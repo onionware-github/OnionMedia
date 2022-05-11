@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "OnionMedia (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "OnionMedia (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
