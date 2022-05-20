@@ -145,7 +145,7 @@
     <value>Über die App</value>
   </data>
   <data name="Settings_AboutDescription.Text" xml:space="preserve">
-    <value>Platzhaltertext. Hier ist die App-Beschreibung</value>
+    <value>OnionMedia ist ein freier Konverter und Downloader für Videos und Audiodateien, der mit ffmpeg und yt-dlp arbeitet. Er unterstützt eine große Anzahl an Formaten und Codecs und ist auf GitHub und im Microsoft Store verfügbar.</value>
   </data>
   <data name="SettingsPage_PrivacyTermsLink.Content" xml:space="preserve">
     <value>Privatsphäre</value>

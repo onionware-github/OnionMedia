@@ -175,7 +175,7 @@
     <value>Nach dem Download benachrichtigen</value>
   </data>
   <data name="storagePaths.Text" xml:space="preserve">
-    <value>Speicherpfade:</value>
+    <value>Speicherpfade</value>
   </data>
   <data name="threadsForConversion.Text" xml:space="preserve">
     <value>Threads zum Konvertieren verwenden:</value>

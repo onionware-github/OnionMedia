@@ -1592,6 +1592,10 @@
       "Description": "LRC lyrics"
     },
     {
+      "Name": "m4a",
+      "Description": "MPEG-4 audio (aac)"
+    },
+    {
       "Name": "m4v",
       "Description": "raw MPEG-4 video"
     },

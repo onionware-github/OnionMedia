@@ -53,6 +53,10 @@ namespace OnionMedia.Core.Models
             DownloadState = Enums.DownloadState.IsWaiting;
             ProgressInfo.DownloadState = YoutubeDLSharp.DownloadState.None;
 
+            //Add video formats to the list
+            foreach (var format in Video.Formats.Where(f => f.Width != null && f.Height != null && f.FrameRate != null))
+                FormatQualityLabels.Add(format, ((int)format.Height).RoundUpToNearestNeighbor(validResolutions));
+
             DownloadProgress.ProgressChanged += OnProgressChanged;
             TimeSpanGroup.PropertyChanged += (o, e) => OnPropertyChanged(nameof(CustomTimes));
 
@@ -203,6 +207,13 @@ namespace OnionMedia.Core.Models
         public string Format => $"bestvideo[height<={GetVideoHeight}]+bestaudio[ext=m4a]/best[height<={GetVideoHeight}]/best";
 
         /// <summary>
+        /// Contains foreach video format a quality label that represents the resolution
+        /// TKey = Format object
+        /// TValue = Rounded height (e.g. 360)
+        /// </summary>
+        public Dictionary<FormatData, int> FormatQualityLabels { get; } = new();
+
+        /// <summary>
         /// Occurs when the download progress get changed
         /// </summary>
         public event EventHandler ProgressChangedEventHandler;
@@ -231,5 +242,7 @@ namespace OnionMedia.Core.Models
         /// </summary>
         public void RaiseFinished()
             => FinishedEventHandler?.Invoke(this, new EventArgs());
+
+        static readonly int[] validResolutions = { 144, 240, 360, 480, 720, 1080, 1440, 2160, 4320, 8640 };
     }
 }

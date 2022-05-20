@@ -43,7 +43,7 @@ namespace OnionMedia
             InitializeComponent();
             UnhandledException += App_UnhandledException;
             Ioc.Default.ConfigureServices(ConfigureServices());
-            GlobalFFOptions.Configure(options => options.BinaryFolder = GlobalResources.Installpath + @"\ExternalBinaries\ffmpeg+yt-dlp\bin");
+            GlobalFFOptions.Configure(options => options.BinaryFolder = GlobalResources.Installpath + @"\ExternalBinaries\ffmpeg+yt-dlp\binaries");
             GlobalResources.DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
         }
 
@@ -116,7 +116,7 @@ namespace OnionMedia
                 try
                 {
                     //Try to read from codecs.json file
-                    codecs = JsonSerializer.Deserialize<FFmpegCodecConfig>(await File.ReadAllTextAsync(GlobalResources.Installpath + @"\Data\codecs.json"));
+                    codecs = JsonSerializer.Deserialize<FFmpegCodecConfig>(File.ReadAllText(Path.Combine(GlobalResources.Installpath, @"Data\codecs.json")));
                     GlobalResources.FFmpegCodecs = codecs.FFmpegHash.SequenceEqual(hash) ? codecs : throw new Exception();
                 }
                 catch

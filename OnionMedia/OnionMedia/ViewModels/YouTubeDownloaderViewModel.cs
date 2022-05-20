@@ -28,6 +28,8 @@ using OnionMedia.Helpers;
 using OnionMedia.Core.Extensions;
 using System.Text.RegularExpressions;
 using Microsoft.UI.Xaml.Controls;
+using System.Threading;
+using System.ComponentModel;
 
 namespace OnionMedia.ViewModels
 {
@@ -43,19 +45,23 @@ namespace OnionMedia.ViewModels
 
             AddSearchedVideo = new(async item => await FillInfosAsync(item.Url), item => !DownloadFileCommand.IsRunning);
 
-            DownloadFileCommand = new(async qualityLabel => await DownloadVideosAsync(Videos, GetMP4, qualityLabel), str => !Videos.Any(v => v.DownloadState is DownloadState.IsLoading));
+            DownloadFileCommand = new(async qualityLabel => await DownloadVideosAsync(Videos, GetMP4, qualityLabel));
 
             RemoveCommand = new(async index => await RemoveVideoAsync());
 
             RestartDownloadCommand = new(video => video.RaiseCancel(true), video => video != null && video.DownloadState == DownloadState.IsLoading);
-            DownloadFileCommand.PropertyChanged += (o, e) => OnPropertyChanged(nameof(QueueIsNotEmpty));
+            DownloadFileCommand.PropertyChanged += (o,e) => UpdateProgressStateProperties();
+            AddVideoCommand.PropertyChanged += (o, e) => UpdateProgressStateProperties();
+            AddSearchedVideo.PropertyChanged += (o, e) => UpdateProgressStateProperties();
+            Videos.CollectionChanged += (o, e) => UpdateProgressStateProperties();
         }
 
+
         public AsyncRelayCommand<string> DownloadFileCommand { get; }
-        public RelayCommand<string> AddVideoCommand { get; }
-        public RelayCommand<int> RemoveCommand { get; }
-        public RelayCommand<SearchItemModel> AddSearchedVideo { get; }
+        public AsyncRelayCommand<string> AddVideoCommand { get; }
+        public AsyncRelayCommand<SearchItemModel> AddSearchedVideo { get; }
         public RelayCommand<StreamItemModel> RestartDownloadCommand { get; }
+        public RelayCommand<int> RemoveCommand { get; }
 
         [ObservableProperty]
         [AlsoNotifyChangeFor(nameof(ResolutionsAvailable))]
@@ -68,6 +74,7 @@ namespace OnionMedia.ViewModels
         private bool videoNotFound;
 
         public bool ResolutionsAvailable => GetMP4 && Videos.Any() && Resolutions.Any();
+
 
         public string SearchTerm
         {
@@ -125,14 +132,7 @@ namespace OnionMedia.ViewModels
             }
         }
 
-        //Use an old version of yt-dl to get thumbnails
-        private static readonly YoutubeDLSharp.YoutubeDL ytDL = new()
-        {
-            YoutubeDLPath = GlobalResources.Installpath + @"\ExternalBinaries\yt-dl.exe",
-            OutputFolder = GlobalResources.DownloaderTempdir,
-            OverwriteFiles = true
-        };
-
+        //Search a video or get a video from a url and add it to the queue.
         private async Task FillInfosAsync(string videolink)
         {
             if (VideoNotFound)
@@ -156,27 +156,31 @@ namespace OnionMedia.ViewModels
             try
             {
                 if (!validUri)
-                    throw new ArgumentException(null, nameof(videolink));
+                {
+                    await RefreshResultsAsync(videolink);
+                    return;
+                }
 
-                var data = await ytDL.RunVideoDataFetch(videolink);
-
-                //Run a check again in case of an age-restricted video
-                if (data.Data == null && validUri)
-                    data = await DownloaderMethods.downloadClient.RunVideoDataFetch(videolink);
+                ScanVideoCount++;
+                var data = await DownloaderMethods.downloadClient.RunVideoDataFetch(videolink);
 
                 if (data.Data == null && urlClone == SearchTerm)
                 {
                     VideoNotFound = true;
+                    ScanVideoCount--;
                     return;
                 }
 
                 var video = new StreamItemModel(data);
                 video.Video.Url = videolink;
 
+                if (Videos.Any(v => v.Video.ID == video.Video.ID))
+                {
+                    ScanVideoCount--;
+                    return;
+                }
 
-                if (!Videos.Any(v => v.Video.ID == video.Video.ID))
-                    Videos.Add(video);
-
+                Videos.Add(video);
                 video.ProgressChangedEventHandler += OnProgressChanged;
                 SelectedVideo = video;
 
@@ -195,12 +199,14 @@ namespace OnionMedia.ViewModels
                 else
                     SelectedQuality = null;
 
+                ScanVideoCount--;
                 OnPropertyChanged(nameof(QueueIsEmpty));
                 OnPropertyChanged(nameof(QueueIsNotEmpty));
                 OnPropertyChanged(nameof(MultipleVideos));
             }
             catch (Exception ex)
             {
+                ScanVideoCount--;
                 switch (ex)
                 {
                     case InvalidOperationException:
@@ -214,16 +220,13 @@ namespace OnionMedia.ViewModels
                     case YoutubeExplodeException:
                         Debug.WriteLine("Video error");
                         break;
-                    //TODO: What is that?
+
+                    //TODO: What is that piece of code?! (i cant remember lol)
                     case ArgumentOutOfRangeException:
                         throw new ArgumentOutOfRangeException("This bug should be fixed...", ex);
 
                     case ArgumentNullException:
                         await RefreshResultsAsync(string.Empty);
-                        break;
-
-                    case ArgumentException:
-                        await RefreshResultsAsync(videolink);
                         break;
 
                     case NotSupportedException:
@@ -299,37 +302,40 @@ namespace OnionMedia.ViewModels
             await Task.CompletedTask;
         }
 
-
+        
         private static async Task DownloadVideosAsync(IList<StreamItemModel> videos, bool getMp4, string qualityLabel)
         {
             if (videos == null || !videos.Any())
                 throw new ArgumentException("videos is null or empty.");
 
-            StreamItemModel loadedVideo = videos[0];
             int finishedCount = 0;
+            List<Task> tasks = new();
+            SemaphoreSlim queue = new(AppSettings.Instance.SimultaneousOperationCount, AppSettings.Instance.SimultaneousOperationCount);
+            StreamItemModel[] items = videos.ToArray();
+            StreamItemModel loadedVideo = null;
+            foreach (var video in items)
+            {
+                video.ProgressInfo.IsDone = false;
+                video.ProgressInfo.Progress = 0;
+                video.QualityLabel = qualityLabel;
+            }
+            foreach (var video in items)
+            {
+                if (!videos.Contains(video) || video.DownloadState == DownloadState.IsCancelled) continue;
+                await queue.WaitAsync();
 
-            var tasks = new Task[videos.Count];
-            YoutubeDLSharp.YoutubeDL youtubeClient = new((byte)AppSettings.Instance.SimultaneousOperationCount)
-            {
-                FFmpegPath = GlobalResources.FFmpegPath,
-                YoutubeDLPath = GlobalResources.YtDlPath,
-                OutputFolder = GlobalResources.DownloaderTempdir,
-                OverwriteFiles = true
-            };
-            for (int i = 0; i < videos.Count; i++)
-            {
-                videos[i].ProgressInfo.IsDone = false;
-                videos[i].ProgressInfo.Progress = 0;
-                videos[i].QualityLabel = qualityLabel;
-                videos[i].FinishedEventHandler += (o, e) =>
+                if (!videos.Contains(video) || video.DownloadState == DownloadState.IsCancelled) continue;
+
+                video.FinishedEventHandler += (o, e) =>
                 {
                     loadedVideo = (StreamItemModel)o;
                     finishedCount++;
-                    Debug.WriteLine($"{loadedVideo.Video.Title} was added to the queue. It has {finishedCount} items now.");
                 };
-                tasks[i] = DownloaderMethods.DownloadStreamAsync(videos[i], getMp4, youtubeClient);
+
+                tasks.Add(DownloaderMethods.DownloadStreamAsync(video, getMp4).ContinueWith(t => queue.Release()));
             }
-            await Task.WhenAll(tasks.Where(t => t != null));
+            await Task.WhenAll(tasks);
+
             Debug.WriteLine("Downloadtask is done.");
 
             foreach (var dir in Directory.GetDirectories(GlobalResources.DownloaderTempdir))
@@ -349,10 +355,10 @@ namespace OnionMedia.ViewModels
                 .AddText("downloadFinished".GetLocalized())
                 .AddText($"{finishedCount} {"videosDownloaded".GetLocalized()}");
 
-                if (videos.All(v => v.Path != null && Path.GetDirectoryName(v.Path.OriginalString) == Path.GetDirectoryName(loadedVideo.Path.OriginalString)))
+                if (items.All(v => v.Path != null && Path.GetDirectoryName(v.Path.OriginalString) == Path.GetDirectoryName(loadedVideo.Path.OriginalString)))
                 {
                     StringBuilder files = new();
-                    var filenames = videos.Where(v => v.Path != null && v.DownloadState is DownloadState.IsDone && File.Exists(v.Path.OriginalString)).Select(v => Path.GetFileName(v.Path.OriginalString));
+                    var filenames = items.Where(v => v.Path != null && v.DownloadState is DownloadState.IsDone && File.Exists(v.Path.OriginalString)).Select(v => Path.GetFileName(v.Path.OriginalString));
                     foreach (var file in filenames)
                         files.AppendLine(file);
 
@@ -410,9 +416,23 @@ namespace OnionMedia.ViewModels
         [ObservableProperty]
         private int downloadProgress;
 
+        /// <summary>
+        /// The number of videos that get scanned in the moment.
+        /// </summary>
+        [ObservableProperty]
+        private int scanVideoCount;
+
         public bool QueueIsEmpty => !Videos.Any();
         public bool QueueIsNotEmpty => Videos.Any() && !DownloadFileCommand.IsRunning;
+        public bool ReadyToDownload => QueueIsNotEmpty && ScanVideoCount == 0;
         public bool AnyResults => SearchResults.Any();
+        public bool AddingVideo => AddVideoCommand.IsRunning || AddSearchedVideo.IsRunning;
+        private void UpdateProgressStateProperties()
+        {
+            OnPropertyChanged(nameof(AddingVideo));
+            OnPropertyChanged(nameof(QueueIsNotEmpty));
+            OnPropertyChanged(nameof(ReadyToDownload));
+        }
 
         public bool MultipleVideos => Videos.Count > 1;
 

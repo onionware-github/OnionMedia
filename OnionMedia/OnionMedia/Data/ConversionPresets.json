@@ -65,6 +65,40 @@
     "AudioEncoder": "aac"
   },
   {
+    "Name": "MP3 Audio",
+    "Format": {
+      "Name": "mp3",
+      "Description": "MP3 (MPEG audio layer 3)"
+    },
+    "VideoAvailable": false,
+    "VideoCodec": {
+      "Name": "h264",
+      "Description": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+      "Encoders": [
+        "libx264",
+        "libx264rgb",
+        "h264_amf",
+        "h264_mf",
+        "h264_nvenc",
+        "h264_qsv"
+      ],
+      "MultipleEncoders": true
+    },
+    "AudioAvailable": true,
+    "AudioCodec": {
+      "Name": "mp3",
+      "Description": "MP3 (MPEG audio layer 3)",
+      "Encoders": [
+        "libmp3lame",
+        "libshine",
+        "mp3_mf"
+      ],
+      "MultipleEncoders": true
+    },
+    "VideoEncoder": "libx264",
+    "AudioEncoder": "libmp3lame"
+  },
+  {
     "Name": "OGG Audio",
     "Format": {
       "Name": "ogg",
@@ -129,10 +163,10 @@
     "AudioEncoder": null
   },
   {
-    "Name": "MP3 Audio",
+    "Name": "M4A Audio",
     "Format": {
-      "Name": "mp3",
-      "Description": "MP3 (MPEG audio layer 3)"
+      "Name": "m4a",
+      "Description": "MPEG-4 audio (aac)"
     },
     "VideoAvailable": false,
     "VideoCodec": {
@@ -150,16 +184,15 @@
     },
     "AudioAvailable": true,
     "AudioCodec": {
-      "Name": "mp3",
-      "Description": "MP3 (MPEG audio layer 3)",
+      "Name": "aac",
+      "Description": "AAC (Advanced Audio Coding)",
       "Encoders": [
-        "libmp3lame",
-        "libshine",
-        "mp3_mf"
+        "aac",
+        "aac_mf"
       ],
       "MultipleEncoders": true
     },
     "VideoEncoder": "libx264",
-    "AudioEncoder": "libmp3lame"
+    "AudioEncoder": "aac"
   }
 ]

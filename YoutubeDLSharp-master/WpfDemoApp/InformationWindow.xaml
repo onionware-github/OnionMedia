@@ -1,0 +1,9 @@
+﻿<Window x:Class="WpfDemoApp.InformationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding Title}" Height="400" Width="400"
+        WindowStartupLocation="CenterOwner">
+    <Grid>
+        <TextBox IsReadOnly="True" VerticalScrollBarVisibility="Auto" Text="{Binding Mode=OneWay}"/>
+    </Grid>
+</Window>

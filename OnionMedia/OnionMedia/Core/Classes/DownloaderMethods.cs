@@ -27,6 +27,7 @@ using YoutubeDLSharp.Metadata;
 using YoutubeExplode.Exceptions;
 using System.Text;
 using CommunityToolkit.WinUI;
+using System.Drawing;
 
 namespace OnionMedia.Core.Classes
 {
@@ -34,7 +35,7 @@ namespace OnionMedia.Core.Classes
     {
         public static readonly YoutubeClient youtube = new();
 
-        public static readonly YoutubeDL downloadClient = new((byte)AppSettings.Instance.SimultaneousOperationCount)
+        public static readonly YoutubeDL downloadClient = new(5)
         {
             FFmpegPath = GlobalResources.FFmpegPath,
             YoutubeDLPath = GlobalResources.YtDlPath,
@@ -94,22 +95,34 @@ namespace OnionMedia.Core.Classes
                 //Audiodownload
                 if (!getMP4)
                 {
-                    RunResult<string> result = await youtubeClient.RunAudioDownload(stream.Video.Url, AppSettings.Instance.DownloadsAudioFormat, cToken, stream.DownloadProgress, overrideOptions: ytOptions);
+                    if (AppSettings.Instance.DownloadsAudioFormat != AudioConversionFormat.Opus)
+                        ytOptions.AddCustomOption("-S", "ext");
+
+                    RunResult<string> result = await youtubeClient.RunAudioDownload(stream.Video.Url, AudioConversionFormat.Best, cToken, stream.DownloadProgress, overrideOptions: ytOptions);
                     stream.Downloading = false;
                     if (result.Data.IsNullOrEmpty())
                         throw new Exception("Download failed!");
-
                     tempfile = result.Data;
-                    Debug.WriteLine(tempfile);
-                    stream.ProgressInfo.Progress = 100;
-                    itemType = Enums.ItemType.audio;
 
                     if (isShortened)
                     {
                         var meta = await new Engine(GlobalResources.FFmpegPath).GetMetaDataAsync(new InputFile(tempfile), cToken);
-                        overhead += meta.Duration - (stream.TimeSpanGroup.EndTime - (stream.TimeSpanGroup.StartTime - overhead));
-                        tempfile = await TrimAudioStartAsync(tempfile, overhead, stream, cToken);
+                        overhead += meta.Duration - (stream.TimeSpanGroup.EndTime.WithoutMilliseconds() - (stream.TimeSpanGroup.StartTime.WithoutMilliseconds() - overhead));
                     }
+
+                    string format = AppSettings.Instance.DownloadsAudioFormat.ToString().ToLower();
+                    if (AppSettings.Instance.DownloadsAudioFormat is AudioConversionFormat.Vorbis)
+                        format = "ogg";
+
+                    if (isShortened || !tempfile.EndsWith(format))
+                    {
+                        stream.Converting = true;
+                        tempfile = await ConvertAudioAsync(tempfile, format, overhead, stream, cToken);
+                    }
+
+                    Debug.WriteLine(tempfile);
+                    stream.ProgressInfo.Progress = 100;
+                    itemType = Enums.ItemType.audio;
                 }
                 //Videodownload
                 else
@@ -118,7 +131,47 @@ namespace OnionMedia.Core.Classes
                     VideoRecodeFormat videoRecodeFormat = (autoConvertToH264 || isShortened) ? VideoRecodeFormat.None : VideoRecodeFormat.Mp4;
                     ytOptions.AddCustomOption("--format-sort", "hdr:SDR");
 
-                    string formatString = stream.QualityLabel.IsNullOrEmpty() ? "bestvideo+bestaudio/best" : stream.Format;
+                    Size originalSize = default;
+                    FormatData formatData = null;
+
+                    if (stream.CustomTimes && stream.QualityLabel.IsNullOrEmpty())
+                    {
+                        //Find the best NonDASH Preset
+                        ytOptions.AddCustomOption("-S", "proto,hdr:SDR");
+                    }
+                    else if (stream.CustomTimes)
+                    {
+                        //Get formats that dont use DASH
+                        var formats = stream.FormatQualityLabels.Where(f => f.Key.Protocol != "http_dash_segments" && f.Key.Extension != "3gp" && f.Key.HDR == "SDR");
+                        formatData = formats.LastOrDefault(f => stream.QualityLabel.StartsWith(f.Value.ToString())).Key;
+                        if (formatData == null)
+                        {
+                            int selectedHeight = int.Parse(stream.QualityLabel.TrimEnd('p'));
+                            var higherFormats = formats.Where(f => f.Value > selectedHeight);
+                            if (higherFormats.Any())
+                            {
+                                //TODO: Downscale to the selected resolution (Check for same aspect ratio)
+                                int min = higherFormats.Min(f => f.Value);
+                                formatData = higherFormats.Where(f => f.Value == min).Last().Key;
+
+                                var defaultSize = stream.FormatQualityLabels.LastOrDefault(f => stream.QualityLabel.StartsWith(f.Value.ToString())).Key;
+                                if (defaultSize != null)
+                                    originalSize = new Size((int)defaultSize.Width, (int)defaultSize.Height);
+                            }
+                            else
+                            {
+                                //Find the best NonDASH format
+                                ytOptions.AddCustomOption("-S", "proto,hdr:SDR");
+                            }
+                        }
+                    }
+
+                    string formatString;
+                    if (formatData?.FormatId != null)
+                        formatString = $"{formatData.FormatId}{(stream.Video.Formats.Any(f => f.VideoBitrate == null && f.AudioBitrate != null) ? "+bestaudio" : string.Empty)}";
+                    else
+                        formatString = stream.QualityLabel.IsNullOrEmpty() ? "bestvideo+bestaudio/best" : stream.Format;
+
                     RunResult<string> result = await youtubeClient.RunVideoDownload(stream.Video.Url, formatString, videoMergeFormat, videoRecodeFormat, cToken, stream.DownloadProgress, overrideOptions: ytOptions);
                     stream.Downloading = false;
                     if (result.Data.IsNullOrEmpty())
@@ -131,17 +184,16 @@ namespace OnionMedia.Core.Classes
                     if (autoConvertToH264 || Path.GetExtension(tempfile) != ".mp4" || isShortened)
                     {
                         stream.Converting = true;
-                        if (!isShortened)
-                            overhead = TimeSpan.Zero;
-
                         if (isShortened)
                         {
                             var meta = await new Engine(GlobalResources.FFmpegPath).GetMetaDataAsync(new InputFile(tempfile), cToken);
-                            overhead += meta.Duration - (stream.TimeSpanGroup.EndTime - (stream.TimeSpanGroup.StartTime - overhead));
+                            overhead += meta.Duration - (stream.TimeSpanGroup.EndTime.WithoutMilliseconds() - (stream.TimeSpanGroup.StartTime.WithoutMilliseconds() - overhead));
                             Debug.WriteLine(overhead);
                         }
+                        else
+                            overhead = TimeSpan.Zero;
 
-                        tempfile = await ConvertToMp4Async(tempfile, overhead, default, stream, cToken);
+                        tempfile = await ConvertToMp4Async(tempfile, overhead, default, stream, originalSize, cToken);
                     }
                 }
             }
@@ -169,12 +221,6 @@ namespace OnionMedia.Core.Classes
                         stream.ProgressInfo.Progress = 0;
                         stream.ProgressInfo.IsCancelledOrFailed = true;
                         goto Start;
-
-                    case YoutubeExplodeException:
-                        Debug.WriteLine(ex.Message);
-                        stream.DownloadState = Enums.DownloadState.IsFailed;
-                        stream.ProgressInfo.IsCancelledOrFailed = true;
-                        return;
 
                     case HttpRequestException:
                         Debug.WriteLine("No internet connection!");
@@ -268,28 +314,37 @@ namespace OnionMedia.Core.Classes
             tagfile.Save();
         }
 
-        private static async Task<string> TrimAudioStartAsync(string inputfile, TimeSpan startTime = default, StreamItemModel stream = null, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// Converts the downloaded audio file to the selected audio format (AppSettings) and/or removes the overhead a the start.
+        /// </summary>
+        /// <returns>The path of the converted file.</returns>
+        private static async Task<string> ConvertAudioAsync(string inputfile, string format, TimeSpan startTime = default, StreamItemModel stream = null, CancellationToken cancellationToken = default)
         {
-            string dir = Path.GetDirectoryName(inputfile);
-            string name = Path.GetFileNameWithoutExtension(inputfile) + "_trimmed";
-            string ext = Path.GetExtension(inputfile);
-            string outputpath = Path.Combine(dir, name + ext);
+            StringBuilder argBuilder = new();
+            if (!inputfile.EndsWith(format))
+            {
+                argBuilder.Append($"-y -loglevel \"repeat+info\" -i \"{inputfile}\" -movflags \"+faststart\" -vn ");
+                argBuilder.Append(GetAudioConversionArgs());
+            }
+            argBuilder.Append($"-ss {startTime} ");
 
-            var input = new InputFile(inputfile);
-            var output = new OutputFile(outputpath);
+            string outputpath = Path.ChangeExtension(inputfile, format);
+            for (int i = 2; File.Exists(outputpath); i++)
+                outputpath = Path.ChangeExtension(outputpath, $"_{i}.{format}");
+            argBuilder.Append(outputpath);
+
+            Debug.WriteLine(argBuilder.ToString());
             Engine ffmpeg = new(GlobalResources.FFmpegPath);
-            ConversionOptions con = new() { ExtraArguments = $"-ss {startTime}" };
+            var meta = await ffmpeg.GetMetaDataAsync(new InputFile(inputfile), cancellationToken);
 
             if (stream != null)
             {
                 ffmpeg.Complete += async (o, e) => await GlobalResources.DispatcherQueue.EnqueueAsync(() => stream.ConversionProgress = 100);
                 ffmpeg.Error += async (o, e) => await GlobalResources.DispatcherQueue.EnqueueAsync(() => stream.ConversionProgress = 0);
-                ffmpeg.Progress += async (o, e) => await GlobalResources.DispatcherQueue.EnqueueAsync(() => stream.ConversionProgress = (int)(e.ProcessedDuration / (e.TotalDuration - startTime) * 100));
+                ffmpeg.Progress += async (o, e) => await GlobalResources.DispatcherQueue.EnqueueAsync(() => stream.ConversionProgress = (int)(e.ProcessedDuration / (meta.Duration - startTime) * 100));
             }
-            await ffmpeg.ConvertAsync(input, output, con, cancellationToken);
 
-            if (stream.ConversionProgress == 0)
-                stream.DownloadState = Enums.DownloadState.IsFailed;
+            await ffmpeg.ExecuteAsync(argBuilder.ToString(), cancellationToken);
             return outputpath;
         }
 
@@ -297,7 +352,7 @@ namespace OnionMedia.Core.Classes
         /// Converts a file to MP4 (with H264 codec if enabled in settings) and returns the new path
         /// </summary>
         /// <returns>The path of the converted file</returns>
-        private static async Task<string> ConvertToMp4Async(string inputfile, TimeSpan startTime = default, TimeSpan endTime = default, StreamItemModel stream = null, CancellationToken cancellationToken = default)
+        private static async Task<string> ConvertToMp4Async(string inputfile, TimeSpan startTime = default, TimeSpan endTime = default, StreamItemModel stream = null, Size resolution = default, CancellationToken cancellationToken = default)
         {
             string outputpath = Path.ChangeExtension(inputfile, ".converted.mp4");
             for (int i = 2; File.Exists(outputpath); i++)
@@ -321,13 +376,13 @@ namespace OnionMedia.Core.Classes
                     };
 
                     var meta = await ffmpeg.GetMetaDataAsync(input, cancellationToken);
-                    if (meta.VideoData.BitRateKbs != null && meta.VideoData.BitRateKbs > 0)
+                    if (meta.VideoData?.BitRateKbs != null && meta.VideoData?.BitRateKbs > 0)
                     {
                         con.VideoBitRate = meta.VideoData.BitRateKbs * 8 / 1000;
                     }
                     else
                     {
-                        int audioBytes = meta.AudioData.BitRateKbs / 1000 * (int)meta.Duration.TotalSeconds;
+                        int audioBytes = meta.AudioData?.BitRateKbs / 1000 * (int)meta.Duration.TotalSeconds ?? 0;
                         int sizeWithoutAudio = (int)meta.FileInfo.Length - audioBytes;
                         con.VideoBitRate = sizeWithoutAudio / (int)meta.Duration.TotalSeconds * 8 / 1000;
                     }
@@ -341,7 +396,9 @@ namespace OnionMedia.Core.Classes
             StringBuilder extraArgs = new();
             extraArgs.Append($"-ss {startTime}");
             if (endTime != default)
-                extraArgs.Append($"-to {endTime}");
+                extraArgs.Append($" -to {endTime}");
+            if (resolution != default)
+                extraArgs.Append($" -vf scale={resolution.Width}:{resolution.Height}");
             con.ExtraArguments = extraArgs.ToString();
 
             if (!AppSettings.Instance.AutoSelectThreadsForConversion)
@@ -473,5 +530,31 @@ namespace OnionMedia.Core.Classes
             }
         }
         public static CancellationTokenSource VideoSearchCancelSource { get; private set; } = new();
+
+
+        private static string GetAudioConversionArgs() => AppSettings.Instance.DownloadsAudioFormat switch
+        {
+            AudioConversionFormat.Flac => "-acodec flac ",
+            AudioConversionFormat.Opus => "-acodec libopus ",
+            AudioConversionFormat.M4a => $"-acodec aac \"-bsf:a\" aac_adtstoasc -aq {GetAudioQuality("aac").ToString().Replace(',', '.')} ",
+            AudioConversionFormat.Mp3 => $"-acodec libmp3lame -aq {GetAudioQuality("libmp3lame").ToString().Replace(',', '.')} ",
+            AudioConversionFormat.Vorbis => $"-acodec libvorbis -aq {GetAudioQuality("libvorbis").ToString().Replace(',', '.')} ",
+            _ => $"-f {AppSettings.Instance.DownloadsAudioFormat.ToString().ToLower()} "
+        };
+
+        private static readonly Dictionary<string, (float, int)> audioQualityDict = new()
+        {
+            { "libmp3lame", (10, 0) },
+            { "libvorbis", (0, 10) },
+            // FFmpeg's AAC encoder does not have an upper limit for the value of -aq.
+            // Experimentally, with values over 4, bitrate changes were minimal or non-existent
+            { "aac", (0.1f, 4) }
+        };
+
+        //Preferred quality for audio-conversion (up to 10).
+        private const float preferredQuality = 5f;
+
+        private static float GetAudioQuality(string codec)
+            => audioQualityDict[codec].Item2 + (audioQualityDict[codec].Item1 - audioQualityDict[codec].Item2) * (preferredQuality / 10);
     }
 }

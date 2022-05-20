@@ -26,6 +26,7 @@ namespace OnionMedia
         {
             new LibraryInfo("FFmpeg", "FFmpeg 64-bit static Windows build from www.gyan.dev", "GNU GPL v3", Installpath + @"\ExternalBinaries\ffmpeg+yt-dlp\FFmpeg_LICENSE", "https://github.com/FFmpeg/FFmpeg/commit/9687cae2b4"),
             new LibraryInfo("yt-dlp", "yt-dlp", "Unlicense", LicensesDir + "yt-dlp.txt", "https://github.com/yt-dlp/yt-dlp"),
+            new LibraryInfo("CommunityToolkit", "Microsoft", "MIT License", LicensesDir + "communitytoolkit.txt", "https://github.com/CommunityToolkit/WindowsCommunityToolkit"),
             new LibraryInfo("FFMpegCore", "Vlad Jerca", "MIT License", LicensesDir + "FFMpegCore.txt", "https://github.com/rosenbjerg/FFMpegCore"),
             new LibraryInfo("TagLib#", "mono", "LGPL v2.1", LicensesDir + "TagLibSharp.txt", "https://github.com/mono/taglib-sharp"),
             new LibraryInfo("xFFmpeg.NET", "Tobias Haimerl(cmxl)", "MIT License", LicensesDir + "xFFmpeg.NET.txt", "https://github.com/cmxl/FFmpeg.NET"),
@@ -38,8 +39,8 @@ namespace OnionMedia
         public static string Tempdir => Path.GetTempPath() + @"\Onionmedia";
         public static string ConverterTempdir => Tempdir + @"\Converter";
         public static string DownloaderTempdir => Tempdir + @"\Downloader";
-        public static string FFmpegPath => Installpath + @"\ExternalBinaries\ffmpeg+yt-dlp\bin\ffmpeg.exe";
-        public static string YtDlPath => Installpath + @"\ExternalBinaries\ffmpeg+yt-dlp\bin\yt-dlp.exe";
+        public static string FFmpegPath => Installpath + @"\ExternalBinaries\ffmpeg+yt-dlp\binaries\ffmpeg.exe";
+        public static string YtDlPath => Installpath + @"\ExternalBinaries\ffmpeg+yt-dlp\binaries\yt-dlp.exe";
         public static string LicensesDir => Installpath + @"\third-party-licenses\";
         public static int SystemThreadCount => Environment.ProcessorCount;
         public static FFmpegCodecConfig FFmpegCodecs { get; set; }

@@ -336,9 +336,6 @@ namespace OnionMedia.ViewModels
             if (SelectedConversionPreset == null)
                 throw new Exception("SelectedConversionPreset is null.");
 
-            //Create the target directory if it does not exist.
-            Directory.CreateDirectory(targetFolder);
-
             var files = new List<MediaItemModel>(Files);
             var queue = new SemaphoreSlim(AppSettings.Instance.SimultaneousOperationCount, AppSettings.Instance.SimultaneousOperationCount);
             List<Task> tasks = new();
@@ -456,7 +453,6 @@ namespace OnionMedia.ViewModels
                                          .ForEach(f => f.RaiseCancel());
 
         private readonly string conversionPresetsPath = GlobalResources.LocalPath + @"\Media\ConversionPresets.json";
-        private readonly string targetFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "OnionMedia", "Converted");
         private const string resources = "Resources";
         private const string dialogResources = "DialogResources";
         private const string deletePresetDialog = "DeletePresetDialog";

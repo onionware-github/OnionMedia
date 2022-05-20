@@ -87,6 +87,24 @@ namespace OnionMedia.Core.Extensions
             throw new ArgumentException("No item met the condition.");
         }
 
+        /// <summary>
+        /// Rounds a number up to the nearest number from <paramref name="numbers"/>
+        /// </summary>
+        /// <returns>The nearest </returns>
+        /// <exception cref="ArgumentNullException"><paramref name="numbers"/> is null.</exception>
+        public static int RoundUpToNearestNeighbor(this int number, IEnumerable<int> numbers)
+        {
+            if (numbers == null)
+                throw new ArgumentNullException(nameof(numbers));
+
+            foreach (var num in numbers.Distinct())
+            {
+                if (number <= num)
+                    return num;
+            }
+            return number;
+        }
+
         public static TimeSpan WithoutMilliseconds(this TimeSpan timeSpan) => new(timeSpan.Days, timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds, 0);
     }
 }

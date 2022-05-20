@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.645
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YoutubeDLSharp", "YoutubeDLSharp\YoutubeDLSharp.csproj", "{55DB24C9-0BD1-4B3B-8464-66AAE156BBC8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YoutubeDLSharp.Tests", "YoutubeDLSharp.Tests\YoutubeDLSharp.Tests.csproj", "{1CA57FDF-8EB6-4BB2-BC1B-32AB313582A4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D6FE5B2E-8313-4154-8BD8-C549281859D3}"
+	ProjectSection(SolutionItems) = preProject
+		Changelog.md = Changelog.md
+		LICENSE.txt = LICENSE.txt
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfDemoApp", "WpfDemoApp\WpfDemoApp.csproj", "{723CB799-D3BB-42D3-8861-BB5557B957B5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{55DB24C9-0BD1-4B3B-8464-66AAE156BBC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55DB24C9-0BD1-4B3B-8464-66AAE156BBC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55DB24C9-0BD1-4B3B-8464-66AAE156BBC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55DB24C9-0BD1-4B3B-8464-66AAE156BBC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CA57FDF-8EB6-4BB2-BC1B-32AB313582A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CA57FDF-8EB6-4BB2-BC1B-32AB313582A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CA57FDF-8EB6-4BB2-BC1B-32AB313582A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CA57FDF-8EB6-4BB2-BC1B-32AB313582A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{723CB799-D3BB-42D3-8861-BB5557B957B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{723CB799-D3BB-42D3-8861-BB5557B957B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{723CB799-D3BB-42D3-8861-BB5557B957B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{723CB799-D3BB-42D3-8861-BB5557B957B5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7685678A-363A-460E-A915-5CDCC2F65D93}
+	EndGlobalSection
+EndGlobal

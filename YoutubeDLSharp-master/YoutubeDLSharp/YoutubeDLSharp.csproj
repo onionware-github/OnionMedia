@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
+    <Authors>Bluegrams</Authors>
+    <Description>A simple .NET wrapper library for youtube-dl.</Description>
+    <Copyright>© 2022 Bluegrams</Copyright>
+    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Bluegrams/YoutubeDLSharp</PackageProjectUrl>
+    <PackageTags>youtube video download youtube-dl yt-dlp</PackageTags>
+    <LangVersion>7.3</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <VersionPrefix>0.4.2</VersionPrefix>
+    <BuildYear>$([System.DateTime]::Now.ToString(yy))</BuildYear>
+    <BuildDay>$([System.DateTime]::Now.DayOfYear)</BuildDay>
+    <AssemblyVersion>$(VersionPrefix).$(BuildYear)$(BuildDay)</AssemblyVersion>
+    <PackageReleaseNotes>https://github.com/Bluegrams/YoutubeDLSharp/blob/master/Changelog.md</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup>
+	<IncludeSymbols>true</IncludeSymbols>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+
+</Project>

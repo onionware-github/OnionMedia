@@ -175,7 +175,7 @@
     <value>Notify after download</value>
   </data>
   <data name="storagePaths.Text" xml:space="preserve">
-    <value>Storage paths:</value>
+    <value>Storage paths</value>
   </data>
   <data name="threadsForConversion.Text" xml:space="preserve">
     <value>Number of threads to convert:</value>

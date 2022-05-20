@@ -129,24 +129,27 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel>
-                        <TextBox x:Name="videolink" x:Uid="/DownloaderPage/videolink" Margin="0,0,3,0" Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay}"
+                        <Grid Margin="0,0,3,0">
+                            <TextBox x:Name="videolink" x:Uid="/DownloaderPage/videolink" Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay}"
                                  ext:TextBoxExtensions.Regex="{x:Bind g:GlobalResources.URLREGEX, Mode=OneTime}"
                                  ext:TextBoxExtensions.IsValid="{x:Bind ViewModel.ValidUrl, Mode=TwoWay}">
-                            <TextBox.KeyboardAccelerators>
-                                <KeyboardAccelerator Modifiers="None" Key="Enter">
-                                    <i:Interaction.Behaviors>
-                                        <core:EventTriggerBehavior EventName="Invoked">
-                                            <core:InvokeCommandAction Command="{x:Bind ViewModel.AddVideoCommand}" CommandParameter="{x:Bind videolink.Text}"/>
-                                        </core:EventTriggerBehavior>
-                                    </i:Interaction.Behaviors>
-                                </KeyboardAccelerator>
-                            </TextBox.KeyboardAccelerators>
-                            <i:Interaction.Behaviors>
-                                <core:EventTriggerBehavior EventName="TextChanged">
-                                    <core:InvokeCommandAction Command="{x:Bind ViewModel.ClearResultsCommand}"/>
-                                </core:EventTriggerBehavior>
-                            </i:Interaction.Behaviors>
-                        </TextBox>
+                                <TextBox.KeyboardAccelerators>
+                                    <KeyboardAccelerator Modifiers="None" Key="Enter">
+                                        <i:Interaction.Behaviors>
+                                            <core:EventTriggerBehavior EventName="Invoked">
+                                                <core:InvokeCommandAction Command="{x:Bind ViewModel.AddVideoCommand}" CommandParameter="{x:Bind videolink.Text}"/>
+                                            </core:EventTriggerBehavior>
+                                        </i:Interaction.Behaviors>
+                                    </KeyboardAccelerator>
+                                </TextBox.KeyboardAccelerators>
+                                <i:Interaction.Behaviors>
+                                    <core:EventTriggerBehavior EventName="TextChanged">
+                                        <core:InvokeCommandAction Command="{x:Bind ViewModel.ClearResultsCommand}"/>
+                                    </core:EventTriggerBehavior>
+                                </i:Interaction.Behaviors>
+                            </TextBox>
+                            <ProgressRing IsActive="{x:Bind ViewModel.AddingVideo}" Margin="0,0,30,0" Width="20" Height="20" HorizontalAlignment="Right"/>
+                        </Grid>
 
                         <ListView ItemsSource="{x:Bind ViewModel.SearchResults}"
                                   SelectionMode="None"
@@ -376,7 +379,7 @@
 
                             <Button Margin="2"
                                     Style="{StaticResource AccentButtonStyle}"
-                                    IsEnabled="{x:Bind ViewModel.QueueIsNotEmpty}"
+                                    IsEnabled="{x:Bind ViewModel.ReadyToDownload}"
                                     Command="{x:Bind ViewModel.DownloadFileCommand}"
                                     CommandParameter="{x:Bind qualitySelection.SelectedItem}"
                                     VerticalAlignment="Stretch">
