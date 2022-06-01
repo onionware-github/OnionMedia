@@ -106,7 +106,6 @@ namespace OnionMedia.Core.Models
                 ConversionState = FFmpegConversionState.Done;
                 ConversionProgress = 100;
             });
-            Complete?.Invoke(this, e);
         }
 
         private async void ConversionError(object sender, ConversionErrorEventArgs e)
@@ -183,11 +182,14 @@ namespace OnionMedia.Core.Models
                 if (ConversionState == FFmpegConversionState.Failed)
                     throw new Exception("Conversion failed.");
             }
-            catch
+            catch (Exception ex)
             {
                 if (Directory.Exists(fileTempDir))
                     try { Directory.Delete(fileTempDir, true); }
                     catch { /* Dont crash if the directory cant be deleted. */ }
+
+                if (ex is IOException ioex)
+                    NotEnoughSpaceException.ThrowIfNotEnoughSpace(ioex);
 
                 CancelSource.Token.ThrowIfCancellationRequested();
                 throw;
@@ -202,12 +204,29 @@ namespace OnionMedia.Core.Models
             for (int i = 2; File.Exists(newFilePath); i++)
                 newFilePath = Path.Combine(dir, name + $"_{i}" + $".{extension}");
 
-            //Move the file to the desired directory.
             if (!File.Exists(fileTempPath)) return;
-            Directory.CreateDirectory(dir);
-            File.Move(fileTempPath, newFilePath);
-            try { Directory.Delete(fileTempDir, true); }
-            catch { /* Dont crash if the directory cant be deleted. */ }
+            try
+            {
+                //Move the file to the desired directory.
+                ConversionState = FFmpegConversionState.Moving;
+                Directory.CreateDirectory(dir);
+                await Task.Run(async () => await MoveFileAsync(fileTempPath, newFilePath));
+                ConversionState = FFmpegConversionState.Done;
+                Complete?.Invoke(this, new ConversionCompleteEventArgs(new InputFile(MediaFile.FileInfo.FullName), new OutputFile(newFilePath)));
+            }
+            catch (Exception ex)
+            {
+                ConversionState = FFmpegConversionState.Failed;
+                if (ex is IOException ioex)
+                    NotEnoughSpaceException.ThrowIfNotEnoughSpace(ioex);
+                throw;
+            }
+        }
+
+        private static async Task MoveFileAsync(string sourceFileName, string destFileName)
+        {
+            File.Move(sourceFileName, destFileName);
+            await Task.CompletedTask;
         }
 
         public string BuildConversionArgs(string filePath, ConversionPreset conversionOptions, out string outputPath, bool forceSoftwareEncodedConversion = false)
@@ -245,7 +264,7 @@ namespace OnionMedia.Core.Models
                 if (VideoBitrate > 0)
                     argBuilder.Append($"-b:v {VideoBitrate} ");
                 else if (IsHardwareAcceleratedCodec(videoCodec))
-                    argBuilder.Append($"-b:v {MediaInfo.PrimaryVideoStream.BitRate} ");
+                    argBuilder.Append($"-b:v {(MediaInfo.PrimaryVideoStream.BitRate > 0 ? MediaInfo.PrimaryVideoStream.BitRate : GlobalResources.CalculateVideoBitrate(MediaFile.FileInfo.FullName, MediaInfo))} ");
                 //Framerate
                 if (FPS > 0 && FPS != MediaInfo.PrimaryVideoStream.FrameRate)
                     argBuilder.Append($"-r {FPS.ToString().Replace(',', '.')} ");
@@ -348,9 +367,9 @@ namespace OnionMedia.Core.Models
             var file = TagLib.File.Create(MediaFile.FileInfo.FullName);
             file.Tag.Title = fileTags.Title;
             file.Tag.Description = fileTags.Description;
-            file.Tag.Performers = new[] { fileTags.Artist };
+            file.Tag.Performers = fileTags.Artist != null ? new[] { fileTags.Artist } : Array.Empty<string>();
             file.Tag.Album = fileTags.Album;
-            file.Tag.Genres = new[] { fileTags.Genre };
+            file.Tag.Genres = fileTags.Genre != null ? new[] { fileTags.Genre } : Array.Empty<string>();
             file.Tag.Track = fileTags.Track;
             file.Tag.Year = fileTags.Year;
             file.Save();

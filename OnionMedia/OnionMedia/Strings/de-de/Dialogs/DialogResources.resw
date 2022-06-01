@@ -117,6 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="conversionFilesCantBeSaved" xml:space="preserve">
+    <value>{0} Dateien konnten nicht am gewählten Speicherort gespeichert werden. Der Pfad konnte nicht gefunden werden, es existieren keine Schreibrechte oder es war nicht genügend freier Speicher vorhanden.</value>
+  </data>
+  <data name="conversionFilesCantBeSavedTitle" xml:space="preserve">
+    <value>Fehler beim Speichern der Dateien.</value>
+  </data>
+  <data name="conversionFilesNoWriteAccess" xml:space="preserve">
+    <value>{0} Datei(en) konnten nicht gespeichert werden, weil kein Schreibzugriff auf den gewählten Ordner besteht.</value>
+  </data>
+  <data name="conversionFilesNoWriteAccessTitle" xml:space="preserve">
+    <value>Kein Schreibzugriff auf den gewählten Speicherpfad.</value>
+  </data>
+  <data name="conversionFilesPathNotFound" xml:space="preserve">
+    <value>{0} Datei(en) konnten nicht gespeichert werden, weil der gewählte Speicherort nicht gefunden wurde.</value>
+  </data>
+  <data name="conversionFilesPathNotFoundTitle" xml:space="preserve">
+    <value>Speicherort nicht gefunden.</value>
+  </data>
   <data name="fileNotSupported" xml:space="preserve">
     <value>Datei wird nicht unterstützt.</value>
   </data>
@@ -134,6 +152,12 @@
   </data>
   <data name="nameIsEmpty.Text" xml:space="preserve">
     <value>Bitte geben Sie einen Namen ein.</value>
+  </data>
+  <data name="notEnoughSpace" xml:space="preserve">
+    <value>{0} Datei(en) konnten nicht gespeichert werden, weil nicht genügend freier Speicher vorhanden ist.</value>
+  </data>
+  <data name="notEnoughSpaceTitle" xml:space="preserve">
+    <value>Nicht genug Speicherplatz vorhanden.</value>
   </data>
   <data name="specificFilesNotSupported" xml:space="preserve">
     <value>Mehrere Dateien werden nicht unterstützt.</value>

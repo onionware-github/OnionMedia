@@ -36,7 +36,7 @@ namespace OnionMedia.Core.Models
         public StreamItemModel(RunResult<VideoData> video)
         {
             if (video.Data == null)
-                throw new NullReferenceException("VideoData is null!");
+                throw new ArgumentNullException("video.Data is null!");
 
             if (video.Data.IsLive == true)
                 throw new NotSupportedException("Livestreams cannot be downloaded.");
@@ -54,8 +54,9 @@ namespace OnionMedia.Core.Models
             ProgressInfo.DownloadState = YoutubeDLSharp.DownloadState.None;
 
             //Add video formats to the list
-            foreach (var format in Video.Formats.Where(f => f.Width != null && f.Height != null && f.FrameRate != null))
-                FormatQualityLabels.Add(format, ((int)format.Height).RoundUpToNearestNeighbor(validResolutions));
+            if (Video.Formats != null)
+                foreach (var format in Video.Formats.Where(f => f.Width != null && f.Height != null && f.FrameRate != null))
+                    FormatQualityLabels.Add(format, ((int)format.Height).RoundUpToNearestNeighbor(validResolutions));
 
             DownloadProgress.ProgressChanged += OnProgressChanged;
             TimeSpanGroup.PropertyChanged += (o, e) => OnPropertyChanged(nameof(CustomTimes));
@@ -67,9 +68,10 @@ namespace OnionMedia.Core.Models
         {
             downloadProgress = e;
             var matchResult = Regex.Match(e.Data ?? string.Empty, GlobalResources.FFMPEGTIMEFROMOUTPUTREGEX);
-            if (matchResult.Success && e.Progress == 0)
+
+            if (matchResult.Success)
                 ProgressInfo.Progress = (int)(TimeSpan.Parse(matchResult.Value.Remove(0, 5)) / (TimeSpanGroup.EndTime - TimeSpanGroup.StartTime) * 100);
-            else
+            else if (e.Progress != 0)
                 ProgressInfo.Progress = (int)(downloadProgress.Progress * 100);
 
             ProgressInfo.TotalSize = downloadProgress.TotalDownloadSize;
@@ -143,6 +145,9 @@ namespace OnionMedia.Core.Models
 
         [ObservableProperty]
         private bool converting;
+
+        [ObservableProperty]
+        private bool moving;
 
         public bool Success => DownloadState is Enums.DownloadState.IsDone;
         public bool Failed => DownloadState is Enums.DownloadState.IsFailed;

@@ -117,6 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="conversionFilesCantBeSaved" xml:space="preserve">
+    <value>{0} files could not be saved to the selected location. The path was not found, there are no write permissions or not enough storage space available.</value>
+  </data>
+  <data name="conversionFilesCantBeSavedTitle" xml:space="preserve">
+    <value>Error while saving files.</value>
+  </data>
+  <data name="conversionFilesNoWriteAccess" xml:space="preserve">
+    <value>{0} file(s) could not be saved to the selected location because the path is not writeable.</value>
+  </data>
+  <data name="conversionFilesNoWriteAccessTitle" xml:space="preserve">
+    <value>No write-access to the selected storage-path.</value>
+  </data>
+  <data name="conversionFilesPathNotFound" xml:space="preserve">
+    <value>{0} file(s) could not be saved because the path was not found.</value>
+  </data>
+  <data name="conversionFilesPathNotFoundTitle" xml:space="preserve">
+    <value>Directory not found.</value>
+  </data>
   <data name="fileNotSupported" xml:space="preserve">
     <value>File is not supported.</value>
   </data>
@@ -134,6 +152,12 @@
   </data>
   <data name="nameIsEmpty.Text" xml:space="preserve">
     <value>Please enter a name for the preset.</value>
+  </data>
+  <data name="notEnoughSpace" xml:space="preserve">
+    <value>{0} file(s) could not be saved because there is not enough disk space.</value>
+  </data>
+  <data name="notEnoughSpaceTitle" xml:space="preserve">
+    <value>Not enough storage space available.</value>
   </data>
   <data name="specificFilesNotSupported" xml:space="preserve">
     <value>Multiple files are not supported.</value>

@@ -13,6 +13,7 @@ using CommunityToolkit.WinUI.Notifications;
 
 using System;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,8 +29,7 @@ using OnionMedia.Helpers;
 using OnionMedia.Core.Extensions;
 using System.Text.RegularExpressions;
 using Microsoft.UI.Xaml.Controls;
-using System.Threading;
-using System.ComponentModel;
+using Windows.Networking.Connectivity;
 
 namespace OnionMedia.ViewModels
 {
@@ -50,10 +50,11 @@ namespace OnionMedia.ViewModels
             RemoveCommand = new(async index => await RemoveVideoAsync());
 
             RestartDownloadCommand = new(video => video.RaiseCancel(true), video => video != null && video.DownloadState == DownloadState.IsLoading);
-            DownloadFileCommand.PropertyChanged += (o,e) => UpdateProgressStateProperties();
+            DownloadFileCommand.PropertyChanged += (o, e) => UpdateProgressStateProperties();
             AddVideoCommand.PropertyChanged += (o, e) => UpdateProgressStateProperties();
             AddSearchedVideo.PropertyChanged += (o, e) => UpdateProgressStateProperties();
             Videos.CollectionChanged += (o, e) => UpdateProgressStateProperties();
+            NetworkInformation.NetworkStatusChanged += o => GlobalResources.DispatcherQueue.TryEnqueue(() => NetworkAvailable = NetworkInformation.GetInternetConnectionProfile() != null);
         }
 
 
@@ -72,6 +73,9 @@ namespace OnionMedia.ViewModels
 
         [ObservableProperty]
         private bool videoNotFound;
+
+        [ObservableProperty]
+        private bool networkAvailable = NetworkInformation.GetInternetConnectionProfile() != null;
 
         public bool ResolutionsAvailable => GetMP4 && Videos.Any() && Resolutions.Any();
 
@@ -157,7 +161,7 @@ namespace OnionMedia.ViewModels
             {
                 if (!validUri)
                 {
-                    await RefreshResultsAsync(videolink);
+                    await RefreshResultsAsync(videolink.Clone() as string);
                     return;
                 }
 
@@ -226,7 +230,7 @@ namespace OnionMedia.ViewModels
                         throw new ArgumentOutOfRangeException("This bug should be fixed...", ex);
 
                     case ArgumentNullException:
-                        await RefreshResultsAsync(string.Empty);
+                        SearchResults.Clear();
                         break;
 
                     case NotSupportedException:
@@ -302,13 +306,25 @@ namespace OnionMedia.ViewModels
             await Task.CompletedTask;
         }
 
-        
-        private static async Task DownloadVideosAsync(IList<StreamItemModel> videos, bool getMp4, string qualityLabel)
+
+        private async Task DownloadVideosAsync(IList<StreamItemModel> videos, bool getMp4, string qualityLabel)
         {
             if (videos == null || !videos.Any())
                 throw new ArgumentException("videos is null or empty.");
 
-            int finishedCount = 0;
+            string path = null;
+            if (!AppSettings.Instance.UseFixedStoragePaths)
+            {
+                path = await GlobalResources.SelectFolderPathAsync();
+                if (path == null) return;
+            }
+
+            VideoNotFound = false;
+            uint finishedCount = 0;
+            uint unauthorizedAccessExceptions = 0;
+            uint directoryNotFoundExceptions = 0;
+            uint notEnoughSpaceExceptions = 0;
+
             List<Task> tasks = new();
             SemaphoreSlim queue = new(AppSettings.Instance.SimultaneousOperationCount, AppSettings.Instance.SimultaneousOperationCount);
             StreamItemModel[] items = videos.ToArray();
@@ -317,6 +333,8 @@ namespace OnionMedia.ViewModels
             {
                 video.ProgressInfo.IsDone = false;
                 video.ProgressInfo.Progress = 0;
+                video.ProgressInfo.DownloadState = YoutubeDLSharp.DownloadState.None;
+                video.DownloadState = DownloadState.IsWaiting;
                 video.QualityLabel = qualityLabel;
             }
             foreach (var video in items)
@@ -332,9 +350,36 @@ namespace OnionMedia.ViewModels
                     finishedCount++;
                 };
 
-                tasks.Add(DownloaderMethods.DownloadStreamAsync(video, getMp4).ContinueWith(t => queue.Release()));
+                tasks.Add(DownloaderMethods.DownloadStreamAsync(video, getMp4, path).ContinueWith(t =>
+                {
+                    queue.Release();
+                    if (t.Exception?.InnerException == null) return;
+
+                    switch (t.Exception?.InnerException)
+                    {
+                        default:
+                            Debug.WriteLine("Exception occured while saving the file.");
+                            break;
+
+                        case UnauthorizedAccessException:
+                            unauthorizedAccessExceptions++;
+                            break;
+
+                        case DirectoryNotFoundException:
+                            directoryNotFoundExceptions++;
+                            break;
+
+                        case NotEnoughSpaceException:
+                            notEnoughSpaceExceptions++;
+                            break;
+                    }
+                }));
             }
             await Task.WhenAll(tasks);
+
+            //Remove downloaded videos from list
+            if (AppSettings.Instance.ClearListsAfterOperation)
+                items.ForEach(v => videos.Remove(v), v => videos.Contains(v) && v.Success);
 
             Debug.WriteLine("Downloadtask is done.");
 
@@ -343,8 +388,11 @@ namespace OnionMedia.ViewModels
                 try { Directory.Delete(dir, true); }
                 catch { /* Dont crash if a directory cant be deleted */ }
             }
-            if (!AppSettings.Instance.SendMessageAfterDownload) return;
 
+            if (unauthorizedAccessExceptions + directoryNotFoundExceptions + notEnoughSpaceExceptions > 0)
+                await GlobalResources.DisplayFileSaveErrorDialog(unauthorizedAccessExceptions, directoryNotFoundExceptions, notEnoughSpaceExceptions);
+
+            if (!AppSettings.Instance.SendMessageAfterDownload) return;
             if (finishedCount == 1)
             {
                 loadedVideo.ShowToast();
@@ -408,6 +456,7 @@ namespace OnionMedia.ViewModels
             if (!DownloaderMethods.VideoSearchCancelSource.IsCancellationRequested)
                 DownloaderMethods.VideoSearchCancelSource.Cancel();
 
+            VideoNotFound = false;
             if (!SearchResults.Any()) return;
             SearchResults.Clear();
             lastSearch = (string.Empty, new Collection<SearchItemModel>());
@@ -430,6 +479,7 @@ namespace OnionMedia.ViewModels
         private void UpdateProgressStateProperties()
         {
             OnPropertyChanged(nameof(AddingVideo));
+            OnPropertyChanged(nameof(QueueIsEmpty));
             OnPropertyChanged(nameof(QueueIsNotEmpty));
             OnPropertyChanged(nameof(ReadyToDownload));
         }

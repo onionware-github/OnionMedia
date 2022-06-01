@@ -30,12 +30,14 @@ namespace OnionMedia.Core.Models
             simultaneousOperationCount = ApplicationData.Current.LocalSettings.Values["simultaneousOperationCount"] as int? ?? 3;
             limitDownloadSpeed = ApplicationData.Current.LocalSettings.Values["limitDownloadSpeed"] as bool? ?? false;
             maxDownloadSpeed = ApplicationData.Current.LocalSettings.Values["maxDownloadSpeed"] as double? ?? 10;
+            clearListsAfterOperation = ApplicationData.Current.LocalSettings.Values["clearListsAfterOperation"] as bool? ?? false;
             autoConvertToH264AfterDownload = ApplicationData.Current.LocalSettings.Values["autoConvertToH264AfterDownload"] as bool? ?? false;
             useHardwareAcceleratedEncoding = ApplicationData.Current.LocalSettings.Values["useHardwareAcceleratedEncoding"] as bool? ?? false;
             //TODO: Check which encoders are available on the system
             hardwareEncoder = ParseEnum<HardwareEncoder>(ApplicationData.Current.LocalSettings.Values["hardwareEncoder"]);
             autoSelectThreadsForConversion = ApplicationData.Current.LocalSettings.Values["autoSelectThreadsForConversion"] as bool? ?? true;
             maxThreadCountForConversion = ApplicationData.Current.LocalSettings.Values["maxThreadCountForConversion"] as int? ?? 1;
+            useFixedStoragePaths = ApplicationData.Current.LocalSettings.Values["useFixedStoragePaths"] as bool? ?? true;
             convertedAudioSavePath = ApplicationData.Current.LocalSettings.Values["convertedAudioSavePath"] as string ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic), "OnionMedia", "converted".GetLocalized());
             convertedVideoSavePath = ApplicationData.Current.LocalSettings.Values["convertedVideoSavePath"] as string ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "OnionMedia", "converted".GetLocalized());
             downloadsAudioSavePath = ApplicationData.Current.LocalSettings.Values["downloadsAudioSavePath"] as string ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic), "OnionMedia", "downloaded".GetLocalized());
@@ -78,6 +80,13 @@ namespace OnionMedia.Core.Models
             set => SetSetting(ref maxDownloadSpeed, value, "maxDownloadSpeed");
         }
         private double? maxDownloadSpeed;
+
+        public bool ClearListsAfterOperation
+        {
+            get => clearListsAfterOperation.HasValue && (bool)clearListsAfterOperation;
+            set => SetSetting(ref clearListsAfterOperation, value, "clearListsAfterOperation");
+        }
+        private bool? clearListsAfterOperation;
 
         /// <summary>
         /// Fallback to software encoding if hardware-accelerated encoding fails.
@@ -155,6 +164,13 @@ namespace OnionMedia.Core.Models
 
 
         //Paths to save files
+        public bool UseFixedStoragePaths
+        {
+            get => useFixedStoragePaths.HasValue && (bool)useFixedStoragePaths;
+            set => SetSetting(ref useFixedStoragePaths, value, "useFixedStoragePaths");
+        }
+        private bool? useFixedStoragePaths;
+
         public string ConvertedVideoSavePath
         {
             get => convertedVideoSavePath;

@@ -164,6 +164,7 @@
                                             <SymbolIcon Symbol="Setting"/>
                                         </ToggleButton>
                                         <muxc:ProgressRing Margin="5" Width="40" Height="40" Value="{x:Bind ConversionProgress}" IsIndeterminate="{x:Bind UnknownConversionProgress}" Visibility="{x:Bind ConversionState, Converter={StaticResource FFmpegConversionStateToVisibilityConverter}, ConverterParameter='Converting'}"/>
+                                        <muxc:ProgressRing Margin="5" Width="40" Height="40" IsActive="True" Visibility="{x:Bind ConversionState, Converter={StaticResource FFmpegConversionStateToVisibilityConverter}, ConverterParameter='Moving'}"/>
                                         <SymbolIcon Symbol="Accept" Visibility="{x:Bind ConversionState, Converter={StaticResource FFmpegConversionStateToVisibilityConverter}, ConverterParameter='Done'}"/>
                                         <SymbolIcon Symbol="Cancel" Visibility="{x:Bind ConversionState, Converter={StaticResource FFmpegConversionStateToVisibilityConverter}, ConverterParameter='Failed'}"/>
                                     </StackPanel>

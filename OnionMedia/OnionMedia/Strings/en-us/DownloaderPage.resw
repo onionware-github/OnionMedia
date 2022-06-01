@@ -147,6 +147,12 @@
   <data name="Mp4.Content" xml:space="preserve">
     <value>Video</value>
   </data>
+  <data name="noInternetConnection.Text" xml:space="preserve">
+    <value>No internet connection</value>
+  </data>
+  <data name="noInternetConnectionDescription.Text" xml:space="preserve">
+    <value>Please make sure you are connected to the internet so that files can be downloaded.</value>
+  </data>
   <data name="noVideoFound.Subtitle" xml:space="preserve">
     <value>No video was found for this URL.</value>
   </data>

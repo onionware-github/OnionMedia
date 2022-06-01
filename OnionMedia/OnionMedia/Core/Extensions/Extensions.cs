@@ -76,6 +76,14 @@ namespace OnionMedia.Core.Extensions
                 action(item);
         }
 
+        public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action, Predicate<T> condition)
+        {
+            if (condition != null)
+                collection.Where(i => condition(i)).ForEach(action);
+            else
+                collection.ForEach(action);
+        }
+
         public static int IndexOf<T>(this IEnumerable<T> collection, Predicate<T> condition)
         {
             if (collection == null || condition == null)

@@ -7,13 +7,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>
  */
 
+using CommunityToolkit.WinUI;
+using FFMpegCore;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using OnionMedia.Core.Models;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.Storage.Pickers;
+using WinRT.Interop;
 using YoutubeDLSharp.Options;
 
 namespace OnionMedia
@@ -50,6 +56,77 @@ namespace OnionMedia
         public const string INVALIDFILENAMECHARACTERSREGEX = @"[<|>:""/\?*]";
         public const string FFMPEGTIMEFROMOUTPUTREGEX = "time=[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{2}";
         public const string URLREGEX = @"^(?:https?:\/\/)?(?:www[.])?\S+[.]\S+(?:[\/]+\S*)*$";
+        private const string DialogResources = "DialogResources";
+
+
+        //Shared methods
+        public static async Task DisplayFileSaveErrorDialog(uint unauthorizedAccessExceptions, uint directoryNotFoundExceptions, uint notEnoughSpaceExceptions)
+        {
+            var dialog = new ContentDialog()
+            {
+                Content = new TextBlock() { TextWrapping = TextWrapping.WrapWholeWords },
+                XamlRoot = XamlRoot,
+                PrimaryButtonText = "OK"
+            };
+
+            if (MultipleExceptionTypes(unauthorizedAccessExceptions, directoryNotFoundExceptions, notEnoughSpaceExceptions))
+            {
+                dialog.Title = "conversionFilesCantBeSavedTitle".GetLocalized(DialogResources);
+                ((TextBlock)dialog.Content).Text = "conversionFilesCantBeSaved".GetLocalized(DialogResources).Replace("{0}", (unauthorizedAccessExceptions + directoryNotFoundExceptions).ToString());
+                await dialog.ShowAsync();
+                return;
+            }
+            if (unauthorizedAccessExceptions > 0)
+            {
+                dialog.Title = "conversionFilesNoWriteAccessTitle".GetLocalized(DialogResources);
+                ((TextBlock)dialog.Content).Text = "conversionFilesNoWriteAccess".GetLocalized(DialogResources).Replace("{0}", unauthorizedAccessExceptions.ToString());
+                await dialog.ShowAsync();
+                return;
+            }
+            if (directoryNotFoundExceptions > 0)
+            {
+                dialog.Title = "conversionFilesPathNotFoundTitle".GetLocalized(DialogResources);
+                ((TextBlock)dialog.Content).Text = "conversionFilesPathNotFound".GetLocalized(DialogResources).Replace("{0}", directoryNotFoundExceptions.ToString());
+                await dialog.ShowAsync();
+                return;
+            }
+            if (notEnoughSpaceExceptions > 0)
+            {
+                dialog.Title = "notEnoughSpaceTitle".GetLocalized(DialogResources);
+                ((TextBlock)dialog.Content).Text = "notEnoughSpace".GetLocalized(DialogResources).Replace("{0}", notEnoughSpaceExceptions.ToString());
+                await dialog.ShowAsync();
+                return;
+            }
+        }
+
+        private static bool MultipleExceptionTypes(params uint[] amountOfException) => amountOfException != null && amountOfException.Count(n => n > 0) > 1;
+
+        public static long CalculateVideoBitrate(string filepath, IMediaAnalysis meta)
+        {
+            if (filepath == null || meta == null)
+                throw new ArgumentNullException(filepath == null ? nameof(filepath) : nameof(meta));
+            if (!File.Exists(filepath))
+                throw new FileNotFoundException();
+
+            long audioBytes = meta.PrimaryAudioStream?.BitRate * (int)meta.Duration.TotalSeconds ?? 0;
+            long sizeWithoutAudio = new FileInfo(filepath).Length - audioBytes;
+            return sizeWithoutAudio / (int)meta.Duration.TotalSeconds * 8;
+        }
+
+
+        /// <summary>
+        /// Opens a FolderPicker and lets the user choose a location.
+        /// </summary>
+        /// <returns>The path to the folder, or null if the dialog is canceled.</returns>
+        public static async Task<string> SelectFolderPathAsync()
+        {
+            FolderPicker picker = new();
+            picker.SuggestedStartLocation = PickerLocationId.VideosLibrary;
+            picker.FileTypeFilter.Add("*");
+            InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(App.MainWindow));
+            var result = await picker.PickSingleFolderAsync();
+            return result?.Path;
+        }
 
 #if DEBUG
         public const bool IS_DEBUG = true;

@@ -28,6 +28,7 @@ using YoutubeExplode.Exceptions;
 using System.Text;
 using CommunityToolkit.WinUI;
 using System.Drawing;
+using FFMpegCore;
 
 namespace OnionMedia.Core.Classes
 {
@@ -43,14 +44,11 @@ namespace OnionMedia.Core.Classes
             OverwriteFiles = true
         };
 
-        public static async Task DownloadStreamAsync(StreamItemModel stream, bool getMP4, YoutubeDL externalYoutubeClient = null)
+        public static async Task DownloadStreamAsync(StreamItemModel stream, bool getMP4, string customOutputDirectory = null)
         {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
-            //   if (stream.ProgressInfo.IsCancelledOrFailed)
-            //       return;
 
-            YoutubeDL youtubeClient = externalYoutubeClient ?? downloadClient;
             OptionSet ytOptions = new() { RestrictFilenames = true };
 
             //Creates a temp directory if it does not already exist.
@@ -98,7 +96,7 @@ namespace OnionMedia.Core.Classes
                     if (AppSettings.Instance.DownloadsAudioFormat != AudioConversionFormat.Opus)
                         ytOptions.AddCustomOption("-S", "ext");
 
-                    RunResult<string> result = await youtubeClient.RunAudioDownload(stream.Video.Url, AudioConversionFormat.Best, cToken, stream.DownloadProgress, overrideOptions: ytOptions);
+                    RunResult<string> result = await downloadClient.RunAudioDownload(stream.Video.Url, AudioConversionFormat.Best, cToken, stream.DownloadProgress, overrideOptions: ytOptions);
                     stream.Downloading = false;
                     if (result.Data.IsNullOrEmpty())
                         throw new Exception("Download failed!");
@@ -172,7 +170,7 @@ namespace OnionMedia.Core.Classes
                     else
                         formatString = stream.QualityLabel.IsNullOrEmpty() ? "bestvideo+bestaudio/best" : stream.Format;
 
-                    RunResult<string> result = await youtubeClient.RunVideoDownload(stream.Video.Url, formatString, videoMergeFormat, videoRecodeFormat, cToken, stream.DownloadProgress, overrideOptions: ytOptions);
+                    RunResult<string> result = await downloadClient.RunVideoDownload(stream.Video.Url, formatString, videoMergeFormat, videoRecodeFormat, cToken, stream.DownloadProgress, overrideOptions: ytOptions);
                     stream.Downloading = false;
                     if (result.Data.IsNullOrEmpty())
                         throw new Exception("Download failed!");
@@ -181,19 +179,20 @@ namespace OnionMedia.Core.Classes
                     Debug.WriteLine(tempfile);
                     stream.ProgressInfo.Progress = 100;
 
-                    if (autoConvertToH264 || Path.GetExtension(tempfile) != ".mp4" || isShortened)
+                    //TODO Setting: Allow to recode ALWAYS to H264, even if it's already H264.
+                    var meta = await FFProbe.AnalyseAsync(tempfile);
+                    if ((autoConvertToH264 && meta.PrimaryVideoStream.CodecName != "h264") || Path.GetExtension(tempfile) != ".mp4" || isShortened)
                     {
                         stream.Converting = true;
                         if (isShortened)
                         {
-                            var meta = await new Engine(GlobalResources.FFmpegPath).GetMetaDataAsync(new InputFile(tempfile), cToken);
                             overhead += meta.Duration - (stream.TimeSpanGroup.EndTime.WithoutMilliseconds() - (stream.TimeSpanGroup.StartTime.WithoutMilliseconds() - overhead));
                             Debug.WriteLine(overhead);
                         }
                         else
                             overhead = TimeSpan.Zero;
 
-                        tempfile = await ConvertToMp4Async(tempfile, overhead, default, stream, originalSize, cToken);
+                        tempfile = await ConvertToMp4Async(tempfile, overhead, default, stream, originalSize, meta, cToken);
                     }
                 }
             }
@@ -223,16 +222,23 @@ namespace OnionMedia.Core.Classes
                         goto Start;
 
                     case HttpRequestException:
-                        Debug.WriteLine("No internet connection!");
+                        Debug.WriteLine("No internet connection.");
                         stream.DownloadState = Enums.DownloadState.IsFailed;
                         stream.ProgressInfo.IsCancelledOrFailed = true;
                         return;
 
                     case SecurityException:
-                        Debug.WriteLine("No access to the temp-path!");
+                        Debug.WriteLine("No access to the temp-path.");
                         stream.DownloadState = Enums.DownloadState.IsFailed;
                         stream.ProgressInfo.IsCancelledOrFailed = true;
                         return;
+
+                    case IOException:
+                        Debug.WriteLine("Failed to save video to the temp-path.");
+                        stream.DownloadState = Enums.DownloadState.IsFailed;
+                        stream.ProgressInfo.IsCancelledOrFailed = true;
+                        NotEnoughSpaceException.ThrowIfNotEnoughSpace((IOException)ex);
+                        throw;
                 }
             }
 
@@ -246,46 +252,45 @@ namespace OnionMedia.Core.Classes
                     SaveTags(tempfile, stream.Video);
 
                 //Moves the video in the correct directory
-                stream.Path = MoveToDisk(tempfile, stream.Video.Title.TrimToFilename(), itemType);
+                stream.Moving = true;
+                stream.Path = await MoveToDisk(tempfile, stream.Video.Title.TrimToFilename(), itemType, customOutputDirectory);
 
                 stream.RaiseFinished();
                 stream.DownloadState = Enums.DownloadState.IsDone;
             }
             catch (Exception ex)
             {
+                stream.DownloadState = Enums.DownloadState.IsFailed;
+                stream.ProgressInfo.IsCancelledOrFailed = true;
                 switch (ex)
                 {
                     default:
                         Debug.WriteLine(ex.Message);
-                        stream.DownloadState = Enums.DownloadState.IsFailed;
-                        stream.ProgressInfo.IsCancelledOrFailed = true;
                         break;
 
                     case FileNotFoundException:
                         Debug.WriteLine("File not found!");
-                        stream.DownloadState = Enums.DownloadState.IsFailed;
-                        stream.ProgressInfo.IsCancelledOrFailed = true;
                         break;
 
                     case UnauthorizedAccessException:
                         Debug.WriteLine("No permissions to access the file.");
-                        stream.DownloadState = Enums.DownloadState.IsFailed;
-                        stream.ProgressInfo.IsCancelledOrFailed = true;
-                        break;
+                        throw;
 
                     case PathTooLongException:
                         Debug.WriteLine("Path is too long");
-                        stream.DownloadState = Enums.DownloadState.IsFailed;
-                        stream.ProgressInfo.IsCancelledOrFailed = true;
-                        break;
+                        throw;
 
                     case DirectoryNotFoundException:
                         Debug.WriteLine("Directory not found!");
-                        stream.DownloadState = Enums.DownloadState.IsFailed;
-                        stream.ProgressInfo.IsCancelledOrFailed = true;
-                        break;
+                        throw;
+
+                    case IOException:
+                        Debug.WriteLine("IOException occured.");
+                        NotEnoughSpaceException.ThrowIfNotEnoughSpace((IOException)ex);
+                        throw;
                 }
             }
+            finally { stream.Moving = false; }
         }
 
         private static void CancelDownload(object sender, CancellationEventArgs e)
@@ -331,7 +336,7 @@ namespace OnionMedia.Core.Classes
             string outputpath = Path.ChangeExtension(inputfile, format);
             for (int i = 2; File.Exists(outputpath); i++)
                 outputpath = Path.ChangeExtension(outputpath, $"_{i}.{format}");
-            argBuilder.Append(outputpath);
+            argBuilder.Append($"\"{outputpath}\"");
 
             Debug.WriteLine(argBuilder.ToString());
             Engine ffmpeg = new(GlobalResources.FFmpegPath);
@@ -352,7 +357,7 @@ namespace OnionMedia.Core.Classes
         /// Converts a file to MP4 (with H264 codec if enabled in settings) and returns the new path
         /// </summary>
         /// <returns>The path of the converted file</returns>
-        private static async Task<string> ConvertToMp4Async(string inputfile, TimeSpan startTime = default, TimeSpan endTime = default, StreamItemModel stream = null, Size resolution = default, CancellationToken cancellationToken = default)
+        private static async Task<string> ConvertToMp4Async(string inputfile, TimeSpan startTime = default, TimeSpan endTime = default, StreamItemModel stream = null, Size resolution = default, IMediaAnalysis videoMeta = null, CancellationToken cancellationToken = default)
         {
             string outputpath = Path.ChangeExtension(inputfile, ".converted.mp4");
             for (int i = 2; File.Exists(outputpath); i++)
@@ -375,17 +380,8 @@ namespace OnionMedia.Core.Classes
                         _ => VideoCodec.libx264
                     };
 
-                    var meta = await ffmpeg.GetMetaDataAsync(input, cancellationToken);
-                    if (meta.VideoData?.BitRateKbs != null && meta.VideoData?.BitRateKbs > 0)
-                    {
-                        con.VideoBitRate = meta.VideoData.BitRateKbs * 8 / 1000;
-                    }
-                    else
-                    {
-                        int audioBytes = meta.AudioData?.BitRateKbs / 1000 * (int)meta.Duration.TotalSeconds ?? 0;
-                        int sizeWithoutAudio = (int)meta.FileInfo.Length - audioBytes;
-                        con.VideoBitRate = sizeWithoutAudio / (int)meta.Duration.TotalSeconds * 8 / 1000;
-                    }
+                    var meta = videoMeta ?? await FFProbe.AnalyseAsync(inputfile);
+                    con.VideoBitRate = (int)GlobalResources.CalculateVideoBitrate(inputfile, meta) / 1000;
                 }
                 else
                     con.VideoCodec = VideoCodec.libx264;
@@ -441,24 +437,20 @@ namespace OnionMedia.Core.Classes
         }
 
 
-        private static Uri MoveToDisk(string tempfile, string videoname, Enums.ItemType itemType)
+        private static async Task<Uri> MoveToDisk(string tempfile, string videoname, Enums.ItemType itemType, string directory = null)
         {
-            string savefilepath;
             string extension = Path.GetExtension(tempfile);
 
             if (videoname.IsNullOrEmpty())
                 videoname = "Download";
 
-            if (itemType == Enums.ItemType.audio)
-                savefilepath = AppSettings.Instance.DownloadsAudioSavePath;
-            else
-                savefilepath = AppSettings.Instance.DownloadsVideoSavePath;
+            string savefilepath = directory ?? (itemType == Enums.ItemType.audio ? AppSettings.Instance.DownloadsAudioSavePath : AppSettings.Instance.DownloadsVideoSavePath);
 
             Directory.CreateDirectory(savefilepath);
             string filename = @$"{savefilepath}\{videoname.TrimToFilename()}{extension}";
 
             if (!File.Exists(filename))
-                File.Move(tempfile, filename);
+                await Task.Run(async () => await MoveFileAsync(tempfile, filename));
 
             else
             {
@@ -469,9 +461,15 @@ namespace OnionMedia.Core.Classes
                 for (int i = 2; File.Exists(filename); i++)
                     filename = $@"{dir}\{name}_{i}{extension}";
 
-                File.Move(tempfile, filename);
+                await Task.Run(async () => await MoveFileAsync(tempfile, filename));
             }
             return new Uri(filename);
+        }
+
+        private static async Task MoveFileAsync(string sourceFileName, string destFileName)
+        {
+            File.Move(sourceFileName, destFileName);
+            await Task.CompletedTask;
         }
 
         //Returns the resolutions from the videos.

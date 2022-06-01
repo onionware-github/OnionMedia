@@ -13,6 +13,7 @@ namespace OnionMedia.Core.Enums
 	{
 		None,
 		Converting,
+		Moving,
 		Done,
 		Cancelled,
 		Failed

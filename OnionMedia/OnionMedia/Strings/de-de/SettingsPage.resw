@@ -129,6 +129,9 @@
   <data name="autoSelectThreadCount.Content" xml:space="preserve">
     <value>Automatisch auswählen</value>
   </data>
+  <data name="clearListsAfterOperation.Content" xml:space="preserve">
+    <value>Liste nach Abschluss der Operation leeren</value>
+  </data>
   <data name="convertAndDownloadSettings.Text" xml:space="preserve">
     <value>Konvert- und Downloadeinstellungen</value>
   </data>
@@ -162,7 +165,7 @@
   <data name="limitDownloadSpeed.Content" xml:space="preserve">
     <value>Downloadgeschwindigkeit limitieren</value>
   </data>
-  <data name="maxDownloadSpeedPerFile" xml:space="preserve">
+  <data name="maxDownloadSpeedPerFile.Header" xml:space="preserve">
     <value>Max. Downloadgeschwindigkeit pro Datei:</value>
   </data>
   <data name="notifications.Text" xml:space="preserve">

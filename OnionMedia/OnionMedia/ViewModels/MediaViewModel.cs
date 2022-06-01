@@ -336,13 +336,24 @@ namespace OnionMedia.ViewModels
             if (SelectedConversionPreset == null)
                 throw new Exception("SelectedConversionPreset is null.");
 
+            string path = null;
+            if (!AppSettings.Instance.UseFixedStoragePaths)
+            {
+                //TODO: Check if this path is writable!
+                path = await GlobalResources.SelectFolderPathAsync();
+                if (path == null) return;
+            }
+
             var files = new List<MediaItemModel>(Files);
             var queue = new SemaphoreSlim(AppSettings.Instance.SimultaneousOperationCount, AppSettings.Instance.SimultaneousOperationCount);
             List<Task> tasks = new();
             files.ForEach(f => f.Uncancel());
             string targetDir;
 
-            int completed = 0;
+            uint completed = 0;
+            uint unauthorizedAccessExceptions = 0;
+            uint directoryNotFoundExceptions = 0;
+            uint notEnoughSpaceExceptions = 0;
             MediaItemModel lastCompleted = null;
             string lastCompletedPath = string.Empty;
             foreach (var file in files)
@@ -356,10 +367,12 @@ namespace OnionMedia.ViewModels
                 if (!Files.Contains(file) || file.ConversionState is FFmpegConversionState.Cancelled) continue;
 
                 //Put the video in ConvertedAudioSavePath, when no video stream exists, otherwise use the ConvertedVideoSavePath.
-                if ((!SelectedConversionPreset.VideoAvailable && !file.UseCustomOptions) || !file.CustomOptions.VideoAvailable && file.UseCustomOptions)
+                if (AppSettings.Instance.UseFixedStoragePaths && ((!SelectedConversionPreset.VideoAvailable && !file.UseCustomOptions) || !file.CustomOptions.VideoAvailable && file.UseCustomOptions))
                     targetDir = AppSettings.Instance.ConvertedAudioSavePath;
-                else
+                else if (AppSettings.Instance.UseFixedStoragePaths)
                     targetDir = AppSettings.Instance.ConvertedVideoSavePath;
+                else
+                    targetDir = path;
 
                 string outputPath = Path.ChangeExtension(Path.Combine(targetDir, file.MediaFile.FileInfo.Name), file.UseCustomOptions ? file.CustomOptions.Format.Name : SelectedConversionPreset.Format.Name);
                 file.Complete += (o, e) =>
@@ -368,9 +381,37 @@ namespace OnionMedia.ViewModels
                     lastCompleted = (MediaItemModel)o;
                     lastCompletedPath = outputPath;
                 };
-                tasks.Add(file.ConvertFileAsync(Path.Combine(targetDir, file.MediaFile.FileInfo.Name), SelectedConversionPreset).ContinueWith(t => queue.Release()));
+                tasks.Add(file.ConvertFileAsync(Path.Combine(targetDir, file.MediaFile.FileInfo.Name), SelectedConversionPreset).ContinueWith(t =>
+                {
+                    queue.Release();
+                    if (t?.Exception?.InnerException == null) return;
+
+                    switch (t.Exception?.InnerException)
+                    {
+                        default:
+                            Debug.WriteLine("Exception occured while saving the file.");
+                            break;
+
+                        case UnauthorizedAccessException:
+                            unauthorizedAccessExceptions++;
+                            break;
+
+                        case DirectoryNotFoundException:
+                            directoryNotFoundExceptions++;
+                            break;
+
+                        case NotEnoughSpaceException:
+                            notEnoughSpaceExceptions++;
+                            break;
+                    }
+                }));
             }
             await Task.WhenAll(tasks);
+
+            //Remove converted files from list.
+            if (AppSettings.Instance.ClearListsAfterOperation)
+                files.ForEach(f => Files.Remove(f), f => Files.Contains(f) && f.ConversionState is FFmpegConversionState.Done);
+
             Debug.WriteLine("Conversion done");
 
             foreach (var dir in Directory.GetDirectories(GlobalResources.ConverterTempdir))
@@ -378,8 +419,11 @@ namespace OnionMedia.ViewModels
                 try { Directory.Delete(dir, true); }
                 catch { /* Dont crash if a directory cant be deleted */ }
             }
-            if (!AppSettings.Instance.SendMessageAfterConversion) return;
 
+            if (unauthorizedAccessExceptions + directoryNotFoundExceptions + notEnoughSpaceExceptions > 0)
+                await GlobalResources.DisplayFileSaveErrorDialog(unauthorizedAccessExceptions, directoryNotFoundExceptions, notEnoughSpaceExceptions);
+
+            if (!AppSettings.Instance.SendMessageAfterConversion) return;
             if (completed == 1)
             {
                 await lastCompleted.ShowToastAsync(lastCompletedPath);
@@ -396,6 +440,7 @@ namespace OnionMedia.ViewModels
                             });
             }
         }
+
 
         private async Task EditTagsAsync()
         {
