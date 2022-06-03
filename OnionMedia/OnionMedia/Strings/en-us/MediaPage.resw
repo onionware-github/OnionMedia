@@ -141,9 +141,6 @@
   <data name="audioInformation.Text" xml:space="preserve">
     <value>Audio information</value>
   </data>
-  <data name="cancelBtn.Text" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
   <data name="cancelText.Content" xml:space="preserve">
     <value>Cancel</value>
   </data>

@@ -232,4 +232,10 @@
   <data name="downloaded" xml:space="preserve">
     <value>Heruntergeladen</value>
   </data>
+  <data name="cancel.Text" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="removeAll.Text" xml:space="preserve">
+    <value>Alle entfernen</value>
+  </data>
 </root>

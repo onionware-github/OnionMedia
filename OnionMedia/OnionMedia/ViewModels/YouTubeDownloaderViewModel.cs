@@ -329,20 +329,17 @@ namespace OnionMedia.ViewModels
             SemaphoreSlim queue = new(AppSettings.Instance.SimultaneousOperationCount, AppSettings.Instance.SimultaneousOperationCount);
             StreamItemModel[] items = videos.ToArray();
             StreamItemModel loadedVideo = null;
+
+            bool canceledAll = false;
+            CanceledAll += (o, e) => canceledAll = true;
+            items.Where(i => i != null && videos.Contains(i)).ForEach(i => i.SetProgressToDefault());
+            items.ForEach(v => v.QualityLabel = qualityLabel);
             foreach (var video in items)
             {
-                video.ProgressInfo.IsDone = false;
-                video.ProgressInfo.Progress = 0;
-                video.ProgressInfo.DownloadState = YoutubeDLSharp.DownloadState.None;
-                video.DownloadState = DownloadState.IsWaiting;
-                video.QualityLabel = qualityLabel;
-            }
-            foreach (var video in items)
-            {
-                if (!videos.Contains(video) || video.DownloadState == DownloadState.IsCancelled) continue;
+                if (canceledAll || !videos.Contains(video) || video.DownloadState == DownloadState.IsCancelled) continue;
                 await queue.WaitAsync();
 
-                if (!videos.Contains(video) || video.DownloadState == DownloadState.IsCancelled) continue;
+                if (canceledAll || !videos.Contains(video) || video.DownloadState == DownloadState.IsCancelled) continue;
 
                 video.FinishedEventHandler += (o, e) =>
                 {
@@ -460,6 +457,21 @@ namespace OnionMedia.ViewModels
             if (!SearchResults.Any()) return;
             SearchResults.Clear();
             lastSearch = (string.Empty, new Collection<SearchItemModel>());
+        }
+
+        [ICommand]
+        private void CancelAll()
+        {
+            Videos.ForEach(v => v?.RaiseCancel());
+            CanceledAll?.Invoke(this, new EventArgs());
+        }
+        public event EventHandler CanceledAll;
+
+        [ICommand]
+        private void RemoveAll()
+        {
+            CancelAll();
+            Videos.Clear();
         }
 
         [ObservableProperty]

@@ -33,5 +33,10 @@ namespace OnionMedia.Views
             btnProgressRing.IsActive = true;
             rotateInSearchIconTrigger.Value = false;
         }
+
+        private void RemoveAll_Clicked(object sender, RoutedEventArgs e)
+        {
+            removeBtnFlyout.Hide();
+        }
     }
 }

@@ -38,6 +38,9 @@ namespace OnionMedia.Views
 
         private void Resolutionpreset_ItemClick(object sender, ItemClickEventArgs e) => resolutionFlyout.Hide();
         private void Frameratepreset_ItemClick(object sender, ItemClickEventArgs e) => framerateFlyout.Hide();
+        private void SmallRemoveAll_Clicked(object sender, RoutedEventArgs e) => smallRemoveBtnFlyout.Hide();
+        private void WideRemoveAll_Clicked(object sender, RoutedEventArgs e) => wideRemoveBtnFlyout.Hide();
+
 
         //Always set value to true on click.
         private void ToggleButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) => ((ToggleButton)sender).IsChecked = true;

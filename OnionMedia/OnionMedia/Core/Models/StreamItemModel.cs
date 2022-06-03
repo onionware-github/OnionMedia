@@ -47,24 +47,32 @@ namespace OnionMedia.Core.Models
             Duration = new TimeSpan(0, 0, (int)Video.Duration);
             TimeSpanGroup = new TimeSpanGroup(Duration);
 
-            DownloadProgress = new();
-            ProgressInfo = new();
-
-            DownloadState = Enums.DownloadState.IsWaiting;
-            ProgressInfo.DownloadState = YoutubeDLSharp.DownloadState.None;
-
             //Add video formats to the list
             if (Video.Formats != null)
                 foreach (var format in Video.Formats.Where(f => f.Width != null && f.Height != null && f.FrameRate != null))
                     FormatQualityLabels.Add(format, ((int)format.Height).RoundUpToNearestNeighbor(validResolutions));
 
-            DownloadProgress.ProgressChanged += OnProgressChanged;
             TimeSpanGroup.PropertyChanged += (o, e) => OnPropertyChanged(nameof(CustomTimes));
-
             CancelSource = new();
+            SetProgressToDefault();
         }
 
-        private void OnProgressChanged(object sender, DownloadProgress e)
+        public void SetProgressToDefault()
+        {
+            if (CancelSource.IsCancellationRequested)
+                CancelSource = new();
+
+            if (DownloadProgress != null)
+                DownloadProgress.ProgressChanged -= OnProgressChanged;
+
+            DownloadProgress = new();
+            ProgressInfo = new();
+
+            DownloadState = Enums.DownloadState.IsWaiting;
+            DownloadProgress.ProgressChanged += OnProgressChanged;
+        }
+
+        protected void OnProgressChanged(object sender, DownloadProgress e)
         {
             downloadProgress = e;
             var matchResult = Regex.Match(e.Data ?? string.Empty, GlobalResources.FFMPEGTIMEFROMOUTPUTREGEX);
@@ -135,7 +143,7 @@ namespace OnionMedia.Core.Models
         /// <summary>
         /// The CancellationTokenSource to cancel the download
         /// </summary>
-        public CancellationTokenSource CancelSource { get; }
+        public CancellationTokenSource CancelSource { get; protected set; }
 
         /// <summary>
         /// Indicates whether the video is being downloaded

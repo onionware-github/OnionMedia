@@ -379,7 +379,8 @@ namespace OnionMedia.ViewModels
                 {
                     completed++;
                     lastCompleted = (MediaItemModel)o;
-                    lastCompletedPath = outputPath;
+                    if (File.Exists(e?.Output?.Name))
+                        lastCompletedPath = e.Output.Name;
                 };
                 tasks.Add(file.ConvertFileAsync(Path.Combine(targetDir, file.MediaFile.FileInfo.Name), SelectedConversionPreset).ContinueWith(t =>
                 {
@@ -496,6 +497,13 @@ namespace OnionMedia.ViewModels
         private void CancelAll() => Files.Where(f => f.ConversionState is FFmpegConversionState.None or FFmpegConversionState.Converting)
                                          .OrderBy(f => f.ConversionState)
                                          .ForEach(f => f.RaiseCancel());
+
+        [ICommand]
+        private void RemoveAll()
+        {
+            CancelAll();
+            Files.Clear();
+        }
 
         private readonly string conversionPresetsPath = GlobalResources.LocalPath + @"\Media\ConversionPresets.json";
         private const string resources = "Resources";

@@ -401,14 +401,35 @@
                                 </StackPanel>
                             </Button>
 
-                            <Button Margin="2"
+                            <SplitButton
+                                Margin="2"
+                                VerticalAlignment="Stretch"
                                 Command="{x:Bind ViewModel.RemoveCommand}"
                                 CommandParameter="{x:Bind videoQueue.SelectedIndex}"
                                 IsEnabled="{x:Bind ViewModel.SelectionIsInRange(ViewModel.Videos, videoQueue.SelectedIndex, x:False)}">
-
                                 <StackPanel>
                                     <SymbolIcon Symbol="Delete"/>
                                     <TextBlock x:Uid="/DownloaderPage/removeBtn"/>
+                                </StackPanel>
+                                <SplitButton.Flyout>
+                                    <Flyout x:Name="removeBtnFlyout" Placement="Bottom">
+                                        <Button Margin="-10" Click="RemoveAll_Clicked" Command="{x:Bind ViewModel.RemoveAllCommand}" IsEnabled="{x:Bind ViewModel.QueueIsNotEmpty}">
+                                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                                <SymbolIcon Symbol="Cancel"/>
+                                                <TextBlock x:Uid="removeAll"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </Flyout>
+                                </SplitButton.Flyout>
+                            </SplitButton>
+
+                            <Button Margin="2"
+                                    Command="{x:Bind ViewModel.CancelAllCommand}"
+                                    Visibility="{x:Bind ViewModel.DownloadFileCommand.IsRunning}"
+                                    VerticalAlignment="Stretch">
+                                <StackPanel>
+                                    <SymbolIcon Symbol="Cancel"/>
+                                    <TextBlock x:Uid="cancel"/>
                                 </StackPanel>
                             </Button>
                         </StackPanel>

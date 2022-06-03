@@ -125,13 +125,24 @@
                                 </StackPanel>
                             </Grid>
                         </Button>
-                        <Button Command="{x:Bind ViewModel.RemoveFileCommand}"
-                                CommandParameter="{x:Bind mediaList.SelectedItem}">
+                        <SplitButton Command="{x:Bind ViewModel.RemoveFileCommand}"
+                                     CommandParameter="{x:Bind mediaList.SelectedItem}"
+                                     VerticalAlignment="Stretch">
                             <StackPanel>
                                 <SymbolIcon Symbol="Remove"/>
                                 <TextBlock x:Uid="/MediaPage/removeBtn"/>
                             </StackPanel>
-                        </Button>
+                            <SplitButton.Flyout>
+                                <Flyout x:Name="smallRemoveBtnFlyout" Placement="Bottom">
+                                    <Button Margin="-10" Click="SmallRemoveAll_Clicked" Command="{x:Bind ViewModel.RemoveAllCommand}" IsEnabled="{x:Bind ViewModel.FilesAreEmpty, Converter={StaticResource InverseBoolConverter}}">
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <SymbolIcon Symbol="Cancel"/>
+                                            <TextBlock x:Uid="removeAll"/>
+                                        </StackPanel>
+                                    </Button>
+                                </Flyout>
+                            </SplitButton.Flyout>
+                        </SplitButton>
                     </StackPanel>
 
                     <ListView Name="mediaList"
@@ -431,20 +442,31 @@
                             </StackPanel>
                         </Grid>
                     </Button>
-                    <Button Command="{x:Bind ViewModel.RemoveFileCommand}"
-                            CommandParameter="{x:Bind mediaList.SelectedItem}"
-                            Margin="0,0,5,0">
+                    <SplitButton Command="{x:Bind ViewModel.RemoveFileCommand}"
+                                 CommandParameter="{x:Bind mediaList.SelectedItem}"
+                                 Margin="0,0,5,0"
+                                 VerticalAlignment="Stretch">
                         <StackPanel>
                             <SymbolIcon Symbol="Remove"/>
                             <TextBlock x:Uid="/MediaPage/removeBtn"/>
                         </StackPanel>
-                    </Button>
+                        <SplitButton.Flyout>
+                            <Flyout x:Name="wideRemoveBtnFlyout" Placement="Top">
+                                <Button Margin="-10" Click="WideRemoveAll_Clicked" Command="{x:Bind ViewModel.RemoveAllCommand}" IsEnabled="{x:Bind ViewModel.FilesAreEmpty, Converter={StaticResource InverseBoolConverter}}">
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <SymbolIcon Symbol="Cancel"/>
+                                        <TextBlock x:Uid="removeAll"/>
+                                    </StackPanel>
+                                </Button>
+                            </Flyout>
+                        </SplitButton.Flyout>
+                    </SplitButton>
                     <Button Command="{x:Bind ViewModel.CancelAllCommand}"
                             Visibility="{x:Bind ViewModel.StartConversionCommand.IsRunning}"
                             Margin="0,0,5,0">
                         <StackPanel>
                             <SymbolIcon Symbol="Cancel"/>
-                            <TextBlock x:Uid="/MediaPage/cancelBtn"/>
+                            <TextBlock x:Uid="cancel"/>
                         </StackPanel>
                     </Button>
                     <Button Command="{x:Bind ViewModel.StartConversionCommand}"
