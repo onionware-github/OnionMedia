@@ -12,10 +12,12 @@ using FFMpegCore;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using OnionMedia.Core.Extensions;
 using OnionMedia.Core.Models;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -34,8 +36,10 @@ namespace OnionMedia
             new LibraryInfo("yt-dlp", "yt-dlp", "Unlicense", LicensesDir + "yt-dlp.txt", "https://github.com/yt-dlp/yt-dlp"),
             new LibraryInfo("CommunityToolkit", "Microsoft", "MIT License", LicensesDir + "communitytoolkit.txt", "https://github.com/CommunityToolkit/WindowsCommunityToolkit"),
             new LibraryInfo("FFMpegCore", "Vlad Jerca", "MIT License", LicensesDir + "FFMpegCore.txt", "https://github.com/rosenbjerg/FFMpegCore"),
+            new LibraryInfo("Newtonsoft.Json", "James Newton-King", "MIT License", LicensesDir + "newtonsoft_json.txt", "https://github.com/JamesNK/Newtonsoft.Json"),
             new LibraryInfo("TagLib#", "mono", "LGPL v2.1", LicensesDir + "TagLibSharp.txt", "https://github.com/mono/taglib-sharp"),
             new LibraryInfo("xFFmpeg.NET", "Tobias Haimerl(cmxl)", "MIT License", LicensesDir + "xFFmpeg.NET.txt", "https://github.com/cmxl/FFmpeg.NET"),
+            new LibraryInfo("XamlBehaviors", "Microsoft", "MIT License", LicensesDir + "microsoft_mit_license.txt", "https://github.com/Microsoft/XamlBehaviors"),
             new LibraryInfo("YoutubeDLSharp", "Bluegrams", "BSD 3-Clause License", LicensesDir + "YoutubeDLSharp.txt", "https://github.com/Bluegrams/YoutubeDLSharp"),
             new LibraryInfo("YoutubeExplode", "Tyrrrz", "LGPL v3", LicensesDir + "YoutubeExplode.txt", "https://github.com/Tyrrrz/YoutubeExplode")
         };
@@ -126,6 +130,47 @@ namespace OnionMedia
             InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(App.MainWindow));
             var result = await picker.PickSingleFolderAsync();
             return result?.Path;
+        }
+
+        /// <summary>
+        /// Moves a file to an another location. When the file at <paramref name="destFileName"/> already exists, it will be overwritten.
+        /// </summary>
+        /// <param name="sourceFileName">The file to move to <paramref name="destFileName"/>.</param>
+        /// <param name="destFileName">The new name and location of <paramref name="sourceFileName"/>.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="FileNotFoundException"></exception>
+        /// <exception cref="OperationCanceledException"></exception>
+        public static async Task MoveFileAsync(string sourceFileName, string destFileName, CancellationToken cancellationToken = default)
+        {
+            if (sourceFileName.IsNullOrEmpty() || destFileName.IsNullOrEmpty())
+                throw new ArgumentNullException();
+
+            if (!File.Exists(sourceFileName))
+                throw new FileNotFoundException("Input file cannot be found.", sourceFileName);
+
+            bool sameDrive = sourceFileName[0].Equals(destFileName[0]);
+            if (sameDrive)
+            {
+                File.Move(sourceFileName, destFileName, true);
+                return;
+            }
+
+
+            try
+            {
+                //If the filepaths points to different volumes, copy the file so that it can be canceled.
+                using (FileStream input = new(sourceFileName, FileMode.Open))
+                using (FileStream output = new(destFileName, FileMode.Create))
+                    await input.CopyToAsync(output, cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                if (File.Exists(destFileName))
+                    File.Delete(destFileName);
+                throw;
+            }
+            File.Delete(sourceFileName);
+            await Task.CompletedTask;
         }
 
 #if DEBUG

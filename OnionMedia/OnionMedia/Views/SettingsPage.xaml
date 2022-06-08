@@ -108,10 +108,8 @@
                         </Expander.Header>
                         <Expander.Content>
                             <StackPanel Spacing="10" MaxWidth="550">
-                                <RadioButtons>
-                                    <RadioButton Content="Jedes Mal nach Speicherort fragen" IsChecked="{x:Bind m:AppSettings.Instance.UseFixedStoragePaths, Mode=OneTime, Converter={StaticResource InverseBoolConverter}}"/>
-                                    <RadioButton Content="Speicherpfade festlegen" IsChecked="{x:Bind m:AppSettings.Instance.UseFixedStoragePaths}"/>
-                                </RadioButtons>
+                                <RadioButton GroupName="fixedPaths" Content="Jedes Mal nach Speicherort fragen" IsChecked="{x:Bind m:AppSettings.Instance.UseFixedStoragePaths, Mode=OneTime, Converter={StaticResource InverseBoolConverter}}"/>
+                                <RadioButton GroupName="fixedPaths" Content="Speicherpfade festlegen" IsChecked="{x:Bind m:AppSettings.Instance.UseFixedStoragePaths}"/>
                                 <StackPanel Spacing="10" Visibility="{x:Bind m:AppSettings.Instance.UseFixedStoragePaths, Mode=OneWay}">
                                     <ctc:DockPanel>
                                         <Button VerticalAlignment="Bottom"

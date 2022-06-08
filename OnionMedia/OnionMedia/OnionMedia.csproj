@@ -13,6 +13,7 @@
   <ItemGroup>
     <None Remove="Assets\AGPLv3_Logo.svg" />
     <None Remove="Assets\OnionMedia_Icon.svg" />
+    <None Remove="Assets\OnionMedia_Icon_New.svg" />
     <None Remove="Assets\OnionMedia_Icon_transparent.svg" />
     <None Remove="Data\codecs.json" />
     <None Remove="Data\ConversionPresets.json" />
@@ -48,6 +49,8 @@
     <None Remove="third-party-licenses\communitytoolkit.txt" />
     <None Remove="third-party-licenses\ffmpeg.txt" />
     <None Remove="third-party-licenses\FFMpegCore.txt" />
+    <None Remove="third-party-licenses\microsoft_mit_license.txt" />
+    <None Remove="third-party-licenses\newtonsoft_json.txt" />
     <None Remove="third-party-licenses\TagLibSharp.txt" />
     <None Remove="third-party-licenses\xFFmpeg.NET.txt" />
     <None Remove="third-party-licenses\YoutubeDLSharp.txt" />
@@ -78,6 +81,8 @@
     <Content Include="third-party-licenses\communitytoolkit.txt" />
     <Content Include="third-party-licenses\ffmpeg.txt" />
     <Content Include="third-party-licenses\FFMpegCore.txt" />
+    <Content Include="third-party-licenses\microsoft_mit_license.txt" />
+    <Content Include="third-party-licenses\newtonsoft_json.txt" />
     <Content Include="third-party-licenses\TagLibSharp.txt" />
     <Content Include="third-party-licenses\xFFmpeg.NET.txt" />
     <Content Include="third-party-licenses\YoutubeDLSharp.txt" />
@@ -94,7 +99,7 @@
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
     <PackageReference Include="FFMpegCore" Version="4.7.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.3" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.0" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.197" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.0.8" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />

@@ -210,9 +210,14 @@ namespace OnionMedia.Core.Models
                 //Move the file to the desired directory.
                 ConversionState = FFmpegConversionState.Moving;
                 Directory.CreateDirectory(dir);
-                await Task.Run(async () => await MoveFileAsync(fileTempPath, newFilePath));
+                await Task.Run(async () => await GlobalResources.MoveFileAsync(fileTempPath, newFilePath, CancelSource.Token));
                 ConversionState = FFmpegConversionState.Done;
                 Complete?.Invoke(this, new ConversionCompleteEventArgs(new InputFile(MediaFile.FileInfo.FullName), new OutputFile(newFilePath)));
+            }
+            catch (OperationCanceledException)
+            {
+                ConversionState = FFmpegConversionState.Cancelled;
+                throw;
             }
             catch (Exception ex)
             {
@@ -221,12 +226,6 @@ namespace OnionMedia.Core.Models
                     NotEnoughSpaceException.ThrowIfNotEnoughSpace(ioex);
                 throw;
             }
-        }
-
-        private static async Task MoveFileAsync(string sourceFileName, string destFileName)
-        {
-            File.Move(sourceFileName, destFileName);
-            await Task.CompletedTask;
         }
 
         public string BuildConversionArgs(string filePath, ConversionPreset conversionOptions, out string outputPath, bool forceSoftwareEncodedConversion = false)

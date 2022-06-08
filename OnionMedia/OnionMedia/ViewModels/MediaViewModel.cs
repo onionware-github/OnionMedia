@@ -494,7 +494,7 @@ namespace OnionMedia.ViewModels
         }
 
         [ICommand]
-        private void CancelAll() => Files.Where(f => f.ConversionState is FFmpegConversionState.None or FFmpegConversionState.Converting)
+        private void CancelAll() => Files.Where(f => f.ConversionState is FFmpegConversionState.None or FFmpegConversionState.Converting or FFmpegConversionState.Moving)
                                          .OrderBy(f => f.ConversionState)
                                          .ForEach(f => f.RaiseCancel());
 

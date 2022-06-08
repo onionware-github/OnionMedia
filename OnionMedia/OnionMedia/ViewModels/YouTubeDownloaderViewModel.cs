@@ -253,23 +253,7 @@ namespace OnionMedia.ViewModels
         private void OnProgressChanged(object sender, EventArgs e)
         {
             OnPropertyChanged(nameof(ResolutionsAvailable));
-            if (Videos.Any() && Videos.All(v => v.ProgressInfo.DownloadState == YoutubeDLSharp.DownloadState.Success))
-            {
-                DownloadProgress = 100;
-                return;
-            }
-
-            int progress = 0;
-            int videocount = Videos.Count;
-
-            //Get progress from all videos
-            foreach (var video in Videos)
-                progress += video.ProgressInfo.Progress;
-
-            if (videocount == 0)
-                DownloadProgress = 0;
-            else
-                DownloadProgress = progress / videocount;
+            OnPropertyChanged(nameof(DownloadProgress));
         }
 
         private async Task RemoveVideoAsync()
@@ -474,8 +458,26 @@ namespace OnionMedia.ViewModels
             Videos.Clear();
         }
 
-        [ObservableProperty]
-        private int downloadProgress;
+        public int DownloadProgress
+        {
+            get
+            {
+                if (Videos.Any() && Videos.All(v => v.ProgressInfo.DownloadState == YoutubeDLSharp.DownloadState.Success))
+                    return 100;
+
+                int progress = 0;
+                int videocount = Videos.Count;
+
+                //Get progress from all videos
+                foreach (var video in Videos)
+                    progress += video.ProgressInfo.Progress;
+
+                if (videocount == 0)
+                    return 0;
+
+                return progress / videocount;
+            }
+        }
 
         /// <summary>
         /// The number of videos that get scanned in the moment.

@@ -127,6 +127,7 @@ namespace OnionMedia.Core.Classes
                 {
                     DownloadMergeFormat videoMergeFormat = (autoConvertToH264 || isShortened) ? DownloadMergeFormat.Unspecified : DownloadMergeFormat.Mp4;
                     VideoRecodeFormat videoRecodeFormat = (autoConvertToH264 || isShortened) ? VideoRecodeFormat.None : VideoRecodeFormat.Mp4;
+                    ytOptions.EmbedThumbnail = true;
                     ytOptions.AddCustomOption("--format-sort", "hdr:SDR");
 
                     Size originalSize = default;
@@ -162,6 +163,11 @@ namespace OnionMedia.Core.Classes
                                 ytOptions.AddCustomOption("-S", "proto,hdr:SDR");
                             }
                         }
+                    }
+                    else
+                    {
+                        //TODO: Check if that works on weaker PCs with less threads.
+                        ytOptions.AddCustomOption("-N", 15);
                     }
 
                     string formatString;
@@ -253,7 +259,7 @@ namespace OnionMedia.Core.Classes
 
                 //Moves the video in the correct directory
                 stream.Moving = true;
-                stream.Path = await MoveToDisk(tempfile, stream.Video.Title.TrimToFilename(), itemType, customOutputDirectory);
+                stream.Path = await MoveToDisk(tempfile, stream.Video.Title.TrimToFilename(), itemType, customOutputDirectory, cToken);
 
                 stream.RaiseFinished();
                 stream.DownloadState = Enums.DownloadState.IsDone;
@@ -266,6 +272,11 @@ namespace OnionMedia.Core.Classes
                 {
                     default:
                         Debug.WriteLine(ex.Message);
+                        break;
+
+                    case OperationCanceledException:
+                        Debug.WriteLine("Moving operation get canceled.");
+                        stream.DownloadState = Enums.DownloadState.IsCancelled;
                         break;
 
                     case FileNotFoundException:
@@ -437,7 +448,7 @@ namespace OnionMedia.Core.Classes
         }
 
 
-        private static async Task<Uri> MoveToDisk(string tempfile, string videoname, Enums.ItemType itemType, string directory = null)
+        private static async Task<Uri> MoveToDisk(string tempfile, string videoname, Enums.ItemType itemType, string directory = null, CancellationToken cancellationToken = default)
         {
             string extension = Path.GetExtension(tempfile);
 
@@ -450,7 +461,7 @@ namespace OnionMedia.Core.Classes
             string filename = @$"{savefilepath}\{videoname.TrimToFilename()}{extension}";
 
             if (!File.Exists(filename))
-                await Task.Run(async () => await MoveFileAsync(tempfile, filename));
+                await Task.Run(async () => await GlobalResources.MoveFileAsync(tempfile, filename, cancellationToken));
 
             else
             {
@@ -461,15 +472,9 @@ namespace OnionMedia.Core.Classes
                 for (int i = 2; File.Exists(filename); i++)
                     filename = $@"{dir}\{name}_{i}{extension}";
 
-                await Task.Run(async () => await MoveFileAsync(tempfile, filename));
+                await Task.Run(async () => await GlobalResources.MoveFileAsync(tempfile, filename, cancellationToken));
             }
             return new Uri(filename);
-        }
-
-        private static async Task MoveFileAsync(string sourceFileName, string destFileName)
-        {
-            File.Move(sourceFileName, destFileName);
-            await Task.CompletedTask;
         }
 
         //Returns the resolutions from the videos.

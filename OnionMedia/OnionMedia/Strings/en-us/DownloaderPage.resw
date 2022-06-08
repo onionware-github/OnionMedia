@@ -168,6 +168,9 @@
   <data name="restartBtn.Text" xml:space="preserve">
     <value>Restart</value>
   </data>
+  <data name="savingFile.Text" xml:space="preserve">
+    <value>Saving...</value>
+  </data>
   <data name="selectFileFormat.Text" xml:space="preserve">
     <value>Select a file format:</value>
   </data>

@@ -98,7 +98,6 @@ namespace OnionMedia.Core.Extensions
         /// <summary>
         /// Rounds a number up to the nearest number from <paramref name="numbers"/>
         /// </summary>
-        /// <returns>The nearest </returns>
         /// <exception cref="ArgumentNullException"><paramref name="numbers"/> is null.</exception>
         public static int RoundUpToNearestNeighbor(this int number, IEnumerable<int> numbers)
         {

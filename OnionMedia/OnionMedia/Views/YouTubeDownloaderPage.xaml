@@ -339,7 +339,7 @@
                                         <StackPanel Grid.Row="1" Grid.Column="2" Margin="5,2" Visibility="{x:Bind CustomTimes, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
                                             <TextBlock Text="{x:Bind ProgressInfo.State}" Visibility="{x:Bind Downloading}"/>
                                             <TextBlock Text="{x:Bind ProgressInfo.DownloadSpeed}" Visibility="{x:Bind Downloading}"/>
-                                            <TextBlock Text="Saving..." Visibility="{x:Bind Moving}"/>
+                                            <TextBlock x:Uid="/DownloaderPage/savingFile" Visibility="{x:Bind Moving}"/>
                                         </StackPanel>
                                         <Grid Grid.Row="1" Grid.Column="2" Margin="5,2" Visibility="{x:Bind CustomTimes}">
                                             <TextBlock x:Uid="/DownloaderPage/downloading" Visibility="{x:Bind Downloading}"/>
@@ -413,7 +413,7 @@
                                 </StackPanel>
                                 <SplitButton.Flyout>
                                     <Flyout x:Name="removeBtnFlyout" Placement="Bottom">
-                                        <Button Margin="-10" Click="RemoveAll_Clicked" Command="{x:Bind ViewModel.RemoveAllCommand}" IsEnabled="{x:Bind ViewModel.QueueIsNotEmpty}">
+                                        <Button Margin="-10" Click="RemoveAll_Clicked" Command="{x:Bind ViewModel.RemoveAllCommand}" IsEnabled="{x:Bind ViewModel.QueueIsEmpty, Converter={StaticResource InverseBoolConverter}}">
                                             <StackPanel Orientation="Horizontal" Spacing="5">
                                                 <SymbolIcon Symbol="Cancel"/>
                                                 <TextBlock x:Uid="removeAll"/>
