@@ -159,6 +159,9 @@
   <data name="noVideoFound.Title" xml:space="preserve">
     <value>Video not found</value>
   </data>
+  <data name="openURLInBrowser.Text" xml:space="preserve">
+    <value>Open URL in browser</value>
+  </data>
   <data name="progress.Text" xml:space="preserve">
     <value>Progress:</value>
   </data>

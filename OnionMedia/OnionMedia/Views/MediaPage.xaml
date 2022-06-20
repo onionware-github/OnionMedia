@@ -369,7 +369,7 @@
                         <RowDefinition Height="auto"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <Button x:Name="editTagsBtn" x:Uid="/MediaPage/editTagsBtn" HorizontalAlignment="Stretch" Margin="10,0,0,0" Command="{x:Bind ViewModel.EditTagsCommand}" IsEnabled="{x:Bind ViewModel.SelectedItem.FileTagsAvailable}" Visibility="{x:Bind ViewModel.ItemSelected}"/>
+                    <Button x:Name="editTagsBtn" x:Uid="/MediaPage/editTagsBtn" HorizontalAlignment="Stretch" Margin="10,0,0,0" Command="{x:Bind ViewModel.EditTagsCommand}" IsEnabled="{x:Bind ViewModel.CanEditTags}" Visibility="{x:Bind ViewModel.ItemSelected}"/>
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Visibility="{x:Bind ViewModel.ItemSelected}">
                         <StackPanel Margin="10" Spacing="7">
                             <TextBlock x:Uid="/MediaPage/fileInfo" FontWeight="SemiBold"/>

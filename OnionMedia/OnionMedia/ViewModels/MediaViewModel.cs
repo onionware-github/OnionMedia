@@ -38,33 +38,13 @@ namespace OnionMedia.ViewModels
     {
         public MediaViewModel()
         {
-            try
-            {
-                //Try to read the .json file that contains the presets.
-                ConversionPresets.AddRange(JsonSerializer.Deserialize<IEnumerable<ConversionPreset>>(File.ReadAllText(conversionPresetsPath)));
-            }
-            catch (Exception)
-            {
-                try
-                {
-                    //If the file is missing or corrupted, try to read the supplied file.
-                    ConversionPresets.AddRange(JsonSerializer.Deserialize<IEnumerable<ConversionPreset>>(File.ReadAllText(GlobalResources.Installpath + @"\Data\ConversionPresets.json")));
-                }
-                catch (Exception) { } //Dont crash when the supplied .json file is missing or corrupted too.
-                finally
-                {
-                    //Finally create a new .json file for the presets.
-                    if (!Directory.Exists(Path.GetDirectoryName(conversionPresetsPath)))
-                        Directory.CreateDirectory(Path.GetDirectoryName(conversionPresetsPath));
-                    using var sr = File.CreateText(conversionPresetsPath);
-                    sr.Write(JsonSerializer.Serialize<IEnumerable<ConversionPreset>>(ConversionPresets));
-                }
-            }
+            InsertConversionPresetsFromJson();
 
             //Sort presets
             var sorted = ConversionPresets.OrderByDescending(p => p.VideoAvailable).ThenBy(p => p.Name);
             ConversionPresets = new(sorted);
 
+            //Insert the "Custom Preset"
             ConversionPresets.Insert(0, new ConversionPreset("custom".GetLocalized(resources)));
             ConversionPresets.CollectionChanged += UpdateConversionPresets;
             if (ConversionPresets.Count > 1)
@@ -89,6 +69,7 @@ namespace OnionMedia.ViewModels
             {
                 OnPropertyChanged(nameof(CanExecuteConversion));
                 OnPropertyChanged(nameof(ItemSelectedAndIdle));
+                OnPropertyChanged(nameof(CanEditTags));
             };
             EditTagsCommand = new(EditTagsAsync);
             SetResolutionCommand = new(res =>
@@ -110,6 +91,32 @@ namespace OnionMedia.ViewModels
         {
             OnPropertyChanged(nameof(FilesAreEmpty));
             OnPropertyChanged(nameof(CanExecuteConversion));
+        }
+
+        private void InsertConversionPresetsFromJson()
+        {
+            try
+            {
+                //Try to read the .json file that contains the presets.
+                ConversionPresets.AddRange(JsonSerializer.Deserialize<IEnumerable<ConversionPreset>>(File.ReadAllText(conversionPresetsPath)));
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    //If the file is missing or corrupted, try to read the supplied file.
+                    ConversionPresets.AddRange(JsonSerializer.Deserialize<IEnumerable<ConversionPreset>>(File.ReadAllText(GlobalResources.Installpath + @"\Data\ConversionPresets.json")));
+                }
+                catch (Exception) { } //Dont crash when the supplied .json file is missing or corrupted too.
+                finally
+                {
+                    //Finally create a new .json file for the presets.
+                    if (!Directory.Exists(Path.GetDirectoryName(conversionPresetsPath)))
+                        Directory.CreateDirectory(Path.GetDirectoryName(conversionPresetsPath));
+                    using var sr = File.CreateText(conversionPresetsPath);
+                    sr.Write(JsonSerializer.Serialize<IEnumerable<ConversionPreset>>(ConversionPresets));
+                }
+            }
         }
 
         private async void UpdateConversionPresets(object sender, NotifyCollectionChangedEventArgs e)
@@ -167,6 +174,7 @@ namespace OnionMedia.ViewModels
                 OnPropertyChanged(nameof(ItemSelected));
                 OnPropertyChanged(nameof(ItemSelectedAndIdle));
                 OnPropertyChanged(nameof(VideoEnabled));
+                OnPropertyChanged(nameof(CanEditTags));
 
                 if (value != null && value.MediaInfo.PrimaryVideoStream != null)
                     Resolutions[0] = new Resolution("source".GetLocalized(resources), (uint)value.MediaInfo.PrimaryVideoStream.Width, (uint)value.MediaInfo.PrimaryVideoStream.Height);
@@ -181,6 +189,7 @@ namespace OnionMedia.ViewModels
         public bool ItemSelectedAndIdle => ItemSelected && !StartConversionCommand.IsRunning;
         public bool FilesAreEmpty => !Files.Any();
         public bool CanExecuteConversion => !StartConversionCommand.IsRunning && !FilesAreEmpty && !AddingFiles;
+        public bool CanEditTags => ItemSelected && SelectedItem.FileTagsAvailable && !StartConversionCommand.IsRunning;
 
         public ConversionPreset SelectedConversionPreset
         {

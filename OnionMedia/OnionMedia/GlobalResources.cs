@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Controls;
 using OnionMedia.Core.Extensions;
 using OnionMedia.Core.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -117,6 +118,24 @@ namespace OnionMedia
             return sizeWithoutAudio / (int)meta.Duration.TotalSeconds * 8;
         }
 
+        public static async Task<string> SelectSaveFilePathAsync(IDictionary<string, IList<string>> filetypechoices, string suggestedFilename = null)
+        {
+            if (filetypechoices == null)
+                throw new ArgumentNullException(nameof(filetypechoices));
+
+            FileSavePicker picker = new();
+            picker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+
+            if (suggestedFilename != null)
+                picker.SuggestedFileName = suggestedFilename;
+
+            foreach (var filetype in filetypechoices)
+                picker.FileTypeChoices.Add(filetype);
+
+            InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(App.MainWindow));
+            var result = await picker.PickSaveFileAsync();
+            return result.Path;
+        }
 
         /// <summary>
         /// Opens a FolderPicker and lets the user choose a location.

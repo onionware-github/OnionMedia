@@ -266,7 +266,7 @@
                         </StackPanel>
 
                         <ctc:WrapPanel Orientation="Horizontal" HorizontalSpacing="40" VerticalSpacing="30" MaxHeight="350" Margin="{StaticResource SmallTopMargin}">
-                            <Image Source="../Assets/OnionMedia_Icon.svg" Height="200" VerticalAlignment="Top"/>
+                            <Image Source="../Assets/OnionMedia_Icon_New.png" Height="200" VerticalAlignment="Top"/>
                             <Image Source="../Assets/AGPLv3_Logo.svg" Stretch="Uniform" MaxHeight="500" MinWidth="350" VerticalAlignment="Top" Margin="0,30,0,0"/>
                         </ctc:WrapPanel>
                     </StackPanel>
@@ -290,7 +290,7 @@
                     </StackPanel>
 
                     <ctc:WrapPanel Orientation="Horizontal" HorizontalSpacing="40" VerticalSpacing="30" MaxHeight="350" Margin="{StaticResource SmallTopMargin}">
-                        <Image Source="../Assets/OnionMedia_Icon.svg" Height="200" VerticalAlignment="Top"/>
+                        <Image Source="../Assets/OnionMedia_Icon_New.png" Height="200" VerticalAlignment="Top"/>
                         <Image Source="../Assets/AGPLv3_Logo.svg" Stretch="Uniform" MaxHeight="500" MinWidth="350" VerticalAlignment="Top" Margin="0,30,0,0"/>
                     </ctc:WrapPanel>
                 </StackPanel>

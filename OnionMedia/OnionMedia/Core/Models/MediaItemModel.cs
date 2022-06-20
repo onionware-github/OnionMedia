@@ -33,9 +33,8 @@ namespace OnionMedia.Core.Models
     [ObservableObject]
     public sealed partial class MediaItemModel
     {
-        private MediaItemModel(MediaFile mediaFile, IMediaAnalysis mediaAnalysis, byte[] hash)
+        private MediaItemModel(MediaFile mediaFile, IMediaAnalysis mediaAnalysis)
         {
-            this.hash = hash;
             MediaFile = mediaFile;
             MediaInfo = mediaAnalysis;
             VideoTimes = new TimeSpanGroup(mediaAnalysis.Duration);
@@ -126,18 +125,10 @@ namespace OnionMedia.Core.Models
             if (!File.Exists(mediafile.FullName))
                 throw new FileNotFoundException("File does not exist.");
 
-            byte[] hash;
-            using (var md5 = MD5.Create())
-            {
-                using var stream = File.OpenRead(mediafile.FullName);
-                hash = md5.ComputeHash(stream);
-            }
-
             IMediaAnalysis mediaAnalysis = await FFProbe.AnalyseAsync(mediafile.FullName);
-            return new MediaItemModel(new InputFile(mediafile.FullName), mediaAnalysis, hash);
+            return new MediaItemModel(new InputFile(mediafile.FullName), mediaAnalysis);
         }
 
-        private byte[] hash;
         private readonly Engine ffmpeg = new(GlobalResources.FFmpegPath);
 
         public async Task ConvertFileAsync(string filePath, ConversionPreset conversionArgs)
@@ -147,16 +138,6 @@ namespace OnionMedia.Core.Models
 
             if (!File.Exists(MediaFile.FileInfo.FullName))
                 throw new FileNotFoundException();
-
-            using (var md5 = MD5.Create())
-            {
-                using var stream = File.OpenRead(MediaFile.FileInfo.FullName);
-                if (!md5.ComputeHash(stream).SequenceEqual(hash))
-                {
-                    ConversionState = FFmpegConversionState.Failed;
-                    throw new SecurityException("The file has been modified.");
-                }
-            }
 
             //Create a new temp directory
             string fileTempDir;
@@ -233,12 +214,9 @@ namespace OnionMedia.Core.Models
             if (filePath == null || conversionOptions == null)
                 throw new ArgumentNullException(filePath == null ? nameof(filePath) : nameof(conversionOptions));
 
-            string videoCodec = UseCustomOptions ? CustomOptions.VideoEncoder : conversionOptions.VideoEncoder;
-            string audioCodec = UseCustomOptions ? CustomOptions.AudioEncoder : conversionOptions.AudioEncoder;
-            if (videoCodec.IsNullOrWhiteSpace())
-                videoCodec = UseCustomOptions ? CustomOptions.VideoCodec.Name : conversionOptions.VideoCodec.Name;
-            if (audioCodec.IsNullOrWhiteSpace())
-                audioCodec = UseCustomOptions ? CustomOptions.AudioCodec.Name : conversionOptions.AudioCodec.Name;
+            ConversionPreset options = UseCustomOptions ? CustomOptions : conversionOptions;
+            string videoCodec = options.VideoEncoder ?? options.VideoCodec.Name;
+            string audioCodec = options.AudioEncoder ?? options.AudioCodec.Name;
 
             if (forceSoftwareEncodedConversion)
                 videoCodec = HardwareToSoftwareEncoder(videoCodec);
@@ -246,7 +224,7 @@ namespace OnionMedia.Core.Models
             StringBuilder argBuilder = new();
             argBuilder.Append($"-i \"{MediaFile.FileInfo.FullName}\" ");
 
-            if (VideoStreamAvailable && ((conversionOptions.VideoAvailable && !UseCustomOptions) || CustomOptions.VideoAvailable && UseCustomOptions))
+            if (VideoStreamAvailable && options.VideoAvailable)
             {
                 //Codec
                 argBuilder.Append($"-codec:v {videoCodec} ");
@@ -268,10 +246,10 @@ namespace OnionMedia.Core.Models
                 if (FPS > 0 && FPS != MediaInfo.PrimaryVideoStream.FrameRate)
                     argBuilder.Append($"-r {FPS.ToString().Replace(',', '.')} ");
             }
-            if (AudioStreamAvailable && ((conversionOptions.AudioAvailable && !UseCustomOptions) || CustomOptions.AudioAvailable && UseCustomOptions))
+            if (AudioStreamAvailable && options.AudioAvailable)
             {
                 //TODO: Einstellung hinzufügen, um auszuwählen, was beim selben Codec passieren soll (Recoden oder ignorieren)
-                if (MediaInfo.PrimaryAudioStream.CodecName != (UseCustomOptions ? CustomOptions.AudioEncoder : conversionOptions.AudioEncoder))
+                if (MediaInfo.PrimaryAudioStream.CodecName != options.AudioEncoder)
                     argBuilder.Append($"-codec:a {audioCodec} ");
                 else
                     argBuilder.Append("-acodec copy ");
@@ -279,17 +257,17 @@ namespace OnionMedia.Core.Models
                     argBuilder.Append($"-b:a {AudioBitrate} ");
 
                 //Remove video when video is deactivated
-                if ((!conversionOptions.VideoAvailable && !UseCustomOptions) || !CustomOptions.VideoAvailable && UseCustomOptions)
+                if (!options.VideoAvailable)
                     argBuilder.Append("-vn ");
             }
 
             if (!VideoTimes.StartTime.Equals(TimeSpan.Zero) || !VideoTimes.EndTime.Equals(VideoTimes.Duration))
-                argBuilder.Append($"-ss {VideoTimes.StartTime} -to {VideoTimes.EndTime} ");
+                argBuilder.Append($"-ss {VideoTimes.StartTime:hh\\:mm\\:ss}.00 -to {VideoTimes.EndTime:hh\\:mm\\:ss}.00 ");
 
             if (!AppSettings.Instance.AutoSelectThreadsForConversion)
                 argBuilder.Append($"-threads {AppSettings.Instance.MaxThreadCountForConversion} ");
 
-            outputPath = Path.ChangeExtension(filePath, UseCustomOptions ? CustomOptions.Format.Name : conversionOptions.Format.Name);
+            outputPath = Path.ChangeExtension(filePath, options.Format.Name);
             argBuilder.Append($"\"{outputPath}\"");
             return argBuilder.ToString();
         }
@@ -305,6 +283,7 @@ namespace OnionMedia.Core.Models
             _ => hardwareEncoder
         };
 
+        //TODO: Change to string.EndsWith("qsv" || "nvenc" || "amf")?
         private static bool IsHardwareAcceleratedCodec(string videoCodec)
             => videoCodec is "h264_nvenc" or "h264_qsv" or "h264_amf"
             or "hevc_nvenc" or "hevc_qsv" or "hevc_amf";
@@ -358,11 +337,6 @@ namespace OnionMedia.Core.Models
             if (!File.Exists(MediaFile.FileInfo.FullName))
                 throw new FileNotFoundException();
 
-            using var md5 = MD5.Create();
-            using (var stream = File.OpenRead(MediaFile.FileInfo.FullName))
-                if (!md5.ComputeHash(stream).SequenceEqual(hash))
-                    throw new SecurityException("The file has been modified.");
-
             var file = TagLib.File.Create(MediaFile.FileInfo.FullName);
             file.Tag.Title = fileTags.Title;
             file.Tag.Description = fileTags.Description;
@@ -378,8 +352,6 @@ namespace OnionMedia.Core.Models
                 return false;
 
             FileTags = fileTags;
-            using (var stream = File.OpenRead(MediaFile.FileInfo.FullName))
-                hash = md5.ComputeHash(stream);
             OnPropertyChanged(nameof(Title));
             return true;
         }

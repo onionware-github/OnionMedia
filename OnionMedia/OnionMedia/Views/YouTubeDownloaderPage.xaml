@@ -314,7 +314,12 @@
                             <ListView.ItemTemplate>
                                 <DataTemplate x:DataType="m:StreamItemModel">
                                     <Grid Padding="5" MinHeight="85">
-
+                                        <Grid.ContextFlyout>
+                                            <MenuFlyout>
+                                                <MenuFlyoutItem x:Uid="/DownloaderPage/openURLInBrowser" Command="{x:Bind vm:YouTubeDownloaderViewModel.OpenUrlCommand}" CommandParameter="{x:Bind Video.Url}"/>
+                                            </MenuFlyout>
+                                        </Grid.ContextFlyout>
+                                            
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="80"/>
                                             <ColumnDefinition Width="auto"/>

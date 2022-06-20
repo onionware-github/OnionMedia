@@ -55,37 +55,34 @@ namespace OnionMedia.Core.Classes
             Directory.CreateDirectory(GlobalResources.DownloaderTempdir);
 
             //Creates a new temp directory for this file
-            string videotempdir;
-            do videotempdir = GlobalResources.DownloaderTempdir + $@"\{Path.GetRandomFileName()}";
-            while (Directory.Exists(videotempdir));
-            Directory.CreateDirectory(videotempdir);
+            string videotempdir = CreateVideoTempDir();
 
-            stream.ProgressInfo.IsDone = false;
-            stream.Converting = false;
-            stream.DownloadState = Enums.DownloadState.IsLoading;
-            stream.ConversionProgress = 0;
+
+            SetProgressToDefault(stream);
             stream.CancelEventHandler += CancelDownload;
-            var cToken = stream.CancelSource.Token;
 
+            var cToken = stream.CancelSource.Token;
             bool autoConvertToH264 = AppSettings.Instance.AutoConvertToH264AfterDownload;
 
             string tempfile = string.Empty;
             bool isShortened = false;
             TimeSpan overhead = getMP4 ? (stream.TimeSpanGroup.StartTime.WithoutMilliseconds() < TimeSpan.FromSeconds(10) ? stream.TimeSpanGroup.StartTime : TimeSpan.FromSeconds(10)) : TimeSpan.Zero;
             Enums.ItemType itemType = Enums.ItemType.video;
-        Start:
+
             try
             {
                 Debug.WriteLine($"Current State of Progress: {stream.ProgressInfo.Progress}");
                 ytOptions.Output = $@"{videotempdir}\%(id)s.%(ext)s";
 
-                if (!stream.TimeSpanGroup.StartTime.Equals(TimeSpan.Zero) || !stream.TimeSpanGroup.EndTime.Equals(stream.Duration))
+                if (stream.CustomTimes)
                 {
                     ytOptions.ExternalDownloader = "ffmpeg";
                     ytOptions.ExternalDownloaderArgs = $"ffmpeg_i: -ss {stream.TimeSpanGroup.StartTime.WithoutMilliseconds() - overhead:hh\\:mm\\:ss}.00 -to {stream.TimeSpanGroup.EndTime:hh\\:mm\\:ss}.00";
                     isShortened = stream.TimeSpanGroup.StartTime.WithoutMilliseconds().Ticks > 0;
                     Debug.WriteLine(ytOptions.ExternalDownloaderArgs);
                 }
+
+                //Set download spped limit from AppSettings
                 if (AppSettings.Instance.LimitDownloadSpeed && AppSettings.Instance.MaxDownloadSpeed > 0)
                     ytOptions.LimitRate = (long)(AppSettings.Instance.MaxDownloadSpeed * 1000000 / 8);
                 stream.Downloading = true;
@@ -93,159 +90,19 @@ namespace OnionMedia.Core.Classes
                 //Audiodownload
                 if (!getMP4)
                 {
-                    if (AppSettings.Instance.DownloadsAudioFormat != AudioConversionFormat.Opus)
-                        ytOptions.AddCustomOption("-S", "ext");
-
-                    RunResult<string> result = await downloadClient.RunAudioDownload(stream.Video.Url, AudioConversionFormat.Best, cToken, stream.DownloadProgress, overrideOptions: ytOptions);
-                    stream.Downloading = false;
-                    if (result.Data.IsNullOrEmpty())
-                        throw new Exception("Download failed!");
-                    tempfile = result.Data;
-
-                    if (isShortened)
-                    {
-                        var meta = await new Engine(GlobalResources.FFmpegPath).GetMetaDataAsync(new InputFile(tempfile), cToken);
-                        overhead += meta.Duration - (stream.TimeSpanGroup.EndTime.WithoutMilliseconds() - (stream.TimeSpanGroup.StartTime.WithoutMilliseconds() - overhead));
-                    }
-
-                    string format = AppSettings.Instance.DownloadsAudioFormat.ToString().ToLower();
-                    if (AppSettings.Instance.DownloadsAudioFormat is AudioConversionFormat.Vorbis)
-                        format = "ogg";
-
-                    if (isShortened || !tempfile.EndsWith(format))
-                    {
-                        stream.Converting = true;
-                        tempfile = await ConvertAudioAsync(tempfile, format, overhead, stream, cToken);
-                    }
-
-                    Debug.WriteLine(tempfile);
-                    stream.ProgressInfo.Progress = 100;
+                    tempfile = await RunAudioDownloadAndConversionAsync(stream, ytOptions, isShortened, overhead, cToken);
                     itemType = Enums.ItemType.audio;
                 }
                 //Videodownload
                 else
                 {
-                    DownloadMergeFormat videoMergeFormat = (autoConvertToH264 || isShortened) ? DownloadMergeFormat.Unspecified : DownloadMergeFormat.Mp4;
-                    VideoRecodeFormat videoRecodeFormat = (autoConvertToH264 || isShortened) ? VideoRecodeFormat.None : VideoRecodeFormat.Mp4;
-                    ytOptions.EmbedThumbnail = true;
-                    ytOptions.AddCustomOption("--format-sort", "hdr:SDR");
-
-                    Size originalSize = default;
-                    FormatData formatData = null;
-
-                    if (stream.CustomTimes && stream.QualityLabel.IsNullOrEmpty())
-                    {
-                        //Find the best NonDASH Preset
-                        ytOptions.AddCustomOption("-S", "proto,hdr:SDR");
-                    }
-                    else if (stream.CustomTimes)
-                    {
-                        //Get formats that dont use DASH
-                        var formats = stream.FormatQualityLabels.Where(f => f.Key.Protocol != "http_dash_segments" && f.Key.Extension != "3gp" && f.Key.HDR == "SDR");
-                        formatData = formats.LastOrDefault(f => stream.QualityLabel.StartsWith(f.Value.ToString())).Key;
-                        if (formatData == null)
-                        {
-                            int selectedHeight = int.Parse(stream.QualityLabel.TrimEnd('p'));
-                            var higherFormats = formats.Where(f => f.Value > selectedHeight);
-                            if (higherFormats.Any())
-                            {
-                                //TODO: Downscale to the selected resolution (Check for same aspect ratio)
-                                int min = higherFormats.Min(f => f.Value);
-                                formatData = higherFormats.Where(f => f.Value == min).Last().Key;
-
-                                var defaultSize = stream.FormatQualityLabels.LastOrDefault(f => stream.QualityLabel.StartsWith(f.Value.ToString())).Key;
-                                if (defaultSize != null)
-                                    originalSize = new Size((int)defaultSize.Width, (int)defaultSize.Height);
-                            }
-                            else
-                            {
-                                //Find the best NonDASH format
-                                ytOptions.AddCustomOption("-S", "proto,hdr:SDR");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //TODO: Check if that works on weaker PCs with less threads.
-                        ytOptions.AddCustomOption("-N", 15);
-                    }
-
-                    string formatString;
-                    if (formatData?.FormatId != null)
-                        formatString = $"{formatData.FormatId}{(stream.Video.Formats.Any(f => f.VideoBitrate == null && f.AudioBitrate != null) ? "+bestaudio" : string.Empty)}";
-                    else
-                        formatString = stream.QualityLabel.IsNullOrEmpty() ? "bestvideo+bestaudio/best" : stream.Format;
-
-                    RunResult<string> result = await downloadClient.RunVideoDownload(stream.Video.Url, formatString, videoMergeFormat, videoRecodeFormat, cToken, stream.DownloadProgress, overrideOptions: ytOptions);
-                    stream.Downloading = false;
-                    if (result.Data.IsNullOrEmpty())
-                        throw new Exception("Download failed!");
-
-                    tempfile = result.Data;
-                    Debug.WriteLine(tempfile);
-                    stream.ProgressInfo.Progress = 100;
-
-                    //TODO Setting: Allow to recode ALWAYS to H264, even if it's already H264.
-                    var meta = await FFProbe.AnalyseAsync(tempfile);
-                    if ((autoConvertToH264 && meta.PrimaryVideoStream.CodecName != "h264") || Path.GetExtension(tempfile) != ".mp4" || isShortened)
-                    {
-                        stream.Converting = true;
-                        if (isShortened)
-                        {
-                            overhead += meta.Duration - (stream.TimeSpanGroup.EndTime.WithoutMilliseconds() - (stream.TimeSpanGroup.StartTime.WithoutMilliseconds() - overhead));
-                            Debug.WriteLine(overhead);
-                        }
-                        else
-                            overhead = TimeSpan.Zero;
-
-                        tempfile = await ConvertToMp4Async(tempfile, overhead, default, stream, originalSize, meta, cToken);
-                    }
+                    tempfile = await RunVideoDownloadAndConversionAsync(stream, ytOptions, isShortened, autoConvertToH264, overhead, cToken);
+                    itemType = Enums.ItemType.video;
                 }
             }
             catch (Exception ex)
             {
-                stream.Downloading = false;
-                stream.Converting = false;
-                switch (ex)
-                {
-                    default:
-                        Debug.WriteLine(ex.Message);
-                        stream.DownloadState = Enums.DownloadState.IsFailed;
-                        stream.ProgressInfo.IsCancelledOrFailed = true;
-                        return;
-
-                    case TaskCanceledException:
-                        Debug.WriteLine("The download has cancelled.");
-                        stream.DownloadState = Enums.DownloadState.IsCancelled;
-                        stream.ProgressInfo.IsCancelledOrFailed = true;
-                        return;
-
-                    case DownloadRestartedException:
-                        //THIS DOESNT WORK AT YET!
-                        Debug.WriteLine("The download has restarted.");
-                        stream.ProgressInfo.Progress = 0;
-                        stream.ProgressInfo.IsCancelledOrFailed = true;
-                        goto Start;
-
-                    case HttpRequestException:
-                        Debug.WriteLine("No internet connection.");
-                        stream.DownloadState = Enums.DownloadState.IsFailed;
-                        stream.ProgressInfo.IsCancelledOrFailed = true;
-                        return;
-
-                    case SecurityException:
-                        Debug.WriteLine("No access to the temp-path.");
-                        stream.DownloadState = Enums.DownloadState.IsFailed;
-                        stream.ProgressInfo.IsCancelledOrFailed = true;
-                        return;
-
-                    case IOException:
-                        Debug.WriteLine("Failed to save video to the temp-path.");
-                        stream.DownloadState = Enums.DownloadState.IsFailed;
-                        stream.ProgressInfo.IsCancelledOrFailed = true;
-                        NotEnoughSpaceException.ThrowIfNotEnoughSpace((IOException)ex);
-                        throw;
-                }
+                HandleDownloadException(stream, ex);
             }
 
             stream.Converting = false;
@@ -264,44 +121,237 @@ namespace OnionMedia.Core.Classes
                 stream.RaiseFinished();
                 stream.DownloadState = Enums.DownloadState.IsDone;
             }
-            catch (Exception ex)
+            catch (Exception ex) { HandleMovingException(stream, ex); }
+            finally { stream.Moving = false; }
+        }
+
+        private static void HandleMovingException(StreamItemModel stream, Exception ex)
+        {
+            stream.DownloadState = Enums.DownloadState.IsFailed;
+            stream.ProgressInfo.IsCancelledOrFailed = true;
+            switch (ex)
             {
-                stream.DownloadState = Enums.DownloadState.IsFailed;
-                stream.ProgressInfo.IsCancelledOrFailed = true;
-                switch (ex)
+                default:
+                    Debug.WriteLine(ex.Message);
+                    break;
+
+                case OperationCanceledException:
+                    Debug.WriteLine("Moving operation get canceled.");
+                    stream.DownloadState = Enums.DownloadState.IsCancelled;
+                    break;
+
+                case FileNotFoundException:
+                    Debug.WriteLine("File not found!");
+                    break;
+
+                case UnauthorizedAccessException:
+                    Debug.WriteLine("No permissions to access the file.");
+                    throw ex;
+
+                case PathTooLongException:
+                    Debug.WriteLine("Path is too long");
+                    throw ex;
+
+                case DirectoryNotFoundException:
+                    Debug.WriteLine("Directory not found!");
+                    throw ex;
+
+                case IOException:
+                    Debug.WriteLine("IOException occured.");
+                    NotEnoughSpaceException.ThrowIfNotEnoughSpace((IOException)ex);
+                    throw ex;
+            }
+        }
+
+        private static void HandleDownloadException(StreamItemModel stream, Exception ex)
+        {
+            stream.Downloading = false;
+            stream.Converting = false;
+            switch (ex)
+            {
+                default:
+                    Debug.WriteLine(ex.Message);
+                    stream.DownloadState = Enums.DownloadState.IsFailed;
+                    stream.ProgressInfo.IsCancelledOrFailed = true;
+                    return;
+
+                case TaskCanceledException:
+                    Debug.WriteLine("The download has cancelled.");
+                    stream.DownloadState = Enums.DownloadState.IsCancelled;
+                    stream.ProgressInfo.IsCancelledOrFailed = true;
+                    return;
+
+                case HttpRequestException:
+                    Debug.WriteLine("No internet connection.");
+                    stream.DownloadState = Enums.DownloadState.IsFailed;
+                    stream.ProgressInfo.IsCancelledOrFailed = true;
+                    return;
+
+                case SecurityException:
+                    Debug.WriteLine("No access to the temp-path.");
+                    stream.DownloadState = Enums.DownloadState.IsFailed;
+                    stream.ProgressInfo.IsCancelledOrFailed = true;
+                    return;
+
+                case IOException:
+                    Debug.WriteLine("Failed to save video to the temp-path.");
+                    stream.DownloadState = Enums.DownloadState.IsFailed;
+                    stream.ProgressInfo.IsCancelledOrFailed = true;
+                    NotEnoughSpaceException.ThrowIfNotEnoughSpace((IOException)ex);
+                    throw ex;
+            }
+        }
+
+        private static void SetProgressToDefault(StreamItemModel stream)
+        {
+            stream.ProgressInfo.IsDone = false;
+            stream.Converting = false;
+            stream.DownloadState = Enums.DownloadState.IsLoading;
+            stream.ConversionProgress = 0;
+        }
+
+        private static string CreateVideoTempDir()
+        {
+            string videotempdir;
+            do videotempdir = GlobalResources.DownloaderTempdir + $@"\{Path.GetRandomFileName()}";
+            while (Directory.Exists(videotempdir));
+            Directory.CreateDirectory(videotempdir);
+            return videotempdir;
+        }
+
+        private static async Task<string> DownloadAudioAsync(StreamItemModel stream, OptionSet ytOptions, CancellationToken cToken = default)
+        {
+            if (AppSettings.Instance.DownloadsAudioFormat != AudioConversionFormat.Opus)
+                ytOptions.AddCustomOption("-S", "ext");
+
+            RunResult<string> result = await downloadClient.RunAudioDownload(stream.Video.Url, AudioConversionFormat.Best, cToken, stream.DownloadProgress, overrideOptions: ytOptions);
+            stream.Downloading = false;
+            if (result.Data.IsNullOrEmpty())
+                throw new Exception("Download failed!");
+            return result.Data;
+        }
+
+        private static async Task<string> RunAudioDownloadAndConversionAsync(StreamItemModel stream, OptionSet ytOptions, bool isShortened = false, TimeSpan overhead = default, CancellationToken cToken = default)
+        {
+            //Download
+            string tempfile = await DownloadAudioAsync(stream, ytOptions, cToken);
+
+            if (isShortened)
+            {
+                var meta = await new Engine(GlobalResources.FFmpegPath).GetMetaDataAsync(new InputFile(tempfile), cToken);
+                overhead += meta.Duration - (stream.TimeSpanGroup.EndTime.WithoutMilliseconds() - (stream.TimeSpanGroup.StartTime.WithoutMilliseconds() - overhead));
+            }
+
+            string format = AppSettings.Instance.DownloadsAudioFormat.ToString().ToLower();
+            if (AppSettings.Instance.DownloadsAudioFormat is AudioConversionFormat.Vorbis)
+                format = "ogg";
+
+            if (isShortened || !tempfile.EndsWith(format))
+            {
+                stream.Converting = true;
+                tempfile = await ConvertAudioAsync(tempfile, format, overhead, stream, cToken);
+            }
+
+            Debug.WriteLine(tempfile);
+            stream.ProgressInfo.Progress = 100;
+            return tempfile;
+        }
+
+        private static async Task<string> RunVideoDownloadAndConversionAsync(StreamItemModel stream, OptionSet ytOptions, bool isShortened = false, bool autoConvertToH264 = false, TimeSpan overhead = default, CancellationToken cToken = default)
+        {
+            DownloadMergeFormat videoMergeFormat = (autoConvertToH264 || isShortened) ? DownloadMergeFormat.Unspecified : DownloadMergeFormat.Mp4;
+            VideoRecodeFormat videoRecodeFormat = (autoConvertToH264 || isShortened) ? VideoRecodeFormat.None : VideoRecodeFormat.Mp4;
+            ytOptions.EmbedThumbnail = true;
+            ytOptions.AddCustomOption("--format-sort", "hdr:SDR");
+
+            Size originalSize = default;
+            FormatData formatData = null;
+
+            //Don't use DASH in trimmed videos
+            if (stream.CustomTimes && stream.QualityLabel.IsNullOrEmpty())
+            {
+                //Find the best NonDASH Preset
+                ytOptions.AddCustomOption("-S", "proto,hdr:SDR");
+            }
+            else if (stream.CustomTimes)
+            {
+                formatData = GetBestFormatWithoutDash(stream, out originalSize);
+                if (formatData == null)
                 {
-                    default:
-                        Debug.WriteLine(ex.Message);
-                        break;
-
-                    case OperationCanceledException:
-                        Debug.WriteLine("Moving operation get canceled.");
-                        stream.DownloadState = Enums.DownloadState.IsCancelled;
-                        break;
-
-                    case FileNotFoundException:
-                        Debug.WriteLine("File not found!");
-                        break;
-
-                    case UnauthorizedAccessException:
-                        Debug.WriteLine("No permissions to access the file.");
-                        throw;
-
-                    case PathTooLongException:
-                        Debug.WriteLine("Path is too long");
-                        throw;
-
-                    case DirectoryNotFoundException:
-                        Debug.WriteLine("Directory not found!");
-                        throw;
-
-                    case IOException:
-                        Debug.WriteLine("IOException occured.");
-                        NotEnoughSpaceException.ThrowIfNotEnoughSpace((IOException)ex);
-                        throw;
+                    //Find the best NonDASH format
+                    ytOptions.AddCustomOption("-S", "proto,hdr:SDR");
                 }
             }
-            finally { stream.Moving = false; }
+            else
+            {
+                //TODO: Check if that works on weaker PCs with less threads.
+                //Download multiple fragments at the same time to increase speed.
+                ytOptions.AddCustomOption("-N", 15);
+            }
+
+            string formatString;
+            if (formatData?.FormatId != null)
+                formatString = $"{formatData.FormatId}{(stream.Video.Formats.Any(f => f.VideoBitrate == null && f.AudioBitrate != null) ? "+bestaudio" : string.Empty)}";
+            else
+                formatString = stream.QualityLabel.IsNullOrEmpty() ? "bestvideo+bestaudio/best" : stream.Format;
+
+            RunResult<string> result = await downloadClient.RunVideoDownload(stream.Video.Url, formatString, videoMergeFormat, videoRecodeFormat, cToken, stream.DownloadProgress, overrideOptions: ytOptions);
+            stream.Downloading = false;
+            if (result.Data.IsNullOrEmpty())
+                throw new Exception("Download failed!");
+
+            string tempfile = result.Data;
+            Debug.WriteLine(tempfile);
+            stream.ProgressInfo.Progress = 100;
+
+            //TODO Setting: Allow to recode ALWAYS to H264, even if it's already H264.
+            var meta = await FFProbe.AnalyseAsync(tempfile);
+            if ((autoConvertToH264 && meta.PrimaryVideoStream.CodecName != "h264") || Path.GetExtension(tempfile) != ".mp4" || isShortened)
+            {
+                stream.Converting = true;
+                if (isShortened)
+                {
+                    overhead += meta.Duration - (stream.TimeSpanGroup.EndTime.WithoutMilliseconds() - (stream.TimeSpanGroup.StartTime.WithoutMilliseconds() - overhead));
+                    Debug.WriteLine(overhead);
+                }
+                else
+                    overhead = TimeSpan.Zero;
+
+                tempfile = await ConvertToMp4Async(tempfile, overhead, default, stream, originalSize, meta, cToken);
+            }
+            return tempfile;
+        }
+
+        private static FormatData GetBestFormatWithoutDash(StreamItemModel stream, out Size originalSize)
+        {
+            FormatData formatData = null;
+            originalSize = default;
+
+            //Get the formats that doesn't use DASH
+            var formats = stream.FormatQualityLabels.Where(f => f.Key.Protocol != "http_dash_segments" && f.Key.Extension != "3gp" && f.Key.HDR == "SDR");
+            formatData = formats.LastOrDefault(f => stream.QualityLabel.StartsWith(f.Value.ToString())).Key;
+
+            //Return if a matching format was found.
+            if (formatData != null) return formatData;
+
+            //Search for the next higher format.
+            int selectedHeight = int.Parse(stream.QualityLabel.TrimEnd('p'));
+            var higherFormats = formats.Where(f => f.Value > selectedHeight);
+
+            if (!higherFormats.Any()) return null;
+
+            //Get the higher format that comes closest to the choosen format.
+            //TODO: Downscale to the selected resolution (Check for same aspect ratio)
+            int min = higherFormats.Min(f => f.Value);
+            formatData = higherFormats.Where(f => f.Value == min).Last().Key;
+
+            //Return the size of the choosen format to downscale it later.
+            var defaultSize = stream.FormatQualityLabels.LastOrDefault(f => stream.QualityLabel.StartsWith(f.Value.ToString())).Key;
+            if (defaultSize != null)
+                originalSize = new Size((int)defaultSize.Width, (int)defaultSize.Height);
+
+            //Return the format.
+            return formatData;
         }
 
         private static void CancelDownload(object sender, CancellationEventArgs e)

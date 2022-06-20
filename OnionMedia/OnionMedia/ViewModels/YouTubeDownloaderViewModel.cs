@@ -30,6 +30,7 @@ using OnionMedia.Core.Extensions;
 using System.Text.RegularExpressions;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Networking.Connectivity;
+using Windows.System;
 
 namespace OnionMedia.ViewModels
 {
@@ -61,6 +62,7 @@ namespace OnionMedia.ViewModels
         public AsyncRelayCommand<string> DownloadFileCommand { get; }
         public AsyncRelayCommand<string> AddVideoCommand { get; }
         public AsyncRelayCommand<SearchItemModel> AddSearchedVideo { get; }
+        public static AsyncRelayCommand<string> OpenUrlCommand { get; } = new(async url => await Launcher.LaunchUriAsync(new Uri(url)));
         public RelayCommand<StreamItemModel> RestartDownloadCommand { get; }
         public RelayCommand<int> RemoveCommand { get; }
 
@@ -147,6 +149,10 @@ namespace OnionMedia.ViewModels
             }
 
             string urlClone = (string)videolink.Clone();
+
+            //Cancel searching and clear results
+            if (searchProcesses > 0 && !DownloaderMethods.VideoSearchCancelSource.IsCancellationRequested)
+                DownloaderMethods.VideoSearchCancelSource.Cancel();
             SearchResults.Clear();
 
             if (string.IsNullOrWhiteSpace(videolink))
@@ -416,6 +422,8 @@ namespace OnionMedia.ViewModels
                 SearchResults.Replace(lastSearch.results);
                 return;
             }
+
+            searchProcesses++;
             try
             {
                 SearchResults.Clear();
@@ -429,7 +437,9 @@ namespace OnionMedia.ViewModels
                 Debug.WriteLine("No internet connection!");
             }
             catch (TaskCanceledException) { }
+            finally { searchProcesses--; }
         }
+        private int searchProcesses = 0;
 
         [ICommand]
         private void ClearResults()
