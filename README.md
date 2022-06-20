@@ -58,12 +58,12 @@ You can find OnionMedia in the Microsoft Store, that is preinstalled in Windows 
 ###### OnionMedia is Free Software and is based on the awesome tools ffmpeg and yt-dlp for converting and downloading files
 
 <a href="https://ffmpeg.org/">
-  <img src="https://github.com/onionware-github/OnionMedia/blob/main/images/ffmpeg.svg" width="250"/>
+  <img src="https://github.com/onionware-github/OnionMedia/blob/main/images/ffmpeg.svg" width="250" valign="middle" margin-right="10"/>
 </a>
 
 
 <a href="https://github.com/yt-dlp/yt-dlp">
-  <img src="https://github.com/onionware-github/OnionMedia/blob/main/images/yt-dp.svg" width="250"/>
+  <img src="https://github.com/onionware-github/OnionMedia/blob/main/images/yt-dlp.svg" width="250" height="65" valign="bottom" margin-left="10"/>
 </a>
 
 
