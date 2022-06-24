@@ -5,7 +5,7 @@ Some features of OnionMedia use third party libraries which may collect data:
 By using OnionMedia, you thus also agree to these Third-Party-Libraries' privacy policies.
 
 ### Third-Party-Libraries
-On our side we don't collect any personal data from our users. Everything is processed on the machine and will never be transmitted via the internet.
+On our side we don't collect any personal data from our users. These libraries are used in OnionMedia and may collect data:
 - FFmpeg (https://ffmpeg.org/)
 - FFMpegCore (https://github.com/rosenbjerg/FFMpegCore)
 - xFFmpeg.Net (https://github.com/cmxl/FFmpeg.NET)
