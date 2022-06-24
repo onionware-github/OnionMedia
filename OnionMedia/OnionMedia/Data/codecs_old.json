@@ -288,14 +288,6 @@
       "MultipleEncoders": false
     },
     {
-      "Name": "jpegxl",
-      "Description": "JPEG XL",
-      "Encoders": [
-        "libjxl"
-      ],
-      "MultipleEncoders": false
-    },
-    {
       "Name": "ljpeg",
       "Description": "Lossless JPEG",
       "Encoders": [
@@ -430,13 +422,6 @@
         "prores_ks"
       ],
       "MultipleEncoders": true
-    },
-    {
-      "Name": "qoi",
-      "Description": "QOI (Quite OK Image)",
-      "Encoders": [
-      ],
-      "MultipleEncoders": false
     },
     {
       "Name": "qtrle",
@@ -590,13 +575,6 @@
     {
       "Name": "v410",
       "Description": "Uncompressed 4:4:4 10-bit",
-      "Encoders": [
-      ],
-      "MultipleEncoders": false
-    },
-    {
-      "Name": "vbn",
-      "Description": "Vizrt Binary Image",
       "Encoders": [
       ],
       "MultipleEncoders": false
@@ -871,13 +849,6 @@
       "MultipleEncoders": false
     },
     {
-      "Name": "dfpwm",
-      "Description": "DFPWM (Dynamic Filter Pulse Width Modulation)",
-      "Encoders": [
-      ],
-      "MultipleEncoders": false
-    },
-    {
       "Name": "dts",
       "Description": "DCA (DTS Coherent Acoustics)",
       "Encoders": [
@@ -976,13 +947,6 @@
     {
       "Name": "pcm_alaw",
       "Description": "PCM A-law / G.711 A-law",
-      "Encoders": [
-      ],
-      "MultipleEncoders": false
-    },
-    {
-      "Name": "pcm_bluray",
-      "Description": "PCM signed 16|20|24-bit big-endian for Blu-ray media",
       "Encoders": [
       ],
       "MultipleEncoders": false
@@ -1380,10 +1344,6 @@
       "Description": "AVI (Audio Video Interleaved)"
     },
     {
-      "Name": "avif",
-      "Description": "AVIF"
-    },
-    {
       "Name": "avm2",
       "Description": "SWF (ShockWave Flash) (AVM2)"
     },
@@ -1438,10 +1398,6 @@
     {
       "Name": "daud",
       "Description": "D-Cinema audio"
-    },
-    {
-      "Name": "dfpwm",
-      "Description": "raw DFPWM1a"
     },
     {
       "Name": "dirac",
@@ -1988,5 +1944,5 @@
       "Description": "YUV4MPEG pipe"
     }
   ],
-  "FFmpegHash": "2iEy1Do7A9rJ0FHt209jIw=="
+  "FFmpegHash": "sLGU7LO4rKwmVngbpjUkag=="
 }

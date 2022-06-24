@@ -248,7 +248,7 @@ namespace OnionMedia.Core.Models
             }
             if (AudioStreamAvailable && options.AudioAvailable)
             {
-                //TODO: Einstellung hinzufügen, um auszuwählen, was beim selben Codec passieren soll (Recoden oder ignorieren)
+                //TODO: Add setting to choose what should happen with the same codec (recode or ignore)
                 if (MediaInfo.PrimaryAudioStream.CodecName != options.AudioEncoder)
                     argBuilder.Append($"-codec:a {audioCodec} ");
                 else
@@ -415,7 +415,7 @@ namespace OnionMedia.Core.Models
         {
             if (!restart)
                 CancelSource.Cancel();
-            //TODO: Option to restart the download
+            
             Cancel?.Invoke(this, new CancellationEventArgs(CancelSource, restart));
         }
 

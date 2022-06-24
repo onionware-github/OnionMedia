@@ -102,7 +102,41 @@ namespace OnionMedia.Core.Classes
             }
             catch (Exception ex)
             {
-                HandleDownloadException(stream, ex);
+                stream.Downloading = false;
+                stream.Converting = false;
+                switch (ex)
+                {
+                    default:
+                        Debug.WriteLine(ex.Message);
+                        stream.DownloadState = Enums.DownloadState.IsFailed;
+                        stream.ProgressInfo.IsCancelledOrFailed = true;
+                        return;
+
+                    case TaskCanceledException:
+                        Debug.WriteLine("The download has cancelled.");
+                        stream.DownloadState = Enums.DownloadState.IsCancelled;
+                        stream.ProgressInfo.IsCancelledOrFailed = true;
+                        return;
+
+                    case HttpRequestException:
+                        Debug.WriteLine("No internet connection.");
+                        stream.DownloadState = Enums.DownloadState.IsFailed;
+                        stream.ProgressInfo.IsCancelledOrFailed = true;
+                        return;
+
+                    case SecurityException:
+                        Debug.WriteLine("No access to the temp-path.");
+                        stream.DownloadState = Enums.DownloadState.IsFailed;
+                        stream.ProgressInfo.IsCancelledOrFailed = true;
+                        return;
+
+                    case IOException:
+                        Debug.WriteLine("Failed to save video to the temp-path.");
+                        stream.DownloadState = Enums.DownloadState.IsFailed;
+                        stream.ProgressInfo.IsCancelledOrFailed = true;
+                        NotEnoughSpaceException.ThrowIfNotEnoughSpace((IOException)ex);
+                        throw;
+                }
             }
 
             stream.Converting = false;
@@ -121,85 +155,44 @@ namespace OnionMedia.Core.Classes
                 stream.RaiseFinished();
                 stream.DownloadState = Enums.DownloadState.IsDone;
             }
-            catch (Exception ex) { HandleMovingException(stream, ex); }
+            catch (Exception ex)
+            {
+                stream.DownloadState = Enums.DownloadState.IsFailed;
+                stream.ProgressInfo.IsCancelledOrFailed = true;
+                switch (ex)
+                {
+                    default:
+                        Debug.WriteLine(ex.Message);
+                        break;
+
+                    case OperationCanceledException:
+                        Debug.WriteLine("Moving operation get canceled.");
+                        stream.DownloadState = Enums.DownloadState.IsCancelled;
+                        break;
+
+                    case FileNotFoundException:
+                        Debug.WriteLine("File not found!");
+                        break;
+
+                    case UnauthorizedAccessException:
+                        Debug.WriteLine("No permissions to access the file.");
+                        throw;
+
+                    case PathTooLongException:
+                        Debug.WriteLine("Path is too long");
+                        throw;
+
+                    case DirectoryNotFoundException:
+                        Debug.WriteLine("Directory not found!");
+                        throw;
+
+                    case IOException:
+                        Debug.WriteLine("IOException occured.");
+                        NotEnoughSpaceException.ThrowIfNotEnoughSpace((IOException)ex);
+                        throw;
+                }
+            }
             finally { stream.Moving = false; }
-        }
-
-        private static void HandleMovingException(StreamItemModel stream, Exception ex)
-        {
-            stream.DownloadState = Enums.DownloadState.IsFailed;
-            stream.ProgressInfo.IsCancelledOrFailed = true;
-            switch (ex)
-            {
-                default:
-                    Debug.WriteLine(ex.Message);
-                    break;
-
-                case OperationCanceledException:
-                    Debug.WriteLine("Moving operation get canceled.");
-                    stream.DownloadState = Enums.DownloadState.IsCancelled;
-                    break;
-
-                case FileNotFoundException:
-                    Debug.WriteLine("File not found!");
-                    break;
-
-                case UnauthorizedAccessException:
-                    Debug.WriteLine("No permissions to access the file.");
-                    throw ex;
-
-                case PathTooLongException:
-                    Debug.WriteLine("Path is too long");
-                    throw ex;
-
-                case DirectoryNotFoundException:
-                    Debug.WriteLine("Directory not found!");
-                    throw ex;
-
-                case IOException:
-                    Debug.WriteLine("IOException occured.");
-                    NotEnoughSpaceException.ThrowIfNotEnoughSpace((IOException)ex);
-                    throw ex;
-            }
-        }
-
-        private static void HandleDownloadException(StreamItemModel stream, Exception ex)
-        {
-            stream.Downloading = false;
-            stream.Converting = false;
-            switch (ex)
-            {
-                default:
-                    Debug.WriteLine(ex.Message);
-                    stream.DownloadState = Enums.DownloadState.IsFailed;
-                    stream.ProgressInfo.IsCancelledOrFailed = true;
-                    return;
-
-                case TaskCanceledException:
-                    Debug.WriteLine("The download has cancelled.");
-                    stream.DownloadState = Enums.DownloadState.IsCancelled;
-                    stream.ProgressInfo.IsCancelledOrFailed = true;
-                    return;
-
-                case HttpRequestException:
-                    Debug.WriteLine("No internet connection.");
-                    stream.DownloadState = Enums.DownloadState.IsFailed;
-                    stream.ProgressInfo.IsCancelledOrFailed = true;
-                    return;
-
-                case SecurityException:
-                    Debug.WriteLine("No access to the temp-path.");
-                    stream.DownloadState = Enums.DownloadState.IsFailed;
-                    stream.ProgressInfo.IsCancelledOrFailed = true;
-                    return;
-
-                case IOException:
-                    Debug.WriteLine("Failed to save video to the temp-path.");
-                    stream.DownloadState = Enums.DownloadState.IsFailed;
-                    stream.ProgressInfo.IsCancelledOrFailed = true;
-                    NotEnoughSpaceException.ThrowIfNotEnoughSpace((IOException)ex);
-                    throw ex;
-            }
         }
 
         private static void SetProgressToDefault(StreamItemModel stream)
@@ -341,7 +334,7 @@ namespace OnionMedia.Core.Classes
             if (!higherFormats.Any()) return null;
 
             //Get the higher format that comes closest to the choosen format.
-            //TODO: Downscale to the selected resolution (Check for same aspect ratio)
+            //TODO: Downscale to the selected resolution? (Check for same aspect ratio)
             int min = higherFormats.Min(f => f.Value);
             formatData = higherFormats.Where(f => f.Value == min).Last().Key;
 

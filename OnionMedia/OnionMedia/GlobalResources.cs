@@ -52,7 +52,7 @@ namespace OnionMedia
         public static string DownloaderTempdir => Tempdir + @"\Downloader";
         public static string FFmpegPath => Installpath + @"\ExternalBinaries\ffmpeg+yt-dlp\binaries\ffmpeg.exe";
         public static string YtDlPath => Installpath + @"\ExternalBinaries\ffmpeg+yt-dlp\binaries\yt-dlp.exe";
-        public static string LicensesDir => Installpath + @"\third-party-licenses\";
+        public static string LicensesDir => Installpath + @"\licenses\";
         public static int SystemThreadCount => Environment.ProcessorCount;
         public static FFmpegCodecConfig FFmpegCodecs { get; set; }
         public static DispatcherQueue DispatcherQueue { get; set; }
@@ -173,7 +173,6 @@ namespace OnionMedia
                 File.Move(sourceFileName, destFileName, true);
                 return;
             }
-
 
             try
             {

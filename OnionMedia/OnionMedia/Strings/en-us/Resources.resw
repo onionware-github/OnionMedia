@@ -151,7 +151,7 @@
     <value>Privacy Statement</value>
   </data>
   <data name="SettingsPage_PrivacyTermsLink.NavigateUri" xml:space="preserve">
-    <value>https://onionware.marvinware.de/OnionMedia/Privacy.htm</value>
+    <value>https://github.com/onionware-github/OnionMedia/blob/main/Privacy.md</value>
     <comment>Here is your Privacy Statement url for SettingsPage</comment>
   </data>
   <data name="nextBtn" xml:space="preserve">
@@ -237,5 +237,19 @@
   </data>
   <data name="cancel.Text" xml:space="preserve">
     <value>Cancel</value>
+  </data>
+  <data name="licenseTitle" xml:space="preserve">
+    <value>OnionMedia License</value>
+  </data>
+  <data name="specialThanks" xml:space="preserve">
+    <value>Special thanks to:</value>
+  </data>
+  <data name="specialThanksText" xml:space="preserve">
+    <value>Marvin Miltkau (Design concepts, Icons)
+
+BobaFett012345 (Much testing and bug reports)
+Onionware | Lorenz Otto (Much testing and bug reports)
+
+pukkandan (development and support for yt-dlp)</value>
   </data>
 </root>

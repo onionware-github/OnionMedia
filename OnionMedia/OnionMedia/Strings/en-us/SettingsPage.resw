@@ -132,6 +132,9 @@
   <data name="clearListsAfterOperation.Content" xml:space="preserve">
     <value>Clear list after operation</value>
   </data>
+  <data name="contactBtn.Content" xml:space="preserve">
+    <value>Contact</value>
+  </data>
   <data name="convertAndDownloadSettings.Text" xml:space="preserve">
     <value>Conversion and download settings</value>
   </data>
@@ -161,6 +164,9 @@
   </data>
   <data name="hardwareEncoder.Header" xml:space="preserve">
     <value>Hardwareencoder:</value>
+  </data>
+  <data name="licenseBtn.Content" xml:space="preserve">
+    <value>License</value>
   </data>
   <data name="limitDownloadSpeed.Content" xml:space="preserve">
     <value>Limit download speed</value>

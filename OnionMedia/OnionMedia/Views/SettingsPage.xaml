@@ -260,10 +260,14 @@
                     Margin="{StaticResource XSmallTopMargin}"
                     Style="{ThemeResource BodyTextBlockStyle}" />
 
-                        <StackPanel Orientation="Horizontal" Spacing="10" Margin="{StaticResource SmallTopBottomMargin}">
+                        <ctc:WrapPanel Orientation="Horizontal" HorizontalSpacing="10" VerticalSpacing="10" Margin="{StaticResource SmallTopBottomMargin}" x:DefaultBindMode="OneTime">
                             <HyperlinkButton x:Uid="SettingsPage_PrivacyTermsLink"/>
-                            <HyperlinkButton Content="Third-Party" Click="HyperlinkButton_Click"/>
-                        </StackPanel>
+                            <HyperlinkButton Content="Special Thanks" Command="{x:Bind ViewModel.ShowThanksDialogCommand}"/>
+                            <HyperlinkButton x:Uid="/SettingsPage/licenseBtn" Command="{x:Bind ViewModel.ShowLicenseCommand}"/>
+                            <HyperlinkButton Content="Third-Party" Command="{x:Bind ViewModel.ShowThirdPartyLicensesCommand}"/>
+                            <HyperlinkButton x:Uid="/SettingsPage/contactBtn" Command="{x:Bind ViewModel.OpenContactMailCommand}"/>
+                            <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/onionware-github/OnionMedia"/>
+                        </ctc:WrapPanel>
 
                         <ctc:WrapPanel Orientation="Horizontal" HorizontalSpacing="40" VerticalSpacing="30" MaxHeight="350" Margin="{StaticResource SmallTopMargin}">
                             <Image Source="../Assets/OnionMedia_Icon_New.png" Height="200" VerticalAlignment="Top"/>
@@ -284,10 +288,14 @@
                     Margin="{StaticResource XSmallTopMargin}"
                     Style="{ThemeResource BodyTextBlockStyle}" />
 
-                    <StackPanel Orientation="Horizontal" Spacing="10" Margin="{StaticResource SmallTopBottomMargin}">
+                    <ctc:WrapPanel Orientation="Horizontal" HorizontalSpacing="5" VerticalSpacing="10" Margin="{StaticResource SmallTopBottomMargin}" x:DefaultBindMode="OneTime">
                         <HyperlinkButton x:Uid="SettingsPage_PrivacyTermsLink"/>
-                        <HyperlinkButton Content="Third-Party" Click="HyperlinkButton_Click"/>
-                    </StackPanel>
+                        <HyperlinkButton Content="Special Thanks" Command="{x:Bind ViewModel.ShowThanksDialogCommand}"/>
+                        <HyperlinkButton x:Uid="/SettingsPage/licenseBtn" Command="{x:Bind ViewModel.ShowLicenseCommand}"/>
+                        <HyperlinkButton Content="Third-Party" Command="{x:Bind ViewModel.ShowThirdPartyLicensesCommand}"/>
+                        <HyperlinkButton x:Uid="/SettingsPage/contactBtn" Command="{x:Bind ViewModel.OpenContactMailCommand}"/>
+                        <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/onionware-github/OnionMedia"/>
+                    </ctc:WrapPanel>
 
                     <ctc:WrapPanel Orientation="Horizontal" HorizontalSpacing="40" VerticalSpacing="30" MaxHeight="350" Margin="{StaticResource SmallTopMargin}">
                         <Image Source="../Assets/OnionMedia_Icon_New.png" Height="200" VerticalAlignment="Top"/>

@@ -17,7 +17,6 @@ using Windows.Globalization.NumberFormatting;
 
 namespace OnionMedia.Views
 {
-    // TODO WTS: Change the URL for your privacy policy, currently set to https://YourPrivacyUrlGoesHere
     public sealed partial class SettingsPage : Page
     {
         public SettingsViewModel ViewModel { get; }
@@ -33,15 +32,6 @@ namespace OnionMedia.Views
             RoundingFormatter = formatter;
 
             InitializeComponent();
-        }
-
-        private async void HyperlinkButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
-        {
-            var dlg = new Dialogs.LicensesDialog()
-            {
-                XamlRoot = XamlRoot
-            };
-            await dlg.ShowAsync();
         }
     }
 }

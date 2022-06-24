@@ -51,7 +51,6 @@ namespace OnionMedia.Views
             KeyboardAccelerators.Add(_altLeftKeyboardAccelerator);
             KeyboardAccelerators.Add(_backKeyboardAccelerator);
 
-            //TODO: Set DownloaderPage as startpage instead of navigating to it
             if (navigateToDownloadPage)
                 shellFrame.Navigate(typeof(YouTubeDownloaderPage), null, new SuppressNavigationTransitionInfo());
         }

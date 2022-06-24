@@ -348,7 +348,7 @@ namespace OnionMedia.ViewModels
             string path = null;
             if (!AppSettings.Instance.UseFixedStoragePaths)
             {
-                //TODO: Check if this path is writable!
+                //TODO: Check if this path is writable.
                 path = await GlobalResources.SelectFolderPathAsync();
                 if (path == null) return;
             }

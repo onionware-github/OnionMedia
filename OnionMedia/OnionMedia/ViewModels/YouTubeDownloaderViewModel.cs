@@ -201,7 +201,7 @@ namespace OnionMedia.ViewModels
                 OnPropertyChanged(nameof(Resolutions));
                 OnPropertyChanged(nameof(ResolutionsAvailable));
 
-                //TODO Videos ohne QualityLabels filtern
+                //TODO Filter videos without QualityLabels
                 if (previouslySelected != null)
                     SelectedQuality = previouslySelected;
                 else if (Resolutions.Any())
@@ -231,7 +231,7 @@ namespace OnionMedia.ViewModels
                         Debug.WriteLine("Video error");
                         break;
 
-                    //TODO: What is that piece of code?! (i cant remember lol)
+                    //TODO: Check what is that piece of code doing?! (i cant remember)
                     case ArgumentOutOfRangeException:
                         throw new ArgumentOutOfRangeException("This bug should be fixed...", ex);
 

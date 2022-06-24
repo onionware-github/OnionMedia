@@ -30,6 +30,7 @@ using Windows.System.UserProfile;
 using Windows.Storage;
 using OnionMedia.Core.Models;
 using FFMpegCore;
+using OnionMedia.Core.Services;
 
 // To learn more about WinUI3, see: https://docs.microsoft.com/windows/apps/winui/winui3/.
 namespace OnionMedia
@@ -140,7 +141,7 @@ namespace OnionMedia
 
         private IServiceProvider ConfigureServices()
         {
-            // TODO WTS: Register your services, viewmodels and pages here
+            //Register your services, viewmodels and pages here
             var services = new ServiceCollection();
 
             // Default Activation Handler
@@ -157,6 +158,8 @@ namespace OnionMedia
             services.AddSingleton<INavigationService, NavigationService>();
 
             // Core Services
+            services.AddSingleton<IDialogService, DialogService>();
+            services.AddSingleton<ICustomDialogService, CustomDialogService>();
 
             // Views and ViewModels
             services.AddTransient<ShellPage>();

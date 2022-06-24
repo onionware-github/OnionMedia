@@ -20,7 +20,6 @@
     <None Remove="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffmpeg.exe" />
     <None Remove="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffprobe.exe" />
     <None Remove="ExternalBinaries\ffmpeg+yt-dlp\binaries\yt-dlp.exe" />
-    <None Remove="ExternalBinaries\ffmpeg+yt-dlp\binaries\yt-dlp_old.exe" />
     <None Remove="ExternalBinaries\ffmpeg+yt-dlp\FFmpeg_LICENSE" />
     <None Remove="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-1080p.ffpreset" />
     <None Remove="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-1080p50_60.ffpreset" />
@@ -30,6 +29,7 @@
     <None Remove="ExternalBinaries\ffmpeg+yt-dlp\README.txt" />
     <None Remove="ExternalBinaries\ffprobe.exe" />
     <None Remove="ExternalBinaries\yt-dlp (2).exe" />
+    <None Remove="licenses\onionmedia.txt" />
     <None Remove="Strings\de-de\Dialogs\ConversionPresetDialog.resw" />
     <None Remove="Strings\de-de\Dialogs\DeletePresetDialog.resw" />
     <None Remove="Strings\de-de\Dialogs\DialogResources.resw" />
@@ -46,16 +46,16 @@
     <None Remove="Strings\en-us\Dialogs\LicenseDialogs.resw" />
     <None Remove="Strings\en-us\Dialogs\MediaPage.resw" />
     <None Remove="Strings\en-us\SettingsPage.resw" />
-    <None Remove="third-party-licenses\communitytoolkit.txt" />
-    <None Remove="third-party-licenses\ffmpeg.txt" />
-    <None Remove="third-party-licenses\FFMpegCore.txt" />
-    <None Remove="third-party-licenses\microsoft_mit_license.txt" />
-    <None Remove="third-party-licenses\newtonsoft_json.txt" />
-    <None Remove="third-party-licenses\TagLibSharp.txt" />
-    <None Remove="third-party-licenses\xFFmpeg.NET.txt" />
-    <None Remove="third-party-licenses\YoutubeDLSharp.txt" />
-    <None Remove="third-party-licenses\YoutubeExplode.txt" />
-    <None Remove="third-party-licenses\yt-dlp.txt" />
+    <None Remove="licenses\communitytoolkit.txt" />
+    <None Remove="licenses\ffmpeg.txt" />
+    <None Remove="licenses\FFMpegCore.txt" />
+    <None Remove="licenses\microsoft_mit_license.txt" />
+    <None Remove="licenses\newtonsoft_json.txt" />
+    <None Remove="licenses\TagLibSharp.txt" />
+    <None Remove="licenses\xFFmpeg.NET.txt" />
+    <None Remove="licenses\YoutubeDLSharp.txt" />
+    <None Remove="licenses\YoutubeExplode.txt" />
+    <None Remove="licenses\yt-dlp.txt" />
     <None Remove="UserControls\TimeRangeSelector.xaml" />
     <None Remove="Views\Dialogs\ConversionPresetDialog.xaml" />
     <None Remove="Views\Dialogs\CustomPresetSelectorDialog.xaml" />
@@ -70,7 +70,7 @@
     <Content Include="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffmpeg.exe" />
     <Content Include="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffprobe.exe" />
     <Content Include="ExternalBinaries\ffmpeg+yt-dlp\binaries\yt-dlp.exe" />
-    <Content Include="ExternalBinaries\ffmpeg+yt-dlp\binaries\yt-dlp_old.exe" />
+    <Content Include="ExternalBinaries\older versions\yt-dlp_old.exe" />
     <Content Include="ExternalBinaries\ffmpeg+yt-dlp\FFmpeg_LICENSE" />
     <Content Include="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-1080p.ffpreset" />
     <Content Include="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-1080p50_60.ffpreset" />
@@ -78,16 +78,17 @@
     <Content Include="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-720p.ffpreset" />
     <Content Include="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-720p50_60.ffpreset" />
     <Content Include="ExternalBinaries\ffmpeg+yt-dlp\README.txt" />
-    <Content Include="third-party-licenses\communitytoolkit.txt" />
-    <Content Include="third-party-licenses\ffmpeg.txt" />
-    <Content Include="third-party-licenses\FFMpegCore.txt" />
-    <Content Include="third-party-licenses\microsoft_mit_license.txt" />
-    <Content Include="third-party-licenses\newtonsoft_json.txt" />
-    <Content Include="third-party-licenses\TagLibSharp.txt" />
-    <Content Include="third-party-licenses\xFFmpeg.NET.txt" />
-    <Content Include="third-party-licenses\YoutubeDLSharp.txt" />
-    <Content Include="third-party-licenses\YoutubeExplode.txt" />
-    <Content Include="third-party-licenses\yt-dlp.txt" />
+    <Content Include="licenses\communitytoolkit.txt" />
+    <Content Include="licenses\ffmpeg.txt" />
+    <Content Include="licenses\FFMpegCore.txt" />
+    <Content Include="licenses\microsoft_mit_license.txt" />
+    <Content Include="licenses\newtonsoft_json.txt" />
+    <Content Include="licenses\onionmedia.txt" />
+    <Content Include="licenses\TagLibSharp.txt" />
+    <Content Include="licenses\xFFmpeg.NET.txt" />
+    <Content Include="licenses\YoutubeDLSharp.txt" />
+    <Content Include="licenses\YoutubeExplode.txt" />
+    <Content Include="licenses\yt-dlp.txt" />
   </ItemGroup>
 
   <ItemGroup>

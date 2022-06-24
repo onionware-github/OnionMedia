@@ -8,6 +8,7 @@
  */
 
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -18,11 +19,13 @@ using Microsoft.UI.Xaml;
 
 using OnionMedia.Contracts.Services;
 using OnionMedia.Core.Models;
+using OnionMedia.Core.Services;
 using OnionMedia.Helpers;
 
 using Windows.ApplicationModel;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.System;
 using WinRT.Interop;
 
 namespace OnionMedia.ViewModels
@@ -30,16 +33,17 @@ namespace OnionMedia.ViewModels
     [ObservableObject]
     public sealed partial class SettingsViewModel
     {
-        public SettingsViewModel(IThemeSelectorService themeSelectorService)
+        public SettingsViewModel(IThemeSelectorService themeSelectorService, IDialogService dialogService, ICustomDialogService customDialogService)
         {
+            this.dialogService = dialogService;
+            this.customDialogService = customDialogService;
             _themeSelectorService = themeSelectorService;
             _elementTheme = _themeSelectorService.Theme;
             VersionDescription = GetVersionDescription();
-            ChangePathCommand = new(pt => ChangePathAsync(pt));
         }
 
-        public AsyncRelayCommand<PathType> ChangePathCommand { get; }
-
+        private readonly IDialogService dialogService;
+        private readonly ICustomDialogService customDialogService;
         private readonly IThemeSelectorService _themeSelectorService;
         private ElementTheme _elementTheme;
 
@@ -82,33 +86,54 @@ namespace OnionMedia.ViewModels
             }
         }
 
-        private static async Task ChangePathAsync(PathType pathType)
+        [ICommand]
+        private async Task ChangePathAsync(PathType pathType)
         {
-            FolderPicker picker = new();
-            picker.FileTypeFilter.Add("*");
-            InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(App.MainWindow));
-            var result = await picker.PickSingleFolderAsync();
-            if (result == null) return;
+            var path = await dialogService.ShowFolderPickerDialogAsync();
+            if (path == null) return;
+
             //TODO: Check write-access to the folder
             switch (pathType)
             {
                 case PathType.ConvertedVideofiles:
-                    AppSettings.Instance.ConvertedVideoSavePath = result.Path;
+                    AppSettings.Instance.ConvertedVideoSavePath = path;
                     break;
 
                 case PathType.ConvertedAudiofiles:
-                    AppSettings.Instance.ConvertedAudioSavePath = result.Path;
+                    AppSettings.Instance.ConvertedAudioSavePath = path;
                     break;
 
                 case PathType.DownloadedVideofiles:
-                    AppSettings.Instance.DownloadsVideoSavePath = result.Path;
+                    AppSettings.Instance.DownloadsVideoSavePath = path;
                     break;
 
                 case PathType.DownloadedAudiofiles:
-                    AppSettings.Instance.DownloadsAudioSavePath = result.Path;
+                    AppSettings.Instance.DownloadsAudioSavePath = path;
                     break;
             }
         }
+
+        [ICommand]
+        private async Task ShowLicenseAsync()
+        {
+            string title = "licenseTitle".GetLocalized();
+            string license = await File.ReadAllTextAsync(GlobalResources.LicensesDir + "onionmedia.txt");
+            await dialogService.ShowInfoDialogAsync(title, license, "OK");
+        }
+
+        [ICommand]
+        private async Task ShowThirdPartyLicensesAsync() => await customDialogService.ShowThirdPartyLicensesDialogAsync();
+
+        [ICommand]
+        private async Task ShowThanksDialogAsync()
+        {
+            string title = "specialThanks".GetLocalized();
+            string content = "specialThanksText".GetLocalized();
+            await dialogService.ShowInfoDialogAsync(title, content, "OK");
+        }
+
+        [ICommand]
+        private async Task OpenContactMailAsync() => await Launcher.LaunchUriAsync(new Uri("mailto:contact.onionware@gmail.com"));
 
         [ObservableProperty]
         private bool invalidFilename;
