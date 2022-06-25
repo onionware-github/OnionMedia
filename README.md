@@ -9,14 +9,14 @@ Converts and downloads videos and music quickly and easily.
 [Overview](#overview) • [Features](#features) • [Download](#download-and-installing) • [Releases](https://github.com/onionware-github/OnionMedia/releases) • [Discord](https://discord.gg/3ahqCzQxs8) • [Info](#info)
 
 ## Overview
-![Screenshot showing the Converter-Page](https://github.com/onionware-github/OnionMedia/blob/main/images/converterpage.jpg)
+![Screenshot showing the Converter-Page](https://github.com/onionware-github/OnionMedia/blob/main/images/screenshots/mediapage.png)
 You're looking for a simple solution to convert, recode, trim or even download media files and do it as easily as possible with many customizable options?
 
 Then OnionMedia is the right choice for you.
 It offers a simple and adaptive user experience and also adapts to your chosen Windows theme.
 So it fits perfectly into your system as an almost native app.
 
-![Screenshot showing the Downloader-Page](https://github.com/onionware-github/OnionMedia/blob/main/images/downloaderpage.jpg)
+![Screenshot showing the Downloader-Page](https://github.com/onionware-github/OnionMedia/blob/main/images/screenshots/downloaderpage.png)
 Download multiple videos and audios at the same time from many platforms with just a click.
 OnionMedia delivers a built-in Searchbar for Youtube, functions to recode your downloaded videos to H264 after download and lets you get shortened videos if you want.
 
