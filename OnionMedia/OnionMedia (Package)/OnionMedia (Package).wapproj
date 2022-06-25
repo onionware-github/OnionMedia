@@ -150,5 +150,9 @@
       <IncludeAssets>build</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Strings\de-de\Resources.resw" />
+    <PRIResource Include="Strings\en-us\Resources.resw" />
+  </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
 </Project>

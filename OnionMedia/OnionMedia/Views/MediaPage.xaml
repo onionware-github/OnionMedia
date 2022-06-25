@@ -152,7 +152,7 @@
                               BorderBrush="SlateGray"
                               BorderThickness="3"
                               CornerRadius="9"
-                              MinHeight="150">
+                              MinHeight="50">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="m:MediaItemModel">
                                 <Grid ColumnSpacing="5" Padding="5">

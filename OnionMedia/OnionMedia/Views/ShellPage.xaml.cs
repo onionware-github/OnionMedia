@@ -50,9 +50,17 @@ namespace OnionMedia.Views
             // More info on tracking issue https://github.com/Microsoft/microsoft-ui-xaml/issues/8
             KeyboardAccelerators.Add(_altLeftKeyboardAccelerator);
             KeyboardAccelerators.Add(_backKeyboardAccelerator);
+            ConfigureTitleBar();
 
             if (navigateToDownloadPage)
                 shellFrame.Navigate(typeof(YouTubeDownloaderPage), null, new SuppressNavigationTransitionInfo());
+        }
+
+        private void ConfigureTitleBar()
+        {
+            AppTitleBar.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
+            App.MainWindow.ExtendsContentIntoTitleBar = true;
+            App.MainWindow.SetTitleBar(AppTitleBar);
         }
 
         private static KeyboardAccelerator BuildKeyboardAccelerator(VirtualKey key, VirtualKeyModifiers? modifiers = null)

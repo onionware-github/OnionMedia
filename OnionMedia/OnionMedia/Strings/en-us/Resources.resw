@@ -252,4 +252,7 @@ Onionware | Lorenz Otto (Much testing and bug reports)
 
 pukkandan (development and support for yt-dlp)</value>
   </data>
+  <data name="AppDescription" xml:space="preserve">
+    <value>OnionMedia is a free video and audio file converter and downloader. It supports a large number of formats and codecs and is available on GitHub and the Microsoft Store.</value>
+  </data>
 </root>

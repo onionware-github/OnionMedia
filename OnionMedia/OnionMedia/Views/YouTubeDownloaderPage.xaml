@@ -363,7 +363,7 @@
                             </ListView.ItemTemplate>
                             <ListView.Footer>
                                 <Grid Padding="20" Visibility="{x:Bind ViewModel.QueueIsEmpty}">
-                                    <TextBlock x:Uid="/DownloaderPage/addVideosOnLeft" FontWeight="SemiBold" FontSize="18" HorizontalTextAlignment="Center"/>
+                                    <TextBlock x:Uid="/DownloaderPage/addVideosOnLeft" FontWeight="SemiBold" FontSize="18" TextTrimming="CharacterEllipsis" HorizontalTextAlignment="Center"/>
                                 </Grid>
                             </ListView.Footer>
                         </ListView>
