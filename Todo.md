@@ -6,6 +6,7 @@
 
 - #### Converter
   - Add custom parameters to improve quality in some cases (e.g. GIF conversion)
+  - Add support for drag and drop
 
 - #### Downloader
   - Function to add entire playlists with a dialog, select and unselect unwanted videos
