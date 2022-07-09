@@ -18,7 +18,7 @@ So it fits perfectly into your system as an almost native app.
 
 ![Screenshot showing the Downloader-Page](https://github.com/onionware-github/OnionMedia/blob/main/images/screenshots/downloaderpage.png)
 Download multiple videos and audios at the same time from many platforms with just a click.
-OnionMedia delivers a built-in Searchbar for Youtube, functions to recode your downloaded videos to H264 after download and lets you get shortened videos if you want.
+OnionMedia delivers a built-in Searchbar for Youtube, functions to recode your downloaded videos to the H.264 codec after download and lets you get shortened videos if you want.
 
 ## Features
 
@@ -34,7 +34,7 @@ OnionMedia delivers a built-in Searchbar for Youtube, functions to recode your d
   - Search videos or add them directly with an URL.
   - Add multiple videos to the queue and download them at the same time.
   - Lets you select a resolution to download the video, or download only the audio of the file.
-  - Recode the video after download directly to H264
+  - Recode the video after download directly to H.264
 
 - #### Other
   - Adapts to the selected Systemtheme and Accent Color in Windows
