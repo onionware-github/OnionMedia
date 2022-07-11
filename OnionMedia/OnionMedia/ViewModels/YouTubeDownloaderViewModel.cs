@@ -28,17 +28,18 @@ using OnionMedia.Core.Classes;
 using OnionMedia.Helpers;
 using OnionMedia.Core.Extensions;
 using System.Text.RegularExpressions;
-using Microsoft.UI.Xaml.Controls;
 using Windows.Networking.Connectivity;
 using Windows.System;
+using OnionMedia.Core.Services;
 
 namespace OnionMedia.ViewModels
 {
     [ObservableObject]
     public sealed partial class YouTubeDownloaderViewModel
     {
-        public YouTubeDownloaderViewModel()
+        public YouTubeDownloaderViewModel(IDialogService dialogService)
         {
+            this.dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             SearchResults.CollectionChanged += (o, e) => OnPropertyChanged(nameof(AnyResults));
             Videos.CollectionChanged += OnProgressChanged;
 
@@ -58,6 +59,7 @@ namespace OnionMedia.ViewModels
             NetworkInformation.NetworkStatusChanged += o => GlobalResources.DispatcherQueue.TryEnqueue(() => NetworkAvailable = NetworkInformation.GetInternetConnectionProfile() != null);
         }
 
+        private IDialogService dialogService;
 
         public AsyncRelayCommand<string> DownloadFileCommand { get; }
         public AsyncRelayCommand<string> AddVideoCommand { get; }
@@ -240,13 +242,7 @@ namespace OnionMedia.ViewModels
                         break;
 
                     case NotSupportedException:
-                        await new ContentDialog()
-                        {
-                            Title = "livestreamDlgTitle".GetLocalized(),
-                            Content = "livestreamDlgContent".GetLocalized(),
-                            XamlRoot = GlobalResources.XamlRoot,
-                            PrimaryButtonText = "OK"
-                        }.ShowAsync();
+                        await dialogService.ShowInfoDialogAsync("livestreamDlgTitle".GetLocalized(), "livestreamDlgContent".GetLocalized(), "OK");
                         break;
 
                     case HttpRequestException:
@@ -390,19 +386,19 @@ namespace OnionMedia.ViewModels
                 .AddText("downloadFinished".GetLocalized())
                 .AddText($"{finishedCount} {"videosDownloaded".GetLocalized()}");
 
-                if (items.All(v => v.Path != null && Path.GetDirectoryName(v.Path.OriginalString) == Path.GetDirectoryName(loadedVideo.Path.OriginalString)))
+                if (items.Any(v => v?.Path != null && Path.GetDirectoryName(v.Path.OriginalString) == Path.GetDirectoryName(loadedVideo.Path.OriginalString)))
                 {
                     StringBuilder files = new();
-                    var filenames = items.Where(v => v.Path != null && v.DownloadState is DownloadState.IsDone && File.Exists(v.Path.OriginalString)).Select(v => Path.GetFileName(v.Path.OriginalString));
+                    var filenames = items.Where(v => v?.Path != null && v.DownloadState is DownloadState.IsDone && File.Exists(v.Path.OriginalString)).Select(v => Path.GetFileName(v.Path.OriginalString));
                     foreach (var file in filenames)
                         files.AppendLine(file);
 
                     dialog.AddButton(new ToastButton()
-                .SetContent("openFolder".GetLocalized())
-                .AddArgument("action", "open path")
-                .AddArgument("folderpath", loadedVideo.Path.OriginalString)
-                .AddArgument("filenames", files.ToString())
-                .SetBackgroundActivation());
+                    .SetContent("openFolder".GetLocalized())
+                    .AddArgument("action", "open path")
+                    .AddArgument("folderpath", loadedVideo.Path.OriginalString)
+                    .AddArgument("filenames", files.ToString())
+                    .SetBackgroundActivation());
                 }
 
 

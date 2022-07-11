@@ -20,9 +20,6 @@ namespace OnionMedia.Services
 {
     internal class CustomDialogService : ICustomDialogService
     {
-        public async Task ShowThirdPartyLicensesDialogAsync() => await new LicensesDialog() { XamlRoot = xamlRoot }.ShowAsync();
-
-
-        private readonly XamlRoot xamlRoot = GlobalResources.XamlRoot;
+        public async Task ShowThirdPartyLicensesDialogAsync() => await new LicensesDialog() { XamlRoot = GlobalResources.XamlRoot }.ShowAsync();
     }
 }

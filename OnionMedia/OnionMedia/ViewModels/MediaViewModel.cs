@@ -27,17 +27,17 @@ using OnionMedia.Core.Enums;
 using OnionMedia.Core.Extensions;
 using OnionMedia.Core.Models;
 using OnionMedia.Views.Dialogs;
-using Windows.Storage.Pickers;
-using WinRT.Interop;
 using CommunityToolkit.WinUI.Notifications;
+using OnionMedia.Core.Services;
 
 namespace OnionMedia.ViewModels
 {
     [ObservableObject]
     public sealed partial class MediaViewModel
     {
-        public MediaViewModel()
+        public MediaViewModel(IDialogService dialogService)
         {
+            this.dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             InsertConversionPresetsFromJson();
 
             //Sort presets
@@ -86,6 +86,8 @@ namespace OnionMedia.ViewModels
                 OnPropertyChanged(nameof(SelectedItem));
             });
         }
+
+        private IDialogService dialogService;
 
         private void Files_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -236,48 +238,38 @@ namespace OnionMedia.ViewModels
 
         private async Task AddFileAsync()
         {
-            var picker = new FileOpenPicker();
-            picker.FileTypeFilter.Add("*");
-            InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(App.MainWindow));
-            var result = await picker.PickMultipleFilesAsync();
+            var result = await dialogService.ShowMultipleFilePickerDialogAsync();
             if (result == null || !result.Any()) return;
 
             int failedCount = 0;
             AddingFiles = true;
-            foreach (var file in result)
+            foreach (var filepath in result)
             {
                 try
                 {
-                    if (Files.Any(f => f.MediaFile.FileInfo.FullName == file.Path))
+                    if (Files.Any(f => f.MediaFile.FileInfo.FullName == filepath))
                         continue;
 
-                    Files.Add(await MediaItemModel.CreateAsync(new FileInfo(file.Path)));
+                    Files.Add(await MediaItemModel.CreateAsync(new FileInfo(filepath)));
                     Files[^1].Progress += async (o, e) => await GlobalResources.DispatcherQueue.EnqueueAsync(() => OnPropertyChanged(nameof(Progress)));
                     Files[^1].Cancel += async (o, e) => await GlobalResources.DispatcherQueue.EnqueueAsync(() => OnPropertyChanged(nameof(Progress)));
                     Files[^1].Error += (o, e) => Debug.WriteLine("Error while converting " + ((MediaItemModel)o).MediaFile.FileInfo.Name);
                     Files[^1].PropertyChanged += async (o, e) => await GlobalResources.DispatcherQueue.EnqueueAsync(() => OnPropertyChanged(nameof(VideoEnabled)));
                 }
-                catch (FFMpegCore.Exceptions.FFMpegException) { failedCount++; }
+                catch { failedCount++; }
             }
             AddingFiles = false;
             if (failedCount > 0)
             {
                 (string title, string content) dlgContent;
-                if (result.Count == 1)
+                if (result.Length == 1)
                     dlgContent = ("fileNotSupported".GetLocalized(dialogResources), "fileNotSupportedText".GetLocalized(dialogResources));
-                else if (result.Count == failedCount)
+                else if (result.Length == failedCount)
                     dlgContent = ("filesNotSupported".GetLocalized(dialogResources), "filesNotSupportedText".GetLocalized(dialogResources));
                 else
                     dlgContent = ("specificFilesNotSupported".GetLocalized(dialogResources), "specificFilesNotSupportedText".GetLocalized(dialogResources).Replace("{0}", failedCount.ToString()));
 
-                ContentDialog dlg = new()
-                {
-                    XamlRoot = GlobalResources.XamlRoot,
-                    Title = dlgContent.title,
-                    Content = dlgContent.content,
-                    PrimaryButtonText = "OK"
-                };
-                await dlg.ShowAsync();
+                await dialogService.ShowInfoDialogAsync(dlgContent.title, dlgContent.content, "OK");
             }
             if (Files.Any())
                 SelectedItem = Files[^1];
@@ -319,19 +311,12 @@ namespace OnionMedia.ViewModels
             if (!ConversionPresets.Contains(conversionPreset))
                 throw new ArgumentException("ConversionPresets does not contain conversionPreset.");
 
-            ContentDialog dlg = new()
-            {
-                Title = "title".GetLocalized(deletePresetDialog),
-                XamlRoot = GlobalResources.XamlRoot,
-                Content = new TextBlock()
-                {
-                    Text = "content".GetLocalized(deletePresetDialog).Replace("{0}", conversionPreset.Name),
-                    TextWrapping = TextWrapping.WrapWholeWords
-                },
-                PrimaryButtonText = "delete".GetLocalized(deletePresetDialog),
-                SecondaryButtonText = "cancel".GetLocalized(deletePresetDialog)
-            };
-            if (await dlg.ShowAsync() != ContentDialogResult.Primary) return;
+            bool deletePreset = await dialogService.ShowInteractionDialogAsync("title".GetLocalized(deletePresetDialog),
+                                                                             "content".GetLocalized(deletePresetDialog).Replace("{0}", conversionPreset.Name),
+                                                                             "delete".GetLocalized(deletePresetDialog),
+                                                                             "cancel".GetLocalized(deletePresetDialog),
+                                                                             null) ?? false;
+            if (!deletePreset) return;
 
             ConversionPresets.Remove(conversionPreset);
             if (ConversionPresets.Count > 1)
@@ -464,13 +449,7 @@ namespace OnionMedia.ViewModels
                 bool result = SelectedItem.ApplyNewTags(dlg.FileTags);
                 if (!result)
                 {
-                    _ = await new ContentDialog()
-                    {
-                        XamlRoot = GlobalResources.XamlRoot,
-                        Title = "error".GetLocalized(resources),
-                        Content = new TextBlock() { Text = "tagerrormsg".GetLocalized(resources) },
-                        PrimaryButtonText = "OK"
-                    }.ShowAsync();
+                    await dialogService.ShowInfoDialogAsync("error".GetLocalized(resources), "tagerrormsg".GetLocalized(resources), "OK");
                     return;
                 }
 
@@ -481,24 +460,12 @@ namespace OnionMedia.ViewModels
             }
             catch (FileNotFoundException)
             {
-                _ = await new ContentDialog()
-                {
-                    XamlRoot = GlobalResources.XamlRoot,
-                    Title = "fileNotFound".GetLocalized(resources),
-                    Content = new TextBlock() { Text = "fileNotFoundText".GetLocalized(resources) },
-                    PrimaryButtonText = "OK"
-                }.ShowAsync();
+                await dialogService.ShowInfoDialogAsync("fileNotFound".GetLocalized(resources), "fileNotFoundText".GetLocalized(resources), "OK");
                 Files.Remove(SelectedItem);
             }
             catch
             {
-                _ = await new ContentDialog()
-                {
-                    XamlRoot = GlobalResources.XamlRoot,
-                    Title = "error".GetLocalized(resources),
-                    Content = new TextBlock() { Text = "changesErrorMsg".GetLocalized(resources) },
-                    PrimaryButtonText = "OK"
-                }.ShowAsync();
+                await dialogService.ShowInfoDialogAsync("error".GetLocalized(resources), "changesErrorMsg".GetLocalized(resources), "OK");
             }
         }
 

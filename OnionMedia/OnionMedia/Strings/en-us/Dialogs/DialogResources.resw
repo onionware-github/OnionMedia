@@ -160,7 +160,7 @@
     <value>Not enough storage space available.</value>
   </data>
   <data name="specificFilesNotSupported" xml:space="preserve">
-    <value>Multiple files are not supported.</value>
+    <value>File(s) are not supported.</value>
   </data>
   <data name="specificFilesNotSupportedText" xml:space="preserve">
     <value>Parts from {0} file(s) are not supported.</value>
