@@ -53,7 +53,7 @@ namespace OnionMedia.ViewModels
                 SelectedConversionPreset = ConversionPresets[0];
 
             Files.CollectionChanged += Files_CollectionChanged;
-            AddFileCommand = new(AddFileAsync);
+            AddFileCommand = new(async () => await AddFilesAsync());
             RemoveFileCommand = new(f =>
             {
                 f.RaiseCancel();
@@ -236,10 +236,18 @@ namespace OnionMedia.ViewModels
             OnPropertyChanged(nameof(ConversionPresets));
         }
 
-        private async Task AddFileAsync()
+        /// <summary>
+        /// Adds the specified files to the list. If <paramref name="filepaths"/> is null or have no content, a FilePicker appears.
+        /// </summary>
+        /// <param name="filepaths">The files to add to the list.</param>
+        public async Task AddFilesAsync(IEnumerable<string> filepaths = null)
         {
-            var result = await dialogService.ShowMultipleFilePickerDialogAsync();
-            if (result == null || !result.Any()) return;
+            string[] result = filepaths?.ToArray();
+            if (result == null || result.Length == 0)
+            {
+                result = await dialogService.ShowMultipleFilePickerDialogAsync();
+                if (result == null || !result.Any()) return;
+            }
 
             int failedCount = 0;
             AddingFiles = true;

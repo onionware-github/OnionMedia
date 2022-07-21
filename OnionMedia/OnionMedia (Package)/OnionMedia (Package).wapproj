@@ -153,6 +153,7 @@
   <ItemGroup>
     <PRIResource Include="Strings\de-de\Resources.resw" />
     <PRIResource Include="Strings\en-us\Resources.resw" />
+    <PRIResource Include="Strings\es\Resources.resw" />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
 </Project>

@@ -127,7 +127,7 @@
     <value>Add a preset</value>
   </data>
   <data name="aspectRatio.Text" xml:space="preserve">
-    <value />
+    <value>Aspect ratio:</value>
   </data>
   <data name="audiobitrate.Header" xml:space="preserve">
     <value>Audiobitrate</value>

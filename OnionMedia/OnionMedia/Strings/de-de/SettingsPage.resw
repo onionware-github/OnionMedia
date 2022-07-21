@@ -120,6 +120,9 @@
   <data name="amountOfSimultaneousOperations.Header" xml:space="preserve">
     <value>Anzahl gleichzeitiger Vorgänge:</value>
   </data>
+  <data name="askForStoragePath.Content" xml:space="preserve">
+    <value>Nach dem Speicherort fragen</value>
+  </data>
   <data name="audioDownloadFormat.Header" xml:space="preserve">
     <value>Format für heruntergeladene Audiodateien:</value>
   </data>
@@ -182,6 +185,9 @@
   </data>
   <data name="notifyAfterDownload.Header" xml:space="preserve">
     <value>Nach dem Download benachrichtigen</value>
+  </data>
+  <data name="setStoragePaths.Content" xml:space="preserve">
+    <value>Speicherpfade festlegen</value>
   </data>
   <data name="storagePaths.Text" xml:space="preserve">
     <value>Speicherpfade</value>

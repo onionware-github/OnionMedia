@@ -1,6 +1,14 @@
 {
   "Videocodecs": [
     {
+      "Name": "copy",
+      "Description": "Copy the codec and do not recode the file",
+      "Encoders": [
+        "copy"
+      ],
+      "MultipleEncoders": false
+    },
+    {
       "Name": "a64_multi",
       "Description": "Multicolor charset for Commodore 64",
       "Encoders": [
@@ -699,6 +707,14 @@
     }
   ],
   "Audiocodecs": [
+    {
+      "Name": "copy",
+      "Description": "Copy the codec and do not recode the file",
+      "Encoders": [
+        "copy"
+      ],
+      "MultipleEncoders": false
+    },
     {
       "Name": "aac",
       "Description": "AAC (Advanced Audio Coding)",

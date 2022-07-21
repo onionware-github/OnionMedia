@@ -7,11 +7,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>
  */
 
+using System;
+using System.Linq;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using OnionMedia.ViewModels;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace OnionMedia.Views
 {
@@ -43,6 +46,21 @@ namespace OnionMedia.Views
 
 
         //Always set value to true on click.
-        private void ToggleButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) => ((ToggleButton)sender).IsChecked = true;
+        private void ToggleButton_Click(object sender, RoutedEventArgs e) => ((ToggleButton)sender).IsChecked = true;
+
+        private async void mediaList_Drop(object sender, DragEventArgs e)
+        {
+            if (ViewModel.AddFileCommand.IsRunning || ViewModel.StartConversionCommand.IsRunning || !e.DataView.Contains(StandardDataFormats.StorageItems))
+                return;
+
+            var items = await e.DataView.GetStorageItemsAsync();
+            if (items.Count == 0) return;
+            await ViewModel.AddFilesAsync(items.Select(i => i.Path));
+        }
+
+        private void mediaList_DragOver(object sender, DragEventArgs e)
+        {
+            e.AcceptedOperation = (ViewModel.AddFileCommand.IsRunning || ViewModel.StartConversionCommand.IsRunning) ? DataPackageOperation.None : DataPackageOperation.Link;
+        }
     }
 }

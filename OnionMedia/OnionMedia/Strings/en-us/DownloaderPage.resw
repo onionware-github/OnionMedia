@@ -142,7 +142,7 @@
     <value>Failed</value>
   </data>
   <data name="Mp3.Content" xml:space="preserve">
-    <value>Only audio</value>
+    <value>Audio only</value>
   </data>
   <data name="Mp4.Content" xml:space="preserve">
     <value>Video</value>

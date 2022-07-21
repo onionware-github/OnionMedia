@@ -255,11 +255,15 @@ namespace OnionMedia.Core.Models
                     argBuilder.Append("-acodec copy ");
                 if (AudioBitrate > 0)
                     argBuilder.Append($"-b:a {AudioBitrate} ");
-
-                //Remove video when video is deactivated
-                if (!options.VideoAvailable)
-                    argBuilder.Append("-vn ");
             }
+
+            //Remove video when video is deactivated
+            if (!options.VideoAvailable)
+                argBuilder.Append("-vn ");
+
+            //Remove audio when audio is deactivated
+            if (!options.AudioAvailable)
+                argBuilder.Append("-an ");
 
             if (!VideoTimes.StartTime.Equals(TimeSpan.Zero) || !VideoTimes.EndTime.Equals(VideoTimes.Duration))
                 argBuilder.Append($"-ss {VideoTimes.StartTime:hh\\:mm\\:ss}.00 -to {VideoTimes.EndTime:hh\\:mm\\:ss}.00 ");
