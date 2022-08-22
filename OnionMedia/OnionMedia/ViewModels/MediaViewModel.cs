@@ -245,7 +245,7 @@ namespace OnionMedia.ViewModels
             string[] result = filepaths?.ToArray();
             if (result == null || result.Length == 0)
             {
-                result = await dialogService.ShowMultipleFilePickerDialogAsync();
+                result = await dialogService.ShowMultipleFilePickerDialogAsync(DirectoryLocation.Videos);
                 if (result == null || !result.Any()) return;
             }
 
@@ -342,7 +342,7 @@ namespace OnionMedia.ViewModels
             if (!AppSettings.Instance.UseFixedStoragePaths)
             {
                 //TODO: Check if this path is writable.
-                path = await GlobalResources.SelectFolderPathAsync();
+                path = await dialogService.ShowFolderPickerDialogAsync(DirectoryLocation.Videos);
                 if (path == null) return;
             }
 

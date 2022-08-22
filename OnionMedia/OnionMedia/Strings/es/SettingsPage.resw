@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="amountOfRetries.Header" xml:space="preserve">
+    <value>Cantidad de reintentos:</value>
+  </data>
   <data name="amountOfSimultaneousOperations.Header" xml:space="preserve">
     <value>Número de operaciones simultáneas:</value>
   </data>
@@ -195,7 +198,13 @@
   <data name="threadsForConversion.Text" xml:space="preserve">
     <value>Número de hilos de CPU a utilizar para la conversión:</value>
   </data>
+  <data name="tryAgainAfterFail.Content" xml:space="preserve">
+    <value>Inténtalo de nuevo después de una descarga fallida</value>
+  </data>
   <data name="useHwAccelerated.Content" xml:space="preserve">
     <value>Utilizar la conversión acelerada por hardware</value>
+  </data>
+  <data name="videoOrPlaylist.Header" xml:space="preserve">
+    <value>¿Añadir un vídeo o la lista de reproducción con una Playlist-URL?</value>
   </data>
 </root>

@@ -24,11 +24,13 @@ using System.Net.Http;
 using YoutubeDLSharp;
 using YoutubeDLSharp.Options;
 using YoutubeDLSharp.Metadata;
-using YoutubeExplode.Exceptions;
+using Newtonsoft.Json;
 using System.Text;
 using CommunityToolkit.WinUI;
 using System.Drawing;
 using FFMpegCore;
+using YoutubeExplode.Videos;
+using OnionMedia.ViewModels.Dialogs;
 
 namespace OnionMedia.Core.Classes
 {
@@ -78,14 +80,13 @@ namespace OnionMedia.Core.Classes
                 {
                     ytOptions.ExternalDownloader = "ffmpeg";
                     ytOptions.ExternalDownloaderArgs = $"ffmpeg_i: -ss {stream.TimeSpanGroup.StartTime.WithoutMilliseconds() - overhead:hh\\:mm\\:ss}.00 -to {stream.TimeSpanGroup.EndTime:hh\\:mm\\:ss}.00";
-                    isShortened = stream.TimeSpanGroup.StartTime.WithoutMilliseconds().Ticks > 0;
+                    isShortened = stream.TimeSpanGroup.StartTime.WithoutMilliseconds().Ticks > 0 || stream.TimeSpanGroup.EndTime < stream.TimeSpanGroup.Duration;
                     Debug.WriteLine(ytOptions.ExternalDownloaderArgs);
                 }
 
                 //Set download spped limit from AppSettings
                 if (AppSettings.Instance.LimitDownloadSpeed && AppSettings.Instance.MaxDownloadSpeed > 0)
                     ytOptions.LimitRate = (long)(AppSettings.Instance.MaxDownloadSpeed * 1000000 / 8);
-                stream.Downloading = true;
 
                 //Audiodownload
                 if (!getMP4)
@@ -150,7 +151,7 @@ namespace OnionMedia.Core.Classes
 
                 //Moves the video in the correct directory
                 stream.Moving = true;
-                stream.Path = await MoveToDisk(tempfile, stream.Video.Title.TrimToFilename(), itemType, customOutputDirectory, cToken);
+                stream.Path = await MoveToDisk(tempfile, stream.Video.Title, itemType, customOutputDirectory, cToken);
 
                 stream.RaiseFinished();
                 stream.DownloadState = Enums.DownloadState.IsDone;
@@ -217,11 +218,26 @@ namespace OnionMedia.Core.Classes
             if (AppSettings.Instance.DownloadsAudioFormat != AudioConversionFormat.Opus)
                 ytOptions.AddCustomOption("-S", "ext");
 
-            RunResult<string> result = await downloadClient.RunAudioDownload(stream.Video.Url, AudioConversionFormat.Best, cToken, stream.DownloadProgress, overrideOptions: ytOptions);
-            stream.Downloading = false;
-            if (result.Data.IsNullOrEmpty())
-                throw new Exception("Download failed!");
-            return result.Data;
+            int downloadCounter = 0;
+            do
+            {
+                downloadCounter++;
+                if (downloadCounter > 1)
+                    stream.SetProgressToDefault();
+
+                stream.Downloading = true;
+                RunResult<string> result = await downloadClient.RunAudioDownload(stream.Video.Url, AudioConversionFormat.Best, cToken, stream.DownloadProgress, overrideOptions: ytOptions);
+                stream.Downloading = false;
+
+                //Return if the download completed sucessfully.
+                if (!result.Data.IsNullOrEmpty())
+                    return result.Data;
+
+                if (AppSettings.Instance.AutoRetryDownload)
+                    Debug.WriteLine("Download failed. Try: " + downloadCounter);
+            }
+            while (AppSettings.Instance.AutoRetryDownload && downloadCounter <= AppSettings.Instance.CountOfDownloadRetries);
+            throw new Exception("Download failed!");
         }
 
         private static async Task<string> RunAudioDownloadAndConversionAsync(StreamItemModel stream, OptionSet ytOptions, bool isShortened = false, TimeSpan overhead = default, CancellationToken cToken = default)
@@ -288,10 +304,28 @@ namespace OnionMedia.Core.Classes
             else
                 formatString = stream.QualityLabel.IsNullOrEmpty() ? "bestvideo+bestaudio/best" : stream.Format;
 
-            RunResult<string> result = await downloadClient.RunVideoDownload(stream.Video.Url, formatString, videoMergeFormat, videoRecodeFormat, cToken, stream.DownloadProgress, overrideOptions: ytOptions);
-            stream.Downloading = false;
+            int downloadCounter = 0;
+            RunResult<string> result;
+            do
+            {
+                downloadCounter++;
+                if (downloadCounter > 1)
+                    stream.SetProgressToDefault();
+
+                stream.Downloading = true;
+                result = await downloadClient.RunVideoDownload(stream.Video.Url, formatString, videoMergeFormat, videoRecodeFormat, cToken, stream.DownloadProgress, overrideOptions: ytOptions);
+                stream.Downloading = false;
+
+                if (!result.Data.IsNullOrEmpty())
+                    break;
+
+                if (AppSettings.Instance.AutoRetryDownload)
+                    Debug.WriteLine("Download failed. Try: " + downloadCounter);
+            }
+            while (AppSettings.Instance.AutoRetryDownload && downloadCounter <= AppSettings.Instance.CountOfDownloadRetries);
             if (result.Data.IsNullOrEmpty())
                 throw new Exception("Download failed!");
+
 
             string tempfile = result.Data;
             Debug.WriteLine(tempfile);
@@ -501,7 +535,8 @@ namespace OnionMedia.Core.Classes
             string savefilepath = directory ?? (itemType == Enums.ItemType.audio ? AppSettings.Instance.DownloadsAudioSavePath : AppSettings.Instance.DownloadsVideoSavePath);
 
             Directory.CreateDirectory(savefilepath);
-            string filename = @$"{savefilepath}\{videoname.TrimToFilename()}{extension}";
+            int maxFilenameLength = 250 - (savefilepath.Length + extension.Length);
+            string filename = @$"{savefilepath}\{videoname.TrimToFilename(maxFilenameLength)}{extension}";
 
             if (!File.Exists(filename))
                 await Task.Run(async () => await GlobalResources.MoveFileAsync(tempfile, filename, cancellationToken));
@@ -518,6 +553,31 @@ namespace OnionMedia.Core.Classes
                 await Task.Run(async () => await GlobalResources.MoveFileAsync(tempfile, filename, cancellationToken));
             }
             return new Uri(filename);
+        }
+
+        public static async Task<IEnumerable<IVideo>> GetVideosFromPlaylistAsync(string playlistUrl, CancellationToken cToken = default)
+        {
+            //TODO: CHECK FOR VULNERABILITIES!
+            Process ytdlProc = new();
+            ytdlProc.StartInfo.CreateNoWindow = true;
+            ytdlProc.StartInfo.FileName = GlobalResources.YtDlPath;
+            ytdlProc.StartInfo.RedirectStandardOutput = true;
+            ytdlProc.StartInfo.Arguments = $"\"{playlistUrl}\" --flat-playlist --dump-json";
+            ytdlProc.Start();
+
+            string output = await ytdlProc.StandardOutput.ReadToEndAsync();
+            if (!ytdlProc.HasExited)
+                await ytdlProc.WaitForExitAsync(cToken);
+
+            List<SelectableVideo> videos = new();
+            foreach (var line in output.Split('\n'))
+            {
+                cToken.ThrowIfCancellationRequested();
+                try { videos.Add(JsonConvert.DeserializeObject<SelectableVideo>(line.Trim())); }
+                catch { continue; }
+            }
+
+            return videos.Where(v => v?.DurationAsFloatingNumber != null);
         }
 
         //Returns the resolutions from the videos.

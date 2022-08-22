@@ -7,21 +7,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>
  */
 
-namespace OnionMedia.Core.Enums
-{
-    public enum FFmpegConversionState
-	{
-		None,
-		Converting,
-		Moving,
-		Done,
-		Cancelled,
-		Failed
-	}
+namespace OnionMedia.Core.Enums;
 
-	public enum ItemType
-    {
-        video,
-        audio
-    }
+public enum FFmpegConversionState
+{
+    None,
+    Converting,
+    Moving,
+    Done,
+    Cancelled,
+    Failed
+}
+
+public enum ItemType
+{
+    video,
+    audio
 }

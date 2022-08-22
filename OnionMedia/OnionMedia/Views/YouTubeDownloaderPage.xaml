@@ -138,7 +138,7 @@
 
                     <StackPanel>
                         <Grid Margin="0,0,3,0">
-                            <TextBox x:Name="videolink" x:Uid="/DownloaderPage/videolink" Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay}"
+                            <TextBox x:Name="videolink" x:Uid="/DownloaderPage/videolink" Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay}" IsSpellCheckEnabled="False"
                                  ext:TextBoxExtensions.Regex="{x:Bind g:GlobalResources.URLREGEX, Mode=OneTime}"
                                  ext:TextBoxExtensions.IsValid="{x:Bind ViewModel.ValidUrl, Mode=TwoWay}">
                                 <TextBox.KeyboardAccelerators>

@@ -117,11 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddPlaylist" xml:space="preserve">
+    <value>Add the playlist</value>
+  </data>
+  <data name="AddVideo" xml:space="preserve">
+    <value>Add the video</value>
+  </data>
+  <data name="amountOfRetries.Header" xml:space="preserve">
+    <value>Amount of retries:</value>
+  </data>
   <data name="amountOfSimultaneousOperations.Header" xml:space="preserve">
     <value>Number of simultaneous operations:</value>
   </data>
   <data name="askForStoragePath.Content" xml:space="preserve">
     <value>Ask for the storage location</value>
+  </data>
+  <data name="AskForVideoAddMode" xml:space="preserve">
+    <value>Always ask</value>
   </data>
   <data name="audioDownloadFormat.Header" xml:space="preserve">
     <value>Format for downloaded audio files:</value>
@@ -195,7 +207,13 @@
   <data name="threadsForConversion.Text" xml:space="preserve">
     <value>Number of threads to convert:</value>
   </data>
+  <data name="tryAgainAfterFail.Content" xml:space="preserve">
+    <value>Try again after a failed download</value>
+  </data>
   <data name="useHwAccelerated.Content" xml:space="preserve">
     <value>Use hardware accelerated conversion</value>
+  </data>
+  <data name="videoOrPlaylist.Header" xml:space="preserve">
+    <value>Add video or the playlist with a Playlist-URL?</value>
   </data>
 </root>

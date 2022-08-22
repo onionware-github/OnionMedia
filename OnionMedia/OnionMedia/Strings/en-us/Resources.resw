@@ -255,4 +255,16 @@ pukkandan (development and support for yt-dlp)</value>
   <data name="AppDescription" xml:space="preserve">
     <value>OnionMedia is a free video and audio file converter and downloader. It supports a large number of formats and codecs and is available on GitHub and the Microsoft Store.</value>
   </data>
+  <data name="askForPlaylistDownloadContent" xml:space="preserve">
+    <value>You've entered an URL to a playlist. Do you want to add the video only or the entire playlist?</value>
+  </data>
+  <data name="askForPlaylistDownloadTitle" xml:space="preserve">
+    <value>Download the playlist?</value>
+  </data>
+  <data name="playlist" xml:space="preserve">
+    <value>Playlist</value>
+  </data>
+  <data name="video" xml:space="preserve">
+    <value>Video</value>
+  </data>
 </root>

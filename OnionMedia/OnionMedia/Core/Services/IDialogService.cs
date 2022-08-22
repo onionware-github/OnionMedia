@@ -17,19 +17,19 @@ public interface IDialogService
 	/// Opens a dialog and lets the user select a folder.
 	/// </summary>
 	/// <returns>The path of the selected folder, null if the dialog get cancelled.</returns>
-	Task<string> ShowFolderPickerDialogAsync();
+	Task<string> ShowFolderPickerDialogAsync(DirectoryLocation location = DirectoryLocation.Home);
 
 	/// <summary>
 	/// Opens a dialog and lets the user select a single file.
 	/// </summary>
 	/// <returns>The path of the selected file, null if the dialog get cancelled.</returns>
-	Task<string> ShowSingleFilePickerDialogAsync();
+	Task<string> ShowSingleFilePickerDialogAsync(DirectoryLocation location = DirectoryLocation.Home);
 
 	/// <summary>
 	/// Opens a dialog and lets the user select multiple files.
 	/// </summary>
 	/// <returns>The paths of the selected files, null if the dialog get cancelled.</returns>
-	Task<string[]> ShowMultipleFilePickerDialogAsync();
+	Task<string[]> ShowMultipleFilePickerDialogAsync(DirectoryLocation location = DirectoryLocation.Home);
 
 	/// <summary>
 	/// Opens an information dialog with a title, a text and a close button.
@@ -81,4 +81,17 @@ public enum TextWrapMode
 	NoWrap,
 	Wrap,
 	WrapWholeWords
+}
+
+public enum DirectoryLocation
+{
+	Home,
+	Desktop,
+	Downloads,
+	Documents,
+	Pictures,
+	Music,
+	Videos,
+	Homegroup,
+	Unspecified
 }

@@ -3,7 +3,8 @@ using System.IO;
 using System.Runtime.Serialization;
 
 namespace OnionMedia.Core.Classes;
-internal class NotEnoughSpaceException : IOException
+
+public class NotEnoughSpaceException : IOException
 {
     public NotEnoughSpaceException() : base() { }
     public NotEnoughSpaceException(string message) : base(message) { }

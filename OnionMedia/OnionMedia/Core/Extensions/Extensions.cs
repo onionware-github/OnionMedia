@@ -22,10 +22,13 @@ namespace OnionMedia.Core.Extensions
         /// </summary>
         /// <param name="input">The string to trim.</param>
         /// <returns>The trimmed filename string.</returns>
-        public static string TrimToFilename(this string input)
+        public static string TrimToFilename(this string input, int maxLength)
         {
+            if (input == null)
+                throw new ArgumentNullException(nameof(input));
+
             char[] forbiddenChars = @"<>:/\|?""*".ToCharArray();
-            return string.Concat(input.Trim().Where(c => !forbiddenChars.Contains(c)));
+            return string.Concat(input.Trim().Where(c => !forbiddenChars.Contains(c))).ShortString(maxLength);
         }
 
         /// <summary>
@@ -113,5 +116,22 @@ namespace OnionMedia.Core.Extensions
         }
 
         public static TimeSpan WithoutMilliseconds(this TimeSpan timeSpan) => new(timeSpan.Days, timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds, 0);
+
+
+        public static string ShortString(this string input, int maxLength)
+        {
+            if (input == null)
+                throw new ArgumentNullException(nameof(input));
+
+            if (input.Length <= maxLength)
+                return input;
+
+            int maxStringLen = maxLength - 3;
+            if (maxStringLen < 0)
+                maxStringLen = 0;
+
+            string range = input[0..maxStringLen];
+            return range + "...";
+        }
     }
 }

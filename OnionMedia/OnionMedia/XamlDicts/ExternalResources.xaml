@@ -24,6 +24,7 @@
     <c:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     <c:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter"/>
     <c:EnumDisplayNameConverter x:Key="EnumDisplayNameConverter"/>
+    <c:ResourceNameToTextConverter x:Key="ResourceNameToTextConverter"/>
     <c:BitToKilobitConverter x:Key="BitToKilobitConverter"/>
     <c:FFmpegConversionStateToVisibilityConverter x:Key="FFmpegConversionStateToVisibilityConverter"/>
     <c:FileSizeConverter x:Key="FileSizeConverter"/>

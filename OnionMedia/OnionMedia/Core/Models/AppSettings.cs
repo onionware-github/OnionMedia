@@ -8,6 +8,7 @@
  */
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using OnionMedia.Core.Enums;
 using OnionMedia.Helpers;
 using System;
 using System.Collections.Generic;
@@ -46,15 +47,24 @@ namespace OnionMedia.Core.Models
             sendMessageAfterConversion = ApplicationData.Current.LocalSettings.Values["sendMessageAfterConversion"] as bool? ?? true;
             sendMessageAfterDownload = ApplicationData.Current.LocalSettings.Values["sendMessageAfterDownload"] as bool? ?? true;
             fallBackToSoftwareEncoding = ApplicationData.Current.LocalSettings.Values["fallBackToSoftwareEncoding"] as bool? ?? true;
+            autoRetryDownload = ApplicationData.Current.LocalSettings.Values["autoRetryDownload"] as bool? ?? true;
+            countOfDownloadRetries = ApplicationData.Current.LocalSettings.Values["countOfDownloadRetries"] as int? ?? 3;
 
             var downloadsAudioFormat = ApplicationData.Current.LocalSettings.Values["downloadsAudioFormat"];
             if (downloadsAudioFormat == null)
                 this.downloadsAudioFormat = AudioConversionFormat.Mp3;
             else
                 this.downloadsAudioFormat = ParseEnum<AudioConversionFormat>(downloadsAudioFormat);
+
+            var videoAddMode = ApplicationData.Current.LocalSettings.Values["videoAddMode"];
+            if (videoAddMode == null)
+                this.videoAddMode = VideoAddMode.AskForVideoAddMode;
+            else
+                this.videoAddMode = ParseEnum<VideoAddMode>(videoAddMode);
         }
 
         public static AppSettings Instance { get; } = new AppSettings();
+        public static VideoAddMode[] VideoAddModes { get; } = Enum.GetValues<VideoAddMode>().ToArray();
 
         //Settings
         public int SimultaneousOperationCount
@@ -125,6 +135,20 @@ namespace OnionMedia.Core.Models
             set => SetSetting(ref sendMessageAfterDownload, value, "sendMessageAfterDownload");
         }
         private bool? sendMessageAfterDownload;
+
+        public bool AutoRetryDownload
+        {
+            get => autoRetryDownload.HasValue && (bool)autoRetryDownload;
+            set => SetSetting(ref autoRetryDownload, value, "autoRetryDownload");
+        }
+        private bool? autoRetryDownload;
+
+        public int CountOfDownloadRetries
+        {
+            get => countOfDownloadRetries.HasValue ? (int)countOfDownloadRetries : 5;
+            set => SetSetting(ref countOfDownloadRetries, value, "countOfDownloadRetries");
+        }
+        private int? countOfDownloadRetries;
 
         public HardwareEncoder HardwareEncoder
         {
@@ -212,6 +236,17 @@ namespace OnionMedia.Core.Models
             get => ApplicationData.Current.LocalSettings.Values["downloaderPageIsOpen"] as bool? ?? false;
             set => ApplicationData.Current.LocalSettings.Values["downloaderPageIsOpen"] = value;
         }
+
+        public VideoAddMode VideoAddMode
+        {
+            get => videoAddMode;
+            set
+            {
+                if (SetProperty(ref videoAddMode, value))
+                    ApplicationData.Current.LocalSettings.Values["videoAddMode"] = value.ToString();
+            }
+        }
+        private VideoAddMode videoAddMode;
 
 
         private void SetSetting<T>(ref T field, T value, string settingName, bool forceOnPropertyChanged = false, [CallerMemberName] string propName = null)

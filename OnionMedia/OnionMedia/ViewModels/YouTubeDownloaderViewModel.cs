@@ -37,9 +37,11 @@ namespace OnionMedia.ViewModels
     [ObservableObject]
     public sealed partial class YouTubeDownloaderViewModel
     {
-        public YouTubeDownloaderViewModel(IDialogService dialogService)
+        public YouTubeDownloaderViewModel(IDialogService dialogService, IDownloaderDialogService downloaderDialogService)
         {
             this.dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
+            this.downloaderDialogService = downloaderDialogService ?? throw new ArgumentNullException(nameof(downloaderDialogService));
+
             SearchResults.CollectionChanged += (o, e) => OnPropertyChanged(nameof(AnyResults));
             Videos.CollectionChanged += OnProgressChanged;
 
@@ -59,7 +61,8 @@ namespace OnionMedia.ViewModels
             NetworkInformation.NetworkStatusChanged += o => GlobalResources.DispatcherQueue.TryEnqueue(() => NetworkAvailable = NetworkInformation.GetInternetConnectionProfile() != null);
         }
 
-        private IDialogService dialogService;
+        private readonly IDialogService dialogService;
+        private readonly IDownloaderDialogService downloaderDialogService;
 
         public AsyncRelayCommand<string> DownloadFileCommand { get; }
         public AsyncRelayCommand<string> AddVideoCommand { get; }
@@ -141,7 +144,7 @@ namespace OnionMedia.ViewModels
         }
 
         //Search a video or get a video from a url and add it to the queue.
-        private async Task FillInfosAsync(string videolink)
+        private async Task FillInfosAsync(string videolink, bool allowPlaylists = true)
         {
             if (VideoNotFound)
             {
@@ -161,6 +164,8 @@ namespace OnionMedia.ViewModels
                 return;
 
             bool validUri = Regex.IsMatch(videolink, GlobalResources.URLREGEX);
+            bool isYoutubePlaylist = validUri && allowPlaylists && IsYoutubePlaylist(urlClone);
+
             //Remove the "feature=share" from shared yt-shorts urls.
             if (videolink.Contains("youtube.com/shorts/"))
                 videolink = videolink.Replace("?feature=share", string.Empty);
@@ -171,6 +176,28 @@ namespace OnionMedia.ViewModels
                 {
                     await RefreshResultsAsync(videolink.Clone() as string);
                     return;
+                }
+
+                if (isYoutubePlaylist && await AskForPlaylistAsync())
+                {
+                    ScanVideoCount++;
+                    try
+                    {
+                        var videos = await DownloaderMethods.GetVideosFromPlaylistAsync(urlClone);
+
+                        var urls = (await downloaderDialogService.ShowPlaylistSelectorDialogAsync(videos)).Select(v => v.Url);
+                        var videosToAdd = await GetVideosAsync(urls);
+                        var sortedVideos = videosToAdd.OrderBy(video => videos.IndexOf(v => v.Url == video.Video.Url));
+
+                        AddVideos(sortedVideos);
+                        if (Videos.Any())
+                            SelectedVideo = Videos[^1];
+                        return;
+                    }
+                    finally
+                    {
+                        ScanVideoCount--;
+                    }
                 }
 
                 ScanVideoCount++;
@@ -192,7 +219,9 @@ namespace OnionMedia.ViewModels
                     return;
                 }
 
-                Videos.Add(video);
+                lock (Videos)
+                    Videos.Add(video);
+
                 video.ProgressChangedEventHandler += OnProgressChanged;
                 SelectedVideo = video;
 
@@ -252,6 +281,85 @@ namespace OnionMedia.ViewModels
             }
         }
 
+        private void AddVideos(IEnumerable<StreamItemModel> videos)
+        {
+            if (videos == null) throw new ArgumentNullException(nameof(videos));
+            if (!videos.Any()) return;
+
+            ScanVideoCount++;
+            try
+            {
+                lock (Videos)
+                    Videos.AddRange(videos.Where(video => !Videos.Any(v => video.Video.ID == v.Video.ID)));
+
+                foreach (var video in Videos)
+                    video.ProgressChangedEventHandler += OnProgressChanged;
+
+                Resolutions = new ObservableCollection<string>(DownloaderMethods.GetResolutions(Videos));
+                OnPropertyChanged(nameof(Resolutions));
+                OnPropertyChanged(nameof(ResolutionsAvailable));
+
+                //TODO Filter videos without QualityLabels
+                if (previouslySelected != null)
+                    SelectedQuality = previouslySelected;
+                else if (Resolutions.Any())
+                    SelectedQuality = Resolutions[0];
+                else
+                    SelectedQuality = null;
+
+                OnPropertyChanged(nameof(QueueIsEmpty));
+                OnPropertyChanged(nameof(QueueIsNotEmpty));
+                OnPropertyChanged(nameof(MultipleVideos));
+            }
+            catch (InvalidOperationException)
+            {
+                Debug.WriteLine("InvalidOperation triggered");
+            }
+            finally
+            {
+                ScanVideoCount--;
+            }
+        }
+
+        private async Task<IEnumerable<StreamItemModel>> GetVideosAsync(IEnumerable<string> urls, CancellationToken cToken = default)
+        {
+            List<StreamItemModel> items = new();
+
+            List<Task> tasks = new();
+            SemaphoreSlim queue = new(20,20);
+            foreach (var url in urls)
+            {
+                await queue.WaitAsync(cToken);
+                tasks.Add(Task.Run(async () =>
+                {
+                    try
+                    {
+                        var video = await DownloaderMethods.downloadClient.RunVideoDataFetch(url);
+                        StreamItemModel item = new(video);
+                        item.Video.Url = url;
+
+                        lock (items)
+                            items.Add(item);
+                    }
+                    catch (Exception ex) { Debug.WriteLine(ex.Message); }
+                }, cToken).ContinueWith(o => queue.Release()));
+            }
+
+            await Task.WhenAll(tasks);
+            return items;
+        }
+
+        private static bool IsYoutubePlaylist(string url)
+        {
+            if (url.IsNullOrWhiteSpace()) return false;
+            return url.Contains("youtu") && url.Contains("list=");
+        }
+
+        private async Task<bool> AskForPlaylistAsync()
+        {
+            return await dialogService.ShowInteractionDialogAsync("askForPlaylistDownloadTitle".GetLocalized(), "askForPlaylistDownloadContent".GetLocalized(), "playlist".GetLocalized(), "video".GetLocalized(), null) == true;
+        }
+
         private void OnProgressChanged(object sender, EventArgs e)
         {
             OnPropertyChanged(nameof(ResolutionsAvailable));
@@ -301,7 +409,7 @@ namespace OnionMedia.ViewModels
             string path = null;
             if (!AppSettings.Instance.UseFixedStoragePaths)
             {
-                path = await GlobalResources.SelectFolderPathAsync();
+                path = await dialogService.ShowFolderPickerDialogAsync(DirectoryLocation.Videos);
                 if (path == null) return;
             }
 
@@ -489,6 +597,7 @@ namespace OnionMedia.ViewModels
         /// The number of videos that get scanned in the moment.
         /// </summary>
         [ObservableProperty]
+        [AlsoNotifyChangeFor(nameof(ReadyToDownload))]
         private int scanVideoCount;
 
         public bool QueueIsEmpty => !Videos.Any();

@@ -7,14 +7,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>
  */
 
-namespace OnionMedia.Core.Enums
+namespace OnionMedia.Core.Enums;
+
+public enum DownloadState
 {
-    public enum DownloadState
-    {
-        IsWaiting,
-        IsLoading,
-        IsDone,
-        IsCancelled,
-        IsFailed
-    }
+    IsWaiting,
+    IsLoading,
+    IsDone,
+    IsCancelled,
+    IsFailed
 }

@@ -11,6 +11,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using CommunityToolkit.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
@@ -218,6 +219,28 @@ namespace OnionMedia.Core.ValueConverters
                 formattedSize /= 1000;
 
             return $"{Math.Round(formattedSize, 2)} {sizeunits[index]}";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ResourceNameToTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (value is string resourceName && resourceName.IsNullOrEmpty())
+                return null;
+
+            if (value is Enum enumtype)
+                resourceName = enumtype.GetDisplayName();
+            else
+                return null;
+
+            string resourcePath = parameter is string rPath && !rPath.IsNullOrEmpty() ? rPath : "Resources";
+            return resourceName.GetLocalized(resourcePath);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

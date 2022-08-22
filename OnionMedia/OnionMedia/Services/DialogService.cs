@@ -23,28 +23,30 @@ namespace OnionMedia.Services
     internal class DialogService : IDialogService
     {
 
-        public async Task<string> ShowFolderPickerDialogAsync()
+        public async Task<string> ShowFolderPickerDialogAsync(DirectoryLocation location = DirectoryLocation.Home)
         {
             FolderPicker picker = new();
-            picker.SuggestedStartLocation = PickerLocationId.VideosLibrary;
+            picker.SuggestedStartLocation = DirectoryLocationToPickerLocationId(location);
             picker.FileTypeFilter.Add("*");
             InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(App.MainWindow));
             var result = await picker.PickSingleFolderAsync();
             return result?.Path;
         }
 
-        public async Task<string> ShowSingleFilePickerDialogAsync()
+        public async Task<string> ShowSingleFilePickerDialogAsync(DirectoryLocation location = DirectoryLocation.Home)
         {
             FileOpenPicker picker = new();
+            picker.SuggestedStartLocation = DirectoryLocationToPickerLocationId(location);
             picker.FileTypeFilter.Add("*");
             InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(App.MainWindow));
             var result = await picker.PickSingleFileAsync();
             return result?.Path;
         }
 
-        public async Task<string[]> ShowMultipleFilePickerDialogAsync()
+        public async Task<string[]> ShowMultipleFilePickerDialogAsync(DirectoryLocation location = DirectoryLocation.Home)
         {
             FileOpenPicker picker = new();
+            picker.SuggestedStartLocation = DirectoryLocationToPickerLocationId(location);
             picker.FileTypeFilter.Add("*");
             InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(App.MainWindow));
             var result = await picker.PickMultipleFilesAsync();
@@ -135,6 +137,19 @@ namespace OnionMedia.Services
             TextWrapMode.Wrap => TextWrapping.Wrap,
             TextWrapMode.WrapWholeWords => TextWrapping.WrapWholeWords,
             _ => throw new NotImplementedException()
+        };
+
+        private static PickerLocationId DirectoryLocationToPickerLocationId(DirectoryLocation location) => location switch
+        {
+            DirectoryLocation.Home => PickerLocationId.ComputerFolder,
+            DirectoryLocation.Desktop => PickerLocationId.Desktop,
+            DirectoryLocation.Pictures => PickerLocationId.PicturesLibrary,
+            DirectoryLocation.Music => PickerLocationId.MusicLibrary,
+            DirectoryLocation.Videos => PickerLocationId.VideosLibrary,
+            DirectoryLocation.Documents => PickerLocationId.DocumentsLibrary,
+            DirectoryLocation.Downloads => PickerLocationId.Downloads,
+            DirectoryLocation.Homegroup => PickerLocationId.HomeGroup,
+            _ => PickerLocationId.Unspecified
         };
 
         private static bool? ContentDialogResultToBool(ContentDialogResult result) => result switch

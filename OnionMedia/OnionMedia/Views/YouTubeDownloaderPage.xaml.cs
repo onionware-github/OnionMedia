@@ -32,6 +32,7 @@ namespace OnionMedia.Views
             btnProgressRing.IsActive = false;
             btnProgressRing.IsActive = true;
             rotateInSearchIconTrigger.Value = false;
+            videolink.Focus(FocusState.Programmatic);
         }
 
         private void RemoveAll_Clicked(object sender, RoutedEventArgs e)

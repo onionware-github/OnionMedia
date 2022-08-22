@@ -63,6 +63,7 @@
     <None Remove="Views\Dialogs\LicenseDialogPages\LicensesInfoPage.xaml" />
     <None Remove="Views\Dialogs\LicenseDialogPages\LicensesListPage.xaml" />
     <None Remove="Views\Dialogs\LicensesDialog.xaml" />
+    <None Remove="Views\Dialogs\PlaylistSelectorDialog.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\codecs.json" />
@@ -99,8 +100,8 @@
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
     <PackageReference Include="FFMpegCore" Version="4.7.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.0" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.197" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.4" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.1" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.0.8" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="TagLibSharp" Version="2.2.0" />
@@ -113,6 +114,12 @@
     <Reference Include="YoutubeDLSharp">
       <HintPath>..\..\YoutubeDLSharp-master\YoutubeDLSharp\bin\Release\netstandard2.0\YoutubeDLSharp.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Dialogs\PlaylistSelectorDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

@@ -118,38 +118,6 @@ namespace OnionMedia
             return sizeWithoutAudio / (int)meta.Duration.TotalSeconds * 8;
         }
 
-        public static async Task<string> SelectSaveFilePathAsync(IDictionary<string, IList<string>> filetypechoices, string suggestedFilename = null)
-        {
-            if (filetypechoices == null)
-                throw new ArgumentNullException(nameof(filetypechoices));
-
-            FileSavePicker picker = new();
-            picker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-
-            if (suggestedFilename != null)
-                picker.SuggestedFileName = suggestedFilename;
-
-            foreach (var filetype in filetypechoices)
-                picker.FileTypeChoices.Add(filetype);
-
-            InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(App.MainWindow));
-            var result = await picker.PickSaveFileAsync();
-            return result.Path;
-        }
-
-        /// <summary>
-        /// Opens a FolderPicker and lets the user choose a location.
-        /// </summary>
-        /// <returns>The path to the folder, or null if the dialog is canceled.</returns>
-        public static async Task<string> SelectFolderPathAsync()
-        {
-            FolderPicker picker = new();
-            picker.SuggestedStartLocation = PickerLocationId.VideosLibrary;
-            picker.FileTypeFilter.Add("*");
-            InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(App.MainWindow));
-            var result = await picker.PickSingleFolderAsync();
-            return result?.Path;
-        }
 
         /// <summary>
         /// Moves a file to an another location. When the file at <paramref name="destFileName"/> already exists, it will be overwritten.

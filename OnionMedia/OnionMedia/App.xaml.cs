@@ -159,6 +159,7 @@ namespace OnionMedia
 
             // Core Services
             services.AddSingleton<IDialogService, DialogService>();
+            services.AddSingleton<IDownloaderDialogService, DownloaderDialogService>();
             services.AddSingleton<ICustomDialogService, CustomDialogService>();
 
             // Views and ViewModels

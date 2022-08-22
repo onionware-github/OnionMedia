@@ -15,6 +15,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:m="using:OnionMedia.Core.Models"
     xmlns:g="using:OnionMedia"
+    xmlns:e="using:OnionMedia.Core.Enums"
     xmlns:ext="using:CommunityToolkit.WinUI.UI"
     xmlns:ctc="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d"
@@ -113,52 +114,52 @@
                                 <StackPanel Spacing="10" Visibility="{x:Bind m:AppSettings.Instance.UseFixedStoragePaths, Mode=OneWay}">
                                     <ctc:DockPanel>
                                         <Button VerticalAlignment="Bottom"
-                                ctc:DockPanel.Dock="Right"
-                                Margin="5,0"
-                                Command="{x:Bind ViewModel.ChangePathCommand, Mode=OneTime}"
-                                CommandParameter="{x:Bind m:PathType.ConvertedVideofiles, Mode=OneTime}">
+                                                ctc:DockPanel.Dock="Right"
+                                                Margin="5,0"
+                                                Command="{x:Bind ViewModel.ChangePathCommand, Mode=OneTime}"
+                                                CommandParameter="{x:Bind m:PathType.ConvertedVideofiles, Mode=OneTime}">
                                             <SymbolIcon Symbol="OpenLocal"/>
                                         </Button>
                                         <TextBox x:Uid="/SettingsPage/convertedVideos" Text="{x:Bind m:AppSettings.Instance.ConvertedVideoSavePath, Mode=OneWay}" IsReadOnly="True"/>
                                     </ctc:DockPanel>
                                     <ctc:DockPanel>
                                         <Button VerticalAlignment="Bottom"
-                                ctc:DockPanel.Dock="Right"
-                                Margin="5,0"
-                                Command="{x:Bind ViewModel.ChangePathCommand, Mode=OneTime}"
-                                CommandParameter="{x:Bind m:PathType.ConvertedAudiofiles, Mode=OneTime}">
+                                                ctc:DockPanel.Dock="Right"
+                                                Margin="5,0"
+                                                Command="{x:Bind ViewModel.ChangePathCommand, Mode=OneTime}"
+                                                CommandParameter="{x:Bind m:PathType.ConvertedAudiofiles, Mode=OneTime}">
                                             <SymbolIcon Symbol="OpenLocal"/>
                                         </Button>
                                         <TextBox x:Uid="/SettingsPage/convertedAudios" Text="{x:Bind m:AppSettings.Instance.ConvertedAudioSavePath, Mode=OneWay}" IsReadOnly="True"/>
                                     </ctc:DockPanel>
                                     <ctc:DockPanel>
                                         <Button VerticalAlignment="Bottom"
-                                ctc:DockPanel.Dock="Right"
-                                Margin="5,0"
-                                Command="{x:Bind ViewModel.ChangePathCommand, Mode=OneTime}"
-                                CommandParameter="{x:Bind m:PathType.DownloadedVideofiles, Mode=OneTime}">
+                                                ctc:DockPanel.Dock="Right"
+                                                Margin="5,0"
+                                                Command="{x:Bind ViewModel.ChangePathCommand, Mode=OneTime}"
+                                                CommandParameter="{x:Bind m:PathType.DownloadedVideofiles, Mode=OneTime}">
                                             <SymbolIcon Symbol="OpenLocal"/>
                                         </Button>
                                         <TextBox x:Uid="/SettingsPage/downloadedVideos" Text="{x:Bind m:AppSettings.Instance.DownloadsVideoSavePath, Mode=OneWay}" IsReadOnly="True"/>
                                     </ctc:DockPanel>
                                     <ctc:DockPanel>
                                         <Button VerticalAlignment="Bottom"
-                                ctc:DockPanel.Dock="Right"
-                                Margin="5,0"
-                                Command="{x:Bind ViewModel.ChangePathCommand, Mode=OneTime}"
-                                CommandParameter="{x:Bind m:PathType.DownloadedAudiofiles, Mode=OneTime}">
+                                                ctc:DockPanel.Dock="Right"
+                                                Margin="5,0"
+                                                Command="{x:Bind ViewModel.ChangePathCommand, Mode=OneTime}"
+                                                CommandParameter="{x:Bind m:PathType.DownloadedAudiofiles, Mode=OneTime}">
                                             <SymbolIcon Symbol="OpenLocal"/>
                                         </Button>
                                         <TextBox x:Uid="/SettingsPage/downloadedAudios" Text="{x:Bind m:AppSettings.Instance.DownloadsAudioSavePath, Mode=OneWay}" IsReadOnly="True"/>
                                     </ctc:DockPanel>
                                     <TextBox x:Name="filenameSuffix"
-                             x:Uid="/SettingsPage/filenameSuffix"
-                             Text="{x:Bind m:AppSettings.Instance.ConvertedFilenameSuffix}"
-                             ext:TextBoxExtensions.Regex="{x:Bind g:GlobalResources.INVALIDFILENAMECHARACTERSREGEX, Mode=OneTime}"
-                             ext:TextBoxExtensions.IsValid="{x:Bind ViewModel.InvalidFilename}"/>
+                                             x:Uid="/SettingsPage/filenameSuffix"
+                                             Text="{x:Bind m:AppSettings.Instance.ConvertedFilenameSuffix}"
+                                             ext:TextBoxExtensions.Regex="{x:Bind g:GlobalResources.INVALIDFILENAMECHARACTERSREGEX, Mode=OneTime}"
+                                             ext:TextBoxExtensions.IsValid="{x:Bind ViewModel.InvalidFilename}"/>
                                     <TeachingTip x:Uid="/SettingsPage/forbiddenChars"
-                                 Target="{x:Bind filenameSuffix, Mode=OneTime}"
-                                 IsOpen="{x:Bind ViewModel.InvalidFilename, Mode=OneWay}">
+                                                 Target="{x:Bind filenameSuffix, Mode=OneTime}"
+                                                 IsOpen="{x:Bind ViewModel.InvalidFilename, Mode=OneWay}">
                                         <TeachingTip.IconSource>
                                             <SymbolIconSource Symbol="Cancel"/>
                                         </TeachingTip.IconSource>
@@ -213,6 +214,24 @@
                                     </ComboBox>
                                 </StackPanel>
                                 <ComboBox x:Uid="/SettingsPage/audioDownloadFormat" ItemsSource="{x:Bind g:GlobalResources.AudioConversionFormats, Mode=OneTime}" SelectedItem="{x:Bind m:AppSettings.Instance.DownloadsAudioFormat}"/>
+
+                                <ComboBox x:Uid="/SettingsPage/videoOrPlaylist" ItemsSource="{x:Bind m:AppSettings.VideoAddModes, Mode=OneTime}" SelectedItem="{x:Bind m:AppSettings.Instance.VideoAddMode}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="e:VideoAddMode">
+                                            <ContentPresenter Content="{x:Bind Converter={StaticResource ResourceNameToTextConverter}, ConverterParameter=SettingsPage, Mode=OneTime}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                
+                                <CheckBox x:Uid="/SettingsPage/tryAgainAfterFail" IsChecked="{x:Bind m:AppSettings.Instance.AutoRetryDownload}" Margin="{StaticResource SmallTopMargin}"/>
+                                <NumberBox x:Uid="/SettingsPage/amountOfRetries"
+                                           Value="{x:Bind m:AppSettings.Instance.CountOfDownloadRetries}"
+                                           Minimum="1"
+                                           Maximum="5"
+                                           NumberFormatter="{x:Bind RoundingFormatter, Mode=OneTime}"
+                                           SpinButtonPlacementMode="Inline"
+                                           MaxWidth="155" HorizontalAlignment="Left"
+                                           Visibility="{x:Bind m:AppSettings.Instance.AutoRetryDownload, Mode=OneWay}"/>
 
                                 <TextBlock x:Uid="/SettingsPage/threadsForConversion" TextWrapping="WrapWholeWords"/>
                                 <CheckBox x:Name="autoSelectThreadCount" x:Uid="/SettingsPage/autoSelectThreadCount" IsChecked="{x:Bind m:AppSettings.Instance.AutoSelectThreadsForConversion}"/>

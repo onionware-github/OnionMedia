@@ -89,7 +89,7 @@ namespace OnionMedia.ViewModels
         [ICommand]
         private async Task ChangePathAsync(PathType pathType)
         {
-            var path = await dialogService.ShowFolderPickerDialogAsync();
+            var path = await dialogService.ShowFolderPickerDialogAsync(DirectoryLocation.Videos);
             if (path == null) return;
 
             //TODO: Check write-access to the folder
