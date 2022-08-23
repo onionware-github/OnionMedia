@@ -178,7 +178,7 @@ namespace OnionMedia.ViewModels
                     return;
                 }
 
-                if (isYoutubePlaylist && await AskForPlaylistAsync())
+                if (isYoutubePlaylist && (AppSettings.Instance.VideoAddMode is VideoAddMode.AddPlaylist || AppSettings.Instance.VideoAddMode is VideoAddMode.AskForVideoAddMode && await AskForPlaylistAsync()))
                 {
                     ScanVideoCount++;
                     try

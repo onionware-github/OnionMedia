@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddPlaylist" xml:space="preserve">
+    <value>Añadir la lista de reproducción</value>
+  </data>
+  <data name="AddVideo" xml:space="preserve">
+    <value>Añadir el vídeo</value>
+  </data>
   <data name="amountOfRetries.Header" xml:space="preserve">
     <value>Cantidad de reintentos:</value>
   </data>
@@ -125,6 +131,9 @@
   </data>
   <data name="askForStoragePath.Content" xml:space="preserve">
     <value>Pregunte por el lugar de almacenamiento</value>
+  </data>
+  <data name="AskForVideoAddMode" xml:space="preserve">
+    <value>Pregunte siempre</value>
   </data>
   <data name="audioDownloadFormat.Header" xml:space="preserve">
     <value>Formato de los archivos de audio descargados:</value>
