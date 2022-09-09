@@ -14,5 +14,5 @@
   - Make the page more adaptive
 
 - #### Known Bugs
-- Time stamp when shortening a video sometimes jumps to a wrong position when changing the time in the text box
-- Writing tags to a file can corrupt the file. The reason is not known yet, it happens e.g. when tags are written in a TikTok video without automatic H264 recoding.
+  - Time stamp when shortening a video sometimes jumps to a wrong position when changing the time in the text box
+  - Writing tags to a file can corrupt the file. The reason is not known yet, it happens e.g. when tags are written in a TikTok video without automatic H264 recoding.
