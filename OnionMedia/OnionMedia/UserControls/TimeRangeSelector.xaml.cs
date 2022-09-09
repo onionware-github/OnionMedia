@@ -14,6 +14,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Linq;
+using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using OnionMedia.Core.Extensions;
 
@@ -145,6 +146,8 @@ namespace OnionMedia.UserControls
             Debug.WriteLine(timespan);
             if (string.IsNullOrWhiteSpace(timespan)) return TimeSpan.Zero;
             timespan = timespan.Trim();
+            timespan = timespan.TrimEnd(':');
+            timespan = Regex.Replace(timespan, ":{2,}", ":");
 
             //Throw an exception when the string contains invalid chars.
             if (timespan.Any(c => !char.IsNumber(c) && c != ':'))

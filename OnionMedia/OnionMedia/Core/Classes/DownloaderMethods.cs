@@ -146,6 +146,7 @@ namespace OnionMedia.Core.Classes
             try
             {
                 //Writes the tags into the file
+                //TODO: Fix file corruptions while saving tags
                 if (Path.GetExtension(tempfile) is ".mp3" or ".mp4" or ".m4a" or ".flac")
                     SaveTags(tempfile, stream.Video);
 
