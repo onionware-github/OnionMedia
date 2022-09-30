@@ -415,9 +415,10 @@ namespace OnionMedia.Core.Classes
         private static async Task<string> ConvertAudioAsync(string inputfile, string format, TimeSpan startTime = default, StreamItemModel stream = null, CancellationToken cancellationToken = default)
         {
             StringBuilder argBuilder = new();
+            argBuilder.Append($"-i \"{inputfile}\" ");
             if (!inputfile.EndsWith(format))
             {
-                argBuilder.Append($"-y -loglevel \"repeat+info\" -i \"{inputfile}\" -movflags \"+faststart\" -vn ");
+                argBuilder.Append($"-y -loglevel \"repeat+info\" -movflags \"+faststart\" -vn ");
                 argBuilder.Append(GetAudioConversionArgs());
             }
             argBuilder.Append($"-ss {startTime} ");
