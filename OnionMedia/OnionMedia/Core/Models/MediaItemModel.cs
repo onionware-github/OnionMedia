@@ -1,10 +1,12 @@
 ﻿/*
  * Copyright (C) 2022 Jaden Phil Nebel (Onionware)
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>
+ *
+ * This file is part of OnionMedia.
+ * OnionMedia is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
+
+ * OnionMedia is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with OnionMedia. If not, see <https://www.gnu.org/licenses/>.
  */
 
 using OnionMedia.Core.Classes;
@@ -14,19 +16,15 @@ using OnionMedia.Core.Extensions;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Security;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.WinUI;
 using FFmpeg.NET;
 using FFmpeg.NET.Events;
 using FFMpegCore;
-using CommunityToolkit.WinUI.Notifications;
+using OnionMedia.Core.Services;
 
 namespace OnionMedia.Core.Models
 {
@@ -64,6 +62,10 @@ namespace OnionMedia.Core.Models
             catch { FileTags = new(); }
         }
 
+        private readonly IDispatcherService dispatcher = IoC.Default.GetService<IDispatcherService>();
+
+        private readonly IToastNotificationService toastNotificationService = IoC.Default.GetService<IToastNotificationService>();
+
         private FileTags GetTags()
         {
             FileTags tags = new();
@@ -83,7 +85,7 @@ namespace OnionMedia.Core.Models
         {
             if (!e.Restart)
             {
-                await GlobalResources.DispatcherQueue.EnqueueAsync(() =>
+                await dispatcher.EnqueueAsync(() =>
                 {
                     ConversionState = FFmpegConversionState.Cancelled;
                     ConversionProgress = 0;
@@ -94,13 +96,13 @@ namespace OnionMedia.Core.Models
         private async void ProgressChanged(object sender, ConversionProgressEventArgs e)
         {
             if (!UnknownConversionProgress)
-                await GlobalResources.DispatcherQueue.EnqueueAsync(() => ConversionProgress = e.ProcessedDuration / (VideoTimes.EndTime - VideoTimes.StartTime) * 100);
+                await dispatcher.EnqueueAsync(() => ConversionProgress = e.ProcessedDuration / (VideoTimes.EndTime - VideoTimes.StartTime) * 100);
             Progress?.Invoke(this, e);
         }
 
         private async void ConversionDone(object sender, ConversionCompleteEventArgs e)
         {
-            await GlobalResources.DispatcherQueue.EnqueueAsync(() =>
+            await dispatcher.EnqueueAsync(() =>
             {
                 ConversionState = FFmpegConversionState.Done;
                 ConversionProgress = 100;
@@ -110,7 +112,7 @@ namespace OnionMedia.Core.Models
         private async void ConversionError(object sender, ConversionErrorEventArgs e)
         {
             Debug.WriteLine(e.Exception);
-            await GlobalResources.DispatcherQueue.EnqueueAsync(() =>
+            await dispatcher.EnqueueAsync(() =>
             {
                 ConversionState = FFmpegConversionState.Failed;
                 ConversionProgress = 0;
@@ -302,27 +304,7 @@ namespace OnionMedia.Core.Models
             Engine ffmpeg = new(GlobalResources.FFmpegPath);
             string tempThumbnailPath = Path.GetTempFileName() + ".jpg";
             await ffmpeg.GetThumbnailAsync(new InputFile(filePath), new OutputFile(tempThumbnailPath), CancellationToken.None);
-            new ToastContentBuilder()
-                            .AddText("conversionDone".GetLocalized("Resources"))
-                            .AddText(Title)
-                            .AddText(FileTags.Artist)
-                            .AddInlineImage(new Uri(tempThumbnailPath))
-                            .AddButton(new ToastButton()
-                            .SetContent("playFile".GetLocalized("Resources"))
-                            .AddArgument("action", "play")
-                            .AddArgument("filepath", filePath)
-                            .SetBackgroundActivation())
-                            .AddButton(new ToastButton()
-                            .SetContent("openFolder".GetLocalized("Resources"))
-                            .AddArgument("action", "open path")
-                            .AddArgument("folderpath", filePath))
-                            .AddArgument("filenames", Path.GetFileName(filePath))
-                            .SetBackgroundActivation()
-                            .Show(toast =>
-                            {
-                                toast.Group = "conversionMsgs";
-                                toast.Tag = "0";
-                            });
+            toastNotificationService.SendConversionDoneNotification(this, filePath, tempThumbnailPath);
         }
 
         public MediaFile MediaFile { get; }

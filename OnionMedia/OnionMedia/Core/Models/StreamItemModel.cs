@@ -1,18 +1,17 @@
 ﻿/*
  * Copyright (C) 2022 Jaden Phil Nebel (Onionware)
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>
+ *
+ * This file is part of OnionMedia.
+ * OnionMedia is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
+
+ * OnionMedia is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with OnionMedia. If not, see <https://www.gnu.org/licenses/>.
  */
 
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.WinUI.Notifications;
 using OnionMedia.Core.Classes;
 using OnionMedia.Core.Extensions;
-using OnionMedia.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using OnionMedia.Core.Services;
 using YoutubeDLSharp;
 using YoutubeDLSharp.Metadata;
 
@@ -56,6 +56,8 @@ namespace OnionMedia.Core.Models
             CancelSource = new();
             SetProgressToDefault();
         }
+
+        private readonly IToastNotificationService toastNotificationService = IoC.Default.GetService<IToastNotificationService>();
 
         public void SetProgressToDefault()
         {
@@ -183,27 +185,7 @@ namespace OnionMedia.Core.Models
         /// </summary>
         public void ShowToast()
         {
-            new ToastContentBuilder()
-                .AddText("downloadFinished".GetLocalized())
-                .AddText(Video.Title)
-                .AddAttributionText(Video.Uploader)
-                .AddInlineImage(new Uri(Video.Thumbnail))
-                .AddButton(new ToastButton()
-                .SetContent("playFile".GetLocalized())
-                .AddArgument("action", "play")
-                .AddArgument("filepath", Path.OriginalString)
-                .SetBackgroundActivation())
-                .AddButton(new ToastButton()
-                .SetContent("openFolder".GetLocalized())
-                .AddArgument("action", "open path")
-                .AddArgument("folderpath", Path.OriginalString))
-                .AddArgument("filenames", System.IO.Path.GetFileName(Path.OriginalString))
-                .SetBackgroundActivation()
-                .Show(toast =>
-                {
-                    toast.Group = "downloadMsgs";
-                    toast.Tag = "0";
-                });
+            toastNotificationService.SendDownloadDoneNotification(Video, Path.OriginalString);
         }
 
         /// <summary>

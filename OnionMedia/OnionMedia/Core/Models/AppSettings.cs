@@ -1,25 +1,26 @@
 ﻿/*
  * Copyright (C) 2022 Jaden Phil Nebel (Onionware)
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>
+ *
+ * This file is part of OnionMedia.
+ * OnionMedia is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
+
+ * OnionMedia is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with OnionMedia. If not, see <https://www.gnu.org/licenses/>.
  */
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using OnionMedia.Core.Enums;
-using OnionMedia.Helpers;
+using OnionMedia.Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Windows.Storage;
+using OnionMedia.Core.Services;
 using YoutubeDLSharp.Options;
 
 namespace OnionMedia.Core.Models
@@ -28,40 +29,42 @@ namespace OnionMedia.Core.Models
     {
         private AppSettings()
         {
-            simultaneousOperationCount = ApplicationData.Current.LocalSettings.Values["simultaneousOperationCount"] as int? ?? 3;
-            limitDownloadSpeed = ApplicationData.Current.LocalSettings.Values["limitDownloadSpeed"] as bool? ?? false;
-            maxDownloadSpeed = ApplicationData.Current.LocalSettings.Values["maxDownloadSpeed"] as double? ?? 10;
-            clearListsAfterOperation = ApplicationData.Current.LocalSettings.Values["clearListsAfterOperation"] as bool? ?? false;
-            autoConvertToH264AfterDownload = ApplicationData.Current.LocalSettings.Values["autoConvertToH264AfterDownload"] as bool? ?? false;
-            useHardwareAcceleratedEncoding = ApplicationData.Current.LocalSettings.Values["useHardwareAcceleratedEncoding"] as bool? ?? false;
+            simultaneousOperationCount = settingsService.GetSetting("simultaneousOperationCount") as int? ?? 3;
+            limitDownloadSpeed = settingsService.GetSetting("limitDownloadSpeed") as bool? ?? false;
+            maxDownloadSpeed = settingsService.GetSetting("maxDownloadSpeed") as double? ?? 10;
+            clearListsAfterOperation = settingsService.GetSetting("clearListsAfterOperation") as bool? ?? false;
+            autoConvertToH264AfterDownload = settingsService.GetSetting("autoConvertToH264AfterDownload") as bool? ?? false;
+            useHardwareAcceleratedEncoding = settingsService.GetSetting("useHardwareAcceleratedEncoding") as bool? ?? false;
             //TODO: Check which encoders are available on the system
-            hardwareEncoder = ParseEnum<HardwareEncoder>(ApplicationData.Current.LocalSettings.Values["hardwareEncoder"]);
-            autoSelectThreadsForConversion = ApplicationData.Current.LocalSettings.Values["autoSelectThreadsForConversion"] as bool? ?? true;
-            maxThreadCountForConversion = ApplicationData.Current.LocalSettings.Values["maxThreadCountForConversion"] as int? ?? 1;
-            useFixedStoragePaths = ApplicationData.Current.LocalSettings.Values["useFixedStoragePaths"] as bool? ?? true;
-            convertedAudioSavePath = ApplicationData.Current.LocalSettings.Values["convertedAudioSavePath"] as string ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic), "OnionMedia", "converted".GetLocalized());
-            convertedVideoSavePath = ApplicationData.Current.LocalSettings.Values["convertedVideoSavePath"] as string ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "OnionMedia", "converted".GetLocalized());
-            downloadsAudioSavePath = ApplicationData.Current.LocalSettings.Values["downloadsAudioSavePath"] as string ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic), "OnionMedia", "downloaded".GetLocalized());
-            downloadsVideoSavePath = ApplicationData.Current.LocalSettings.Values["downloadsVideoSavePath"] as string ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "OnionMedia", "downloaded".GetLocalized());
-            convertedFilenameSuffix = ApplicationData.Current.LocalSettings.Values["convertedFilenameSuffix"] as string ?? string.Empty;
-            sendMessageAfterConversion = ApplicationData.Current.LocalSettings.Values["sendMessageAfterConversion"] as bool? ?? true;
-            sendMessageAfterDownload = ApplicationData.Current.LocalSettings.Values["sendMessageAfterDownload"] as bool? ?? true;
-            fallBackToSoftwareEncoding = ApplicationData.Current.LocalSettings.Values["fallBackToSoftwareEncoding"] as bool? ?? true;
-            autoRetryDownload = ApplicationData.Current.LocalSettings.Values["autoRetryDownload"] as bool? ?? true;
-            countOfDownloadRetries = ApplicationData.Current.LocalSettings.Values["countOfDownloadRetries"] as int? ?? 3;
+            hardwareEncoder = ParseEnum<HardwareEncoder>(settingsService.GetSetting("hardwareEncoder"));
+            autoSelectThreadsForConversion = settingsService.GetSetting("autoSelectThreadsForConversion") as bool? ?? true;
+            maxThreadCountForConversion = settingsService.GetSetting("maxThreadCountForConversion") as int? ?? 1;
+            useFixedStoragePaths = settingsService.GetSetting("useFixedStoragePaths") as bool? ?? true;
+            convertedAudioSavePath = settingsService.GetSetting("convertedAudioSavePath") as string ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic), "OnionMedia", "converted".GetLocalized());
+            convertedVideoSavePath = settingsService.GetSetting("convertedVideoSavePath") as string ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "OnionMedia", "converted".GetLocalized());
+            downloadsAudioSavePath = settingsService.GetSetting("downloadsAudioSavePath") as string ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic), "OnionMedia", "downloaded".GetLocalized());
+            downloadsVideoSavePath = settingsService.GetSetting("downloadsVideoSavePath") as string ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "OnionMedia", "downloaded".GetLocalized());
+            convertedFilenameSuffix = settingsService.GetSetting("convertedFilenameSuffix") as string ?? string.Empty;
+            sendMessageAfterConversion = settingsService.GetSetting("sendMessageAfterConversion") as bool? ?? true;
+            sendMessageAfterDownload = settingsService.GetSetting("sendMessageAfterDownload") as bool? ?? true;
+            fallBackToSoftwareEncoding = settingsService.GetSetting("fallBackToSoftwareEncoding") as bool? ?? true;
+            autoRetryDownload = settingsService.GetSetting("autoRetryDownload") as bool? ?? true;
+            countOfDownloadRetries = settingsService.GetSetting("countOfDownloadRetries") as int? ?? 3;
 
-            var downloadsAudioFormat = ApplicationData.Current.LocalSettings.Values["downloadsAudioFormat"];
+            var downloadsAudioFormat = settingsService.GetSetting("downloadsAudioFormat");
             if (downloadsAudioFormat == null)
                 this.downloadsAudioFormat = AudioConversionFormat.Mp3;
             else
                 this.downloadsAudioFormat = ParseEnum<AudioConversionFormat>(downloadsAudioFormat);
 
-            var videoAddMode = ApplicationData.Current.LocalSettings.Values["videoAddMode"];
+            var videoAddMode = settingsService.GetSetting("videoAddMode");
             if (videoAddMode == null)
                 this.videoAddMode = VideoAddMode.AskForVideoAddMode;
             else
                 this.videoAddMode = ParseEnum<VideoAddMode>(videoAddMode);
         }
+
+        private readonly ISettingsService settingsService = IoC.Default.GetService<ISettingsService>();
 
         public static AppSettings Instance { get; } = new AppSettings();
         public static VideoAddMode[] VideoAddModes { get; } = Enum.GetValues<VideoAddMode>().ToArray();
@@ -156,7 +159,7 @@ namespace OnionMedia.Core.Models
             set
             {
                 if (SetProperty(ref hardwareEncoder, value))
-                    ApplicationData.Current.LocalSettings.Values["hardwareEncoder"] = value.ToString();
+                    settingsService.SetSetting("hardwareEncoder", value.ToString());
             }
         }
         private HardwareEncoder? hardwareEncoder;
@@ -167,7 +170,7 @@ namespace OnionMedia.Core.Models
             set
             {
                 if (SetProperty(ref downloadsAudioFormat, value))
-                    ApplicationData.Current.LocalSettings.Values["downloadsAudioFormat"] = value.ToString();
+                    settingsService.SetSetting("downloadsAudioFormat", value.ToString());
             }
         }
         private AudioConversionFormat downloadsAudioFormat;
@@ -233,8 +236,8 @@ namespace OnionMedia.Core.Models
         //Last opened page
         public bool DownloaderPageIsOpen
         {
-            get => ApplicationData.Current.LocalSettings.Values["downloaderPageIsOpen"] as bool? ?? false;
-            set => ApplicationData.Current.LocalSettings.Values["downloaderPageIsOpen"] = value;
+            get => settingsService.GetSetting("downloaderPageIsOpen") as bool? ?? false;
+            set => settingsService.SetSetting("downloaderPageIsOpen", value);
         }
 
         public VideoAddMode VideoAddMode
@@ -243,7 +246,7 @@ namespace OnionMedia.Core.Models
             set
             {
                 if (SetProperty(ref videoAddMode, value))
-                    ApplicationData.Current.LocalSettings.Values["videoAddMode"] = value.ToString();
+                    settingsService.SetSetting("videoAddMode", value.ToString());
             }
         }
         private VideoAddMode videoAddMode;
@@ -252,7 +255,7 @@ namespace OnionMedia.Core.Models
         private void SetSetting<T>(ref T field, T value, string settingName, bool forceOnPropertyChanged = false, [CallerMemberName] string propName = null)
         {
             if (SetProperty(ref field, value, propName))
-                ApplicationData.Current.LocalSettings.Values[settingName] = value;
+                settingsService.SetSetting(settingName, value);
             else if (forceOnPropertyChanged)
                 OnPropertyChanged(propName);
         }

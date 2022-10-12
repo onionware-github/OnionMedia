@@ -1,10 +1,12 @@
 ﻿/*
  * Copyright (C) 2022 Jaden Phil Nebel (Onionware)
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>
+ *
+ * This file is part of OnionMedia.
+ * OnionMedia is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
+
+ * OnionMedia is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with OnionMedia. If not, see <https://www.gnu.org/licenses/>.
  */
 
 using System;
@@ -20,7 +22,7 @@ using Microsoft.UI.Xaml;
 using OnionMedia.Contracts.Services;
 using OnionMedia.Core.Models;
 using OnionMedia.Core.Services;
-using OnionMedia.Helpers;
+using OnionMedia.Core.Extensions;
 
 using Windows.ApplicationModel;
 using Windows.Storage;
@@ -33,17 +35,17 @@ namespace OnionMedia.ViewModels
     [ObservableObject]
     public sealed partial class SettingsViewModel
     {
-        public SettingsViewModel(IThemeSelectorService themeSelectorService, IDialogService dialogService, ICustomDialogService customDialogService)
+        public SettingsViewModel(IThemeSelectorService themeSelectorService, IDialogService dialogService, IThirdPartyLicenseDialog thirdPartyLicenseDialog)
         {
             this.dialogService = dialogService;
-            this.customDialogService = customDialogService;
+            this.thirdPartyLicenseDialog = thirdPartyLicenseDialog;
             _themeSelectorService = themeSelectorService;
             _elementTheme = _themeSelectorService.Theme;
             VersionDescription = GetVersionDescription();
         }
 
         private readonly IDialogService dialogService;
-        private readonly ICustomDialogService customDialogService;
+        private readonly IThirdPartyLicenseDialog thirdPartyLicenseDialog;
         private readonly IThemeSelectorService _themeSelectorService;
         private ElementTheme _elementTheme;
 
@@ -122,7 +124,7 @@ namespace OnionMedia.ViewModels
         }
 
         [ICommand]
-        private async Task ShowThirdPartyLicensesAsync() => await customDialogService.ShowThirdPartyLicensesDialogAsync();
+        private async Task ShowThirdPartyLicensesAsync() => await thirdPartyLicenseDialog.ShowThirdPartyLicensesDialogAsync();
 
         [ICommand]
         private async Task ShowThanksDialogAsync()

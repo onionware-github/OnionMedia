@@ -1,10 +1,12 @@
 ﻿/*
  * Copyright (C) 2022 Jaden Phil Nebel (Onionware)
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>
+ *
+ * This file is part of OnionMedia.
+ * OnionMedia is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
+
+ * OnionMedia is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with OnionMedia. If not, see <https://www.gnu.org/licenses/>.
  */
 
 using System;
@@ -19,15 +21,10 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.WinUI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using OnionMedia.Core.Classes;
 using OnionMedia.Core.Enums;
 using OnionMedia.Core.Extensions;
 using OnionMedia.Core.Models;
-using OnionMedia.Views.Dialogs;
-using CommunityToolkit.WinUI.Notifications;
 using OnionMedia.Core.Services;
 
 namespace OnionMedia.ViewModels
@@ -35,9 +32,14 @@ namespace OnionMedia.ViewModels
     [ObservableObject]
     public sealed partial class MediaViewModel
     {
-        public MediaViewModel(IDialogService dialogService)
+        public MediaViewModel(IDialogService dialogService, IDispatcherService dispatcher, IConversionPresetDialog conversionPresetDialog, IFiletagEditorDialog filetagEditorDialog, IToastNotificationService toastNotificationService)
         {
             this.dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
+            this.conversionPresetDialog = conversionPresetDialog ?? throw new ArgumentNullException(nameof(conversionPresetDialog));
+            this.filetagEditorDialog = filetagEditorDialog ?? throw new ArgumentNullException(nameof(filetagEditorDialog));
+            this.toastNotificationService = toastNotificationService ?? throw new ArgumentNullException(nameof(toastNotificationService));
+            this.dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+
             InsertConversionPresetsFromJson();
 
             //Sort presets
@@ -87,7 +89,11 @@ namespace OnionMedia.ViewModels
             });
         }
 
-        private IDialogService dialogService;
+        private readonly IDialogService dialogService;
+        private readonly IConversionPresetDialog conversionPresetDialog;
+        private readonly IFiletagEditorDialog filetagEditorDialog;
+        private readonly IToastNotificationService toastNotificationService;
+        private readonly IDispatcherService dispatcher;
 
         private void Files_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -259,10 +265,10 @@ namespace OnionMedia.ViewModels
                         continue;
 
                     Files.Add(await MediaItemModel.CreateAsync(new FileInfo(filepath)));
-                    Files[^1].Progress += async (o, e) => await GlobalResources.DispatcherQueue.EnqueueAsync(() => OnPropertyChanged(nameof(Progress)));
-                    Files[^1].Cancel += async (o, e) => await GlobalResources.DispatcherQueue.EnqueueAsync(() => OnPropertyChanged(nameof(Progress)));
+                    Files[^1].Progress += async (o, e) => await dispatcher.EnqueueAsync(() => OnPropertyChanged(nameof(Progress)));
+                    Files[^1].Cancel += async (o, e) => await dispatcher.EnqueueAsync(() => OnPropertyChanged(nameof(Progress)));
                     Files[^1].Error += (o, e) => Debug.WriteLine("Error while converting " + ((MediaItemModel)o).MediaFile.FileInfo.Name);
-                    Files[^1].PropertyChanged += async (o, e) => await GlobalResources.DispatcherQueue.EnqueueAsync(() => OnPropertyChanged(nameof(VideoEnabled)));
+                    Files[^1].PropertyChanged += async (o, e) => await dispatcher.EnqueueAsync(() => OnPropertyChanged(nameof(VideoEnabled)));
                 }
                 catch { failedCount++; }
             }
@@ -285,13 +291,13 @@ namespace OnionMedia.ViewModels
 
         private async Task AddConversionPresetAsync()
         {
-            ConversionPresetDialog dlg = new(ConversionPresets.Select(p => p.Name)) { XamlRoot = GlobalResources.XamlRoot };
-            if (await dlg.ShowAsync() != ContentDialogResult.Primary) return;
+            ConversionPreset newPreset = await conversionPresetDialog.ShowCustomPresetDialogAsync(ConversionPresets.Select(p => p.Name));
+            if (newPreset == null) return;
 
             //Add the new preset and sort the presets (exclude the standard preset [0] from sorting)
-            ConversionPresets.Add(dlg.ConversionPreset);
+            ConversionPresets.Add(newPreset);
             ReorderConversionPresets();
-            SelectedConversionPreset = dlg.ConversionPreset;
+            SelectedConversionPreset = newPreset;
         }
 
         private async Task EditConversionPresetAsync(ConversionPreset conversionPreset)
@@ -302,13 +308,13 @@ namespace OnionMedia.ViewModels
             if (!ConversionPresets.Contains(conversionPreset))
                 throw new ArgumentException("ConversionPresets does not contain conversionPreset.");
 
-            ConversionPresetDialog dlg = new(conversionPreset, ConversionPresets.Select(p => p.Name)) { XamlRoot = GlobalResources.XamlRoot };
-            if (await dlg.ShowAsync() != ContentDialogResult.Primary) return;
+            ConversionPreset editedPreset = await conversionPresetDialog.ShowCustomPresetDialogAsync(conversionPreset, ConversionPresets.Select(p => p.Name));
+            if (editedPreset == null) return;
 
             //Rename the preset and sort the presets (exclude the standard preset [0] from sorting)
-            ConversionPresets[ConversionPresets.IndexOf(conversionPreset)] = dlg.ConversionPreset;
+            ConversionPresets[ConversionPresets.IndexOf(conversionPreset)] = editedPreset;
             ReorderConversionPresets();
-            SelectedConversionPreset = dlg.ConversionPreset;
+            SelectedConversionPreset = editedPreset;
         }
 
         private async Task DeleteConversionPresetAsync(ConversionPreset conversionPreset)
@@ -433,14 +439,7 @@ namespace OnionMedia.ViewModels
             }
             else if (completed > 1)
             {
-                new ToastContentBuilder()
-                            .AddText("conversionDone".GetLocalized("Resources"))
-                            .AddText("filesConverted".GetLocalized("Resources").Replace("{0}", completed.ToString()))
-                            .Show(toast =>
-                            {
-                                toast.Group = "conversionMsgs";
-                                toast.Tag = "0";
-                            });
+                toastNotificationService.SendConversionsDoneNotification(completed);
             }
         }
 
@@ -450,11 +449,11 @@ namespace OnionMedia.ViewModels
             TagsEditedFlyoutIsOpen = false;
             if (SelectedItem == null || !SelectedItem.FileTagsAvailable) return;
 
-            var dlg = new EditTagsDialog(SelectedItem.FileTags) { XamlRoot = GlobalResources.XamlRoot };
-            if (await dlg.ShowAsync() != ContentDialogResult.Primary) return;
+            FileTags newTags = await filetagEditorDialog.ShowTagEditorDialogAsync(SelectedItem.FileTags);
+            if (newTags == null) return;
             try
             {
-                bool result = SelectedItem.ApplyNewTags(dlg.FileTags);
+                bool result = SelectedItem.ApplyNewTags(newTags);
                 if (!result)
                 {
                     await dialogService.ShowInfoDialogAsync("error".GetLocalized(resources), "tagerrormsg".GetLocalized(resources), "OK");

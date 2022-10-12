@@ -1,17 +1,16 @@
 ﻿/*
  * Copyright (C) 2022 Jaden Phil Nebel (Onionware)
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>
+ *
+ * This file is part of OnionMedia.
+ * OnionMedia is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
+
+ * OnionMedia is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with OnionMedia. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using CommunityToolkit.WinUI;
 using FFMpegCore;
-using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using OnionMedia.Core.Extensions;
 using OnionMedia.Core.Models;
 using System;
@@ -21,8 +20,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.Storage.Pickers;
-using WinRT.Interop;
+using OnionMedia.Core;
+using OnionMedia.Core.Services;
 using YoutubeDLSharp.Options;
 
 namespace OnionMedia
@@ -55,7 +54,6 @@ namespace OnionMedia
         public static string LicensesDir => Installpath + @"\licenses\";
         public static int SystemThreadCount => Environment.ProcessorCount;
         public static FFmpegCodecConfig FFmpegCodecs { get; set; }
-        public static DispatcherQueue DispatcherQueue { get; set; }
         public static XamlRoot XamlRoot { get; set; }
 
         public const string INVALIDFILENAMECHARACTERSREGEX = @"[<|>:""/\?*]";
@@ -67,39 +65,39 @@ namespace OnionMedia
         //Shared methods
         public static async Task DisplayFileSaveErrorDialog(uint unauthorizedAccessExceptions, uint directoryNotFoundExceptions, uint notEnoughSpaceExceptions)
         {
-            var dialog = new ContentDialog()
+            var dialogService = IoC.Default.GetService<IDialogService>();
+            DialogTextOptions dlgConfig = new()
             {
-                Content = new TextBlock() { TextWrapping = TextWrapping.WrapWholeWords },
-                XamlRoot = XamlRoot,
-                PrimaryButtonText = "OK"
+                CloseButtonText = "OK",
+                ContentTextWrapping = TextWrapMode.WrapWholeWords
             };
 
             if (MultipleExceptionTypes(unauthorizedAccessExceptions, directoryNotFoundExceptions, notEnoughSpaceExceptions))
             {
-                dialog.Title = "conversionFilesCantBeSavedTitle".GetLocalized(DialogResources);
-                ((TextBlock)dialog.Content).Text = "conversionFilesCantBeSaved".GetLocalized(DialogResources).Replace("{0}", (unauthorizedAccessExceptions + directoryNotFoundExceptions).ToString());
-                await dialog.ShowAsync();
+                dlgConfig.Title = "conversionFilesCantBeSavedTitle".GetLocalized(DialogResources);
+                dlgConfig.Content = "conversionFilesCantBeSaved".GetLocalized(DialogResources).Replace("{0}", (unauthorizedAccessExceptions + directoryNotFoundExceptions).ToString());
+                await dialogService.ShowDialogAsync(dlgConfig);
                 return;
             }
             if (unauthorizedAccessExceptions > 0)
             {
-                dialog.Title = "conversionFilesNoWriteAccessTitle".GetLocalized(DialogResources);
-                ((TextBlock)dialog.Content).Text = "conversionFilesNoWriteAccess".GetLocalized(DialogResources).Replace("{0}", unauthorizedAccessExceptions.ToString());
-                await dialog.ShowAsync();
+                dlgConfig.Title = "conversionFilesNoWriteAccessTitle".GetLocalized(DialogResources);
+                dlgConfig.Content = "conversionFilesNoWriteAccess".GetLocalized(DialogResources).Replace("{0}", unauthorizedAccessExceptions.ToString());
+                await dialogService.ShowDialogAsync(dlgConfig);
                 return;
             }
             if (directoryNotFoundExceptions > 0)
             {
-                dialog.Title = "conversionFilesPathNotFoundTitle".GetLocalized(DialogResources);
-                ((TextBlock)dialog.Content).Text = "conversionFilesPathNotFound".GetLocalized(DialogResources).Replace("{0}", directoryNotFoundExceptions.ToString());
-                await dialog.ShowAsync();
+                dlgConfig.Title = "conversionFilesPathNotFoundTitle".GetLocalized(DialogResources);
+                dlgConfig.Content = "conversionFilesPathNotFound".GetLocalized(DialogResources).Replace("{0}", directoryNotFoundExceptions.ToString());
+                await dialogService.ShowDialogAsync(dlgConfig);
                 return;
             }
             if (notEnoughSpaceExceptions > 0)
             {
-                dialog.Title = "notEnoughSpaceTitle".GetLocalized(DialogResources);
-                ((TextBlock)dialog.Content).Text = "notEnoughSpace".GetLocalized(DialogResources).Replace("{0}", notEnoughSpaceExceptions.ToString());
-                await dialog.ShowAsync();
+                dlgConfig.Title = "notEnoughSpaceTitle".GetLocalized(DialogResources);
+                dlgConfig.Content = "notEnoughSpace".GetLocalized(DialogResources).Replace("{0}", notEnoughSpaceExceptions.ToString());
+                await dialogService.ShowDialogAsync(dlgConfig);
                 return;
             }
         }

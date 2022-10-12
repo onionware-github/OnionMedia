@@ -1,15 +1,16 @@
 ﻿/*
  * Copyright (C) 2022 Jaden Phil Nebel (Onionware)
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>
+ *
+ * This file is part of OnionMedia.
+ * OnionMedia is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
+
+ * OnionMedia is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with OnionMedia. If not, see <https://www.gnu.org/licenses/>.
  */
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.WinUI.Notifications;
 
 using System;
 using System.Collections.ObjectModel;
@@ -25,11 +26,9 @@ using System.Net.Http;
 using System.Text;
 using System.IO;
 using OnionMedia.Core.Classes;
-using OnionMedia.Helpers;
 using OnionMedia.Core.Extensions;
 using System.Text.RegularExpressions;
-using Windows.Networking.Connectivity;
-using Windows.System;
+using OnionMedia.Core;
 using OnionMedia.Core.Services;
 
 namespace OnionMedia.ViewModels
@@ -37,10 +36,13 @@ namespace OnionMedia.ViewModels
     [ObservableObject]
     public sealed partial class YouTubeDownloaderViewModel
     {
-        public YouTubeDownloaderViewModel(IDialogService dialogService, IDownloaderDialogService downloaderDialogService)
+        public YouTubeDownloaderViewModel(IDialogService dialogService, IDownloaderDialogService downloaderDialogService, IDispatcherService dispatcher, INetworkStatusService networkStatusService, IToastNotificationService toastNotificationService)
         {
             this.dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             this.downloaderDialogService = downloaderDialogService ?? throw new ArgumentNullException(nameof(downloaderDialogService));
+            this.dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+            this.toastNotificationService = toastNotificationService ?? throw new ArgumentNullException(nameof(toastNotificationService));
+            this.networkStatusService = networkStatusService;
 
             SearchResults.CollectionChanged += (o, e) => OnPropertyChanged(nameof(AnyResults));
             Videos.CollectionChanged += OnProgressChanged;
@@ -58,16 +60,22 @@ namespace OnionMedia.ViewModels
             AddVideoCommand.PropertyChanged += (o, e) => UpdateProgressStateProperties();
             AddSearchedVideo.PropertyChanged += (o, e) => UpdateProgressStateProperties();
             Videos.CollectionChanged += (o, e) => UpdateProgressStateProperties();
-            NetworkInformation.NetworkStatusChanged += o => GlobalResources.DispatcherQueue.TryEnqueue(() => NetworkAvailable = NetworkInformation.GetInternetConnectionProfile() != null);
+            networkAvailable = this.networkStatusService?.IsNetworkConnectionAvailable() ?? true;
+            if (this.networkStatusService != null)
+                this.networkStatusService.ConnectionStateChanged += (o, e) => this.dispatcher.Enqueue(() => NetworkAvailable = e);
         }
 
         private readonly IDialogService dialogService;
         private readonly IDownloaderDialogService downloaderDialogService;
+        private readonly IDispatcherService dispatcher;
+        private readonly INetworkStatusService networkStatusService;
+        private readonly IToastNotificationService toastNotificationService;
+        private static readonly IUrlService urlService = IoC.Default.GetService<IUrlService>() ?? throw new ArgumentNullException();
 
+        public static AsyncRelayCommand<string> OpenUrlCommand { get; } = new(async url => await urlService.OpenUrlAsync(url));
         public AsyncRelayCommand<string> DownloadFileCommand { get; }
         public AsyncRelayCommand<string> AddVideoCommand { get; }
         public AsyncRelayCommand<SearchItemModel> AddSearchedVideo { get; }
-        public static AsyncRelayCommand<string> OpenUrlCommand { get; } = new(async url => await Launcher.LaunchUriAsync(new Uri(url)));
         public RelayCommand<StreamItemModel> RestartDownloadCommand { get; }
         public RelayCommand<int> RemoveCommand { get; }
 
@@ -82,7 +90,7 @@ namespace OnionMedia.ViewModels
         private bool videoNotFound;
 
         [ObservableProperty]
-        private bool networkAvailable = NetworkInformation.GetInternetConnectionProfile() != null;
+        private bool networkAvailable;
 
         public bool ResolutionsAvailable => GetMP4 && Videos.Any() && Resolutions.Any();
 
@@ -326,7 +334,7 @@ namespace OnionMedia.ViewModels
             List<StreamItemModel> items = new();
 
             List<Task> tasks = new();
-            SemaphoreSlim queue = new(20,20);
+            SemaphoreSlim queue = new(20, 20);
             foreach (var url in urls)
             {
                 await queue.WaitAsync(cToken);
@@ -490,31 +498,14 @@ namespace OnionMedia.ViewModels
             }
             else if (finishedCount > 1)
             {
-                var dialog = new ToastContentBuilder()
-                .AddText("downloadFinished".GetLocalized())
-                .AddText($"{finishedCount} {"videosDownloaded".GetLocalized()}");
+                IEnumerable<string> filenames = null;
 
                 if (items.Any(v => v?.Path != null && Path.GetDirectoryName(v.Path.OriginalString) == Path.GetDirectoryName(loadedVideo.Path.OriginalString)))
                 {
-                    StringBuilder files = new();
-                    var filenames = items.Where(v => v?.Path != null && v.DownloadState is DownloadState.IsDone && File.Exists(v.Path.OriginalString)).Select(v => Path.GetFileName(v.Path.OriginalString));
-                    foreach (var file in filenames)
-                        files.AppendLine(file);
-
-                    dialog.AddButton(new ToastButton()
-                    .SetContent("openFolder".GetLocalized())
-                    .AddArgument("action", "open path")
-                    .AddArgument("folderpath", loadedVideo.Path.OriginalString)
-                    .AddArgument("filenames", files.ToString())
-                    .SetBackgroundActivation());
+                    filenames = items.Where(v => v?.Path != null && v.DownloadState is DownloadState.IsDone && File.Exists(v.Path.OriginalString)).Select(v => Path.GetFileName(v.Path.OriginalString));
                 }
 
-
-                dialog.Show(toast =>
-                {
-                    toast.Group = "downloadMsgs";
-                    toast.Tag = "0";
-                });
+                toastNotificationService.SendDownloadsDoneNotification(loadedVideo.Path.OriginalString, finishedCount, filenames);
             }
         }
 

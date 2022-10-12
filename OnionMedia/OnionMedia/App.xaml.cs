@@ -1,10 +1,12 @@
 ﻿/*
  * Copyright (C) 2022 Jaden Phil Nebel (Onionware)
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>
+ *
+ * This file is part of OnionMedia.
+ * OnionMedia is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
+
+ * OnionMedia is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with OnionMedia. If not, see <https://www.gnu.org/licenses/>.
  */
 
 using CommunityToolkit.Mvvm.DependencyInjection;
@@ -30,6 +32,7 @@ using Windows.System.UserProfile;
 using Windows.Storage;
 using OnionMedia.Core.Models;
 using FFMpegCore;
+using OnionMedia.Core;
 using OnionMedia.Core.Services;
 
 // To learn more about WinUI3, see: https://docs.microsoft.com/windows/apps/winui/winui3/.
@@ -43,9 +46,10 @@ namespace OnionMedia
         {
             InitializeComponent();
             UnhandledException += App_UnhandledException;
-            Ioc.Default.ConfigureServices(ConfigureServices());
+            var services = ConfigureServices();
+            Ioc.Default.ConfigureServices(services);
+            IoC.Default.InitializeServices(services);
             GlobalFFOptions.Configure(options => options.BinaryFolder = GlobalResources.Installpath + @"\ExternalBinaries\ffmpeg+yt-dlp\binaries");
-            GlobalResources.DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
         }
 
         private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
@@ -160,7 +164,15 @@ namespace OnionMedia
             // Core Services
             services.AddSingleton<IDialogService, DialogService>();
             services.AddSingleton<IDownloaderDialogService, DownloaderDialogService>();
-            services.AddSingleton<ICustomDialogService, CustomDialogService>();
+            services.AddSingleton<IThirdPartyLicenseDialog, ThirdPartyLicenseDialog>();
+            services.AddSingleton<IConversionPresetDialog, ConversionPresetDialog>();
+            services.AddSingleton<IFiletagEditorDialog, FiletagEditorDialog>();
+            services.AddSingleton<IDispatcherService, DispatcherService>();
+            services.AddSingleton<INetworkStatusService, NetworkStatusService>();
+            services.AddSingleton<IUrlService, UrlService>();
+            services.AddSingleton<IToastNotificationService, ToastNotificationService>();
+            services.AddSingleton<IStringResourceService, StringResourceService>();
+            services.AddSingleton<ISettingsService, SettingsService>();
 
             // Views and ViewModels
             services.AddTransient<ShellPage>();

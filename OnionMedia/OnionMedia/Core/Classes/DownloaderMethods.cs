@@ -1,10 +1,12 @@
 ﻿/*
  * Copyright (C) 2022 Jaden Phil Nebel (Onionware)
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>
+ *
+ * This file is part of OnionMedia.
+ * OnionMedia is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
+
+ * OnionMedia is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with OnionMedia. If not, see <https://www.gnu.org/licenses/>.
  */
 
 using System;
@@ -26,9 +28,9 @@ using YoutubeDLSharp.Options;
 using YoutubeDLSharp.Metadata;
 using Newtonsoft.Json;
 using System.Text;
-using CommunityToolkit.WinUI;
 using System.Drawing;
 using FFMpegCore;
+using OnionMedia.Core.Services;
 using YoutubeExplode.Videos;
 using OnionMedia.ViewModels.Dialogs;
 
@@ -36,6 +38,7 @@ namespace OnionMedia.Core.Classes
 {
     public static class DownloaderMethods
     {
+        private static readonly IDispatcherService dispatcher = IoC.Default.GetService<IDispatcherService>() ?? throw new ArgumentNullException();
         public static readonly YoutubeClient youtube = new();
 
         public static readonly YoutubeDL downloadClient = new(5)
@@ -434,9 +437,9 @@ namespace OnionMedia.Core.Classes
 
             if (stream != null)
             {
-                ffmpeg.Complete += async (o, e) => await GlobalResources.DispatcherQueue.EnqueueAsync(() => stream.ConversionProgress = 100);
-                ffmpeg.Error += async (o, e) => await GlobalResources.DispatcherQueue.EnqueueAsync(() => stream.ConversionProgress = 0);
-                ffmpeg.Progress += async (o, e) => await GlobalResources.DispatcherQueue.EnqueueAsync(() => stream.ConversionProgress = (int)(e.ProcessedDuration / (meta.Duration - startTime) * 100));
+                ffmpeg.Complete += async (o, e) => await dispatcher.EnqueueAsync(() => stream.ConversionProgress = 100);
+                ffmpeg.Error += async (o, e) => await dispatcher.EnqueueAsync(() => stream.ConversionProgress = 0);
+                ffmpeg.Progress += async (o, e) => await dispatcher.EnqueueAsync(() => stream.ConversionProgress = (int)(e.ProcessedDuration / (meta.Duration - startTime) * 100));
             }
 
             await ffmpeg.ExecuteAsync(argBuilder.ToString(), cancellationToken);
@@ -493,14 +496,14 @@ namespace OnionMedia.Core.Classes
             bool error = false;
             if (stream != null)
             {
-                ffmpeg.Complete += async (o, e) => await GlobalResources.DispatcherQueue.EnqueueAsync(() => stream.ConversionProgress = 100);
-                ffmpeg.Error += async (o, e) => await GlobalResources.DispatcherQueue.EnqueueAsync(() =>
+                ffmpeg.Complete += async (o, e) => await dispatcher.EnqueueAsync(() => stream.ConversionProgress = 100);
+                ffmpeg.Error += async (o, e) => await dispatcher.EnqueueAsync(() =>
                 {
                     stream.ConversionProgress = 0;
                     error = true;
                     Debug.WriteLine(e.Exception);
                 });
-                ffmpeg.Progress += async (o, e) => await GlobalResources.DispatcherQueue.EnqueueAsync(() =>
+                ffmpeg.Progress += async (o, e) => await dispatcher.EnqueueAsync(() =>
                 {
                     var totalDuration = e.TotalDuration - startTime;
                     if (endTime != default)
