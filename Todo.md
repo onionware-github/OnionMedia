@@ -2,8 +2,7 @@
 
 - #### App & Code
   - Add logging features
-  - Decouple OS and WinUI dependent stuff, use Services and DI instead and move Models and ViewModels in an independent Core-Project
-  - Add more languages
+  - Linux Port
   - Add project with unit tests
 
 - #### Converter
