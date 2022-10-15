@@ -22,6 +22,6 @@ namespace OnionMedia.Services
 {
     sealed class ThirdPartyLicenseDialog : IThirdPartyLicenseDialog
     {
-        public async Task ShowThirdPartyLicensesDialogAsync() => await new LicensesDialog() { XamlRoot = GlobalResources.XamlRoot }.ShowAsync();
+        public async Task ShowThirdPartyLicensesDialogAsync() => await new LicensesDialog() { XamlRoot = UIResources.XamlRoot }.ShowAsync();
     }
 }

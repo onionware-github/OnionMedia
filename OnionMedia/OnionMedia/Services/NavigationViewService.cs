@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 
 using OnionMedia.Contracts.Services;
 using OnionMedia.Helpers;
-using OnionMedia.ViewModels;
+using OnionMedia.Core.ViewModels;
 
 namespace OnionMedia.Services
 {

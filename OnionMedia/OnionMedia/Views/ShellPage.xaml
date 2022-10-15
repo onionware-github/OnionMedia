@@ -18,6 +18,7 @@
     xmlns:helpers="using:OnionMedia.Helpers"
     xmlns:behaviors="using:OnionMedia.Behaviors"
     xmlns:local="using:OnionMedia"
+    xmlns:c="using:OnionMedia.Core"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     SizeChanged="Page_SizeChanged"
@@ -60,9 +61,9 @@
             Or to use an IconElement instead of a Symbol see https://github.com/Microsoft/WindowsTemplateStudio/blob/release/docs/UWP/projectTypes/navigationpane.md
             Edit String/en-US/Resources.resw: Add a menu item title for each page
             -->
-                <NavigationViewItem x:Uid="Shell_Media" Icon="Play" helpers:NavHelper.NavigateTo="OnionMedia.ViewModels.MediaViewModel" />
-                <NavigationViewItem x:Uid="Shell_YouTubeDownloader" Icon="Download" helpers:NavHelper.NavigateTo="OnionMedia.ViewModels.YouTubeDownloaderViewModel" />
-                <!-- <NavigationViewItem x:Uid="Shell_Playlists" Icon="List" helpers:NavHelper.NavigateTo="OnionMedia.ViewModels.PlaylistsViewModel" /> -->
+                <NavigationViewItem x:Uid="Shell_Media" Icon="Play" helpers:NavHelper.NavigateTo="OnionMedia.Core.ViewModels.MediaViewModel" />
+                <NavigationViewItem x:Uid="Shell_YouTubeDownloader" Icon="Download" helpers:NavHelper.NavigateTo="OnionMedia.Core.ViewModels.YouTubeDownloaderViewModel" />
+                <!-- <NavigationViewItem x:Uid="Shell_Playlists" Icon="List" helpers:NavHelper.NavigateTo="OnionMedia.Core.ViewModels.PlaylistsViewModel" /> -->
             </NavigationView.MenuItems>
             <NavigationView.HeaderTemplate>
                 <DataTemplate>
@@ -89,11 +90,11 @@
             </i:Interaction.Behaviors>
             <controls:DockPanel>
                 <StackPanel controls:DockPanel.Dock="Top" HorizontalAlignment="Right" Orientation="Horizontal" Spacing="5" Height="30">
-                    <TextBlock Visibility="{x:Bind local:GlobalResources.IS_DEBUG}">
+                    <TextBlock Visibility="{x:Bind c:GlobalResources.IS_DEBUG}">
                             <Run>X:</Run>
                             <Run Text="{x:Bind PageWidth, Mode=OneWay}"/>
                     </TextBlock>
-                    <TextBlock Visibility="{x:Bind local:GlobalResources.IS_DEBUG}">
+                    <TextBlock Visibility="{x:Bind c:GlobalResources.IS_DEBUG}">
                             <Run>Y:</Run>
                             <Run Text="{x:Bind PageHeight, Mode=OneWay}"/>
                     </TextBlock>

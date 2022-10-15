@@ -16,7 +16,7 @@
     xmlns:local="using:OnionMedia.Views.Dialogs"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vmd="using:OnionMedia.ViewModels.Dialogs"
+    xmlns:vmd="using:OnionMedia.Core.ViewModels.Dialogs"
     mc:Ignorable="d"
     x:Uid="/PlaylistSelectorDialog/playlistSelectorDialog"
     PrimaryButtonStyle="{ThemeResource AccentButtonStyle}"

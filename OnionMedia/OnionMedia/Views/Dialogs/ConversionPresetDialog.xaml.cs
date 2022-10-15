@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using OnionMedia.Core;
 using OnionMedia.Core.Models;
 using System;
 using System.Collections.Generic;

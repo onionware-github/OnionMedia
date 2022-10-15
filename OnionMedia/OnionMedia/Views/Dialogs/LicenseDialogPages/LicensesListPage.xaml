@@ -17,11 +17,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:g="using:OnionMedia"
+    xmlns:c="using:OnionMedia.Core"
     xmlns:m="using:OnionMedia.Core.Models"
     mc:Ignorable="d"
     Background="Transparent">
 
-    <ListView ItemsSource="{x:Bind g:GlobalResources.LibraryLicenses}" SelectionMode="None" IsItemClickEnabled="True" ItemClick="ListView_ItemClick">
+    <ListView ItemsSource="{x:Bind c:GlobalResources.LibraryLicenses}" SelectionMode="None" IsItemClickEnabled="True" ItemClick="ListView_ItemClick">
         <ListView.ItemTemplate>
             <DataTemplate x:DataType="m:LibraryInfo">
                 <TextBlock Foreground="{ThemeResource SystemAccentColor}" Text="{x:Bind Libraryname}"/>

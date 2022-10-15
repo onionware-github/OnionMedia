@@ -64,6 +64,8 @@
     <None Remove="Views\Dialogs\LicenseDialogPages\LicensesListPage.xaml" />
     <None Remove="Views\Dialogs\LicensesDialog.xaml" />
     <None Remove="Views\Dialogs\PlaylistSelectorDialog.xaml" />
+    <None Remove="Core\**" />
+    <None Remove="ViewModels\Dialogs\**" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\codecs.json" />
@@ -120,6 +122,8 @@
     <Page Update="Views\Dialogs\PlaylistSelectorDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Remove="Core\**" />
+    <Page Remove="ViewModels\Dialogs\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -192,5 +196,32 @@
     <Page Update="XamlDicts\ExternalResources.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OnionMedia.Core\OnionMedia.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Core\**" />
+    <Compile Remove="ViewModels\Dialogs\**" />
+    <Content Remove="ViewModels\Dialogs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Core\**" />
+    <EmbeddedResource Remove="ViewModels\Dialogs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PRIResource Remove="Core\**" />
+    <PRIResource Remove="ViewModels\Dialogs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="ViewModels\MediaViewModel.cs" />
+    <Compile Remove="ViewModels\PlaylistsViewModel.cs" />
+    <Compile Remove="ViewModels\SettingsViewModel.cs" />
+    <Compile Remove="ViewModels\YouTubeDownloaderViewModel.cs" />
   </ItemGroup>
 </Project>

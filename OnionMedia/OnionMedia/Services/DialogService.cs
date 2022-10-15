@@ -60,7 +60,7 @@ namespace OnionMedia.Services
 
             ContentDialog dlg = new()
             {
-                XamlRoot = GlobalResources.XamlRoot,
+                XamlRoot = UIResources.XamlRoot,
                 Title = dialogTextOptions.Title,
                 Content = new ScrollViewer()
                 {
@@ -80,7 +80,7 @@ namespace OnionMedia.Services
         {
             await new ContentDialog()
             {
-                XamlRoot = GlobalResources.XamlRoot,
+                XamlRoot = UIResources.XamlRoot,
                 Title = title,
                 CloseButtonText = closeButtonText,
                 Content = new ScrollViewer()
@@ -99,7 +99,7 @@ namespace OnionMedia.Services
         {
             ContentDialog dlg = new()
             {
-                XamlRoot = GlobalResources.XamlRoot,
+                XamlRoot = UIResources.XamlRoot,
                 Title = title,
                 PrimaryButtonText = yesButtonText,
                 SecondaryButtonText = noButtonText,

@@ -12,8 +12,7 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 
 using Microsoft.UI.Xaml.Controls;
-
-using OnionMedia.ViewModels;
+using OnionMedia.Core.ViewModels;
 
 namespace OnionMedia.Views
 {

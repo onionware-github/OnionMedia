@@ -15,7 +15,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="using:OnionMedia.ViewModels"
+    xmlns:vm="using:OnionMedia.Core.ViewModels"
     xmlns:m="using:OnionMedia.Core.Models"
     xmlns:i="using:Microsoft.Xaml.Interactivity" 
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
@@ -24,6 +24,7 @@
     xmlns:ani="using:CommunityToolkit.WinUI.UI.Animations"
     xmlns:bhv="using:CommunityToolkit.WinUI.UI.Behaviors"
     xmlns:g="using:OnionMedia"
+    xmlns:c="using:OnionMedia.Core"
     mc:Ignorable="d"
     x:DefaultBindMode="OneWay"
     Style="{StaticResource PageStyle}">
@@ -141,7 +142,7 @@
                     <StackPanel>
                         <Grid Margin="0,0,3,0">
                             <TextBox x:Name="videolink" x:Uid="/DownloaderPage/videolink" Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay}" IsSpellCheckEnabled="False"
-                                 ext:TextBoxExtensions.Regex="{x:Bind g:GlobalResources.URLREGEX, Mode=OneTime}"
+                                 ext:TextBoxExtensions.Regex="{x:Bind c:GlobalResources.URLREGEX, Mode=OneTime}"
                                  ext:TextBoxExtensions.IsValid="{x:Bind ViewModel.ValidUrl, Mode=TwoWay}">
                                 <TextBox.KeyboardAccelerators>
                                     <KeyboardAccelerator Modifiers="None" Key="Enter">

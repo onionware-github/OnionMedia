@@ -24,7 +24,7 @@ namespace OnionMedia.Services
     {
         public async Task<IEnumerable<IVideo>> ShowPlaylistSelectorDialogAsync(IEnumerable<IVideo> videosFromPlaylist)
         {
-            PlaylistSelectorDialog dlg = new(videosFromPlaylist) { XamlRoot = GlobalResources.XamlRoot };
+            PlaylistSelectorDialog dlg = new(videosFromPlaylist) { XamlRoot = UIResources.XamlRoot };
             if (await dlg.ShowAsync() != ContentDialogResult.Primary) return Array.Empty<IVideo>();
             return dlg.ViewModel.Videos.Where(v => v.IsSelected);
         }

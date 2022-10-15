@@ -13,7 +13,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 
 using Microsoft.UI.Xaml.Controls;
 
-using OnionMedia.ViewModels;
+using OnionMedia.Core.ViewModels;
 using System;
 using Windows.Globalization.NumberFormatting;
 
@@ -27,10 +27,12 @@ namespace OnionMedia.Views
         public SettingsPage()
         {
             ViewModel = Ioc.Default.GetService<SettingsViewModel>();
-            DecimalFormatter formatter = new();
-            formatter.IntegerDigits = 1;
-            formatter.FractionDigits = 0;
-            formatter.NumberRounder = new IncrementNumberRounder() { Increment = 1, RoundingAlgorithm = RoundingAlgorithm.RoundHalfUp };
+            DecimalFormatter formatter = new()
+            {
+                IntegerDigits = 1,
+                FractionDigits = 0,
+                NumberRounder = new IncrementNumberRounder() { Increment = 1, RoundingAlgorithm = RoundingAlgorithm.RoundHalfUp }
+            };
             RoundingFormatter = formatter;
 
             InitializeComponent();

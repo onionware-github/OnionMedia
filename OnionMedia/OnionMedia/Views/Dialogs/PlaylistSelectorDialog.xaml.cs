@@ -10,7 +10,7 @@
  */
 
 using Microsoft.UI.Xaml.Controls;
-using OnionMedia.ViewModels.Dialogs;
+using OnionMedia.Core.ViewModels.Dialogs;
 using System.Collections.Generic;
 using YoutubeExplode.Videos;
 

@@ -15,6 +15,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:c="using:OnionMedia.Core"
     xmlns:m="using:OnionMedia.Core.Models"
     xmlns:uc="using:OnionMedia.UserControls"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
@@ -225,7 +226,7 @@
                                     </Button>
                                 </ctc:WrapPanel>
                                 <ctc:WrapPanel Orientation="Horizontal" HorizontalSpacing="15" VerticalSpacing="10" Visibility="{x:Bind ViewModel.IsDefaultPresetSelected}">
-                                    <ComboBox x:Uid="/MediaPage/outputFormat" VerticalAlignment="Center" SelectedIndex="94" ItemsSource="{x:Bind g:GlobalResources.FFmpegCodecs.ContainerFormats, Mode=OneTime}" SelectedItem="{x:Bind ViewModel.ConversionPresets[0].Format, Mode=TwoWay}">
+                                    <ComboBox x:Uid="/MediaPage/outputFormat" VerticalAlignment="Center" SelectedIndex="94" ItemsSource="{x:Bind c:GlobalResources.FFmpegCodecs.ContainerFormats, Mode=OneTime}" SelectedItem="{x:Bind ViewModel.ConversionPresets[0].Format, Mode=TwoWay}">
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate x:DataType="m:FFmpegContainerFormat">
                                                 <TextBlock Text="{x:Bind Name, Mode=OneTime}"/>
@@ -235,7 +236,7 @@
 
                                     <ctc:WrapPanel Orientation="Horizontal" HorizontalSpacing="5" VerticalSpacing="5" VerticalAlignment="Bottom">
                                         <CheckBox x:Name="useVideo" x:Uid="/MediaPage/videocodec" IsChecked="{x:Bind ViewModel.ConversionPresets[0].VideoAvailable, Mode=TwoWay}"/>
-                                        <ComboBox ItemsSource="{x:Bind g:GlobalResources.FFmpegCodecs.Videocodecs, Mode=OneTime}" SelectedItem="{x:Bind ViewModel.ConversionPresets[0].VideoCodec, Mode=TwoWay}" Visibility="{x:Bind useVideo.IsChecked}">
+                                        <ComboBox ItemsSource="{x:Bind c:GlobalResources.FFmpegCodecs.Videocodecs, Mode=OneTime}" SelectedItem="{x:Bind ViewModel.ConversionPresets[0].VideoCodec, Mode=TwoWay}" Visibility="{x:Bind useVideo.IsChecked}">
                                             <ComboBox.ItemTemplate>
                                                 <DataTemplate x:DataType="m:FFmpegCodec">
                                                     <TextBlock Text="{x:Bind Name, Mode=OneTime}"/>
@@ -248,7 +249,7 @@
                                     </ctc:WrapPanel>
                                     <ctc:WrapPanel Orientation="Horizontal" HorizontalSpacing="5" VerticalSpacing="5" VerticalAlignment="Bottom">
                                         <CheckBox x:Name="useAudio" x:Uid="/MediaPage/audiocodec" IsChecked="{x:Bind ViewModel.ConversionPresets[0].AudioAvailable, Mode=TwoWay}"/>
-                                        <ComboBox ItemsSource="{x:Bind g:GlobalResources.FFmpegCodecs.Audiocodecs, Mode=OneTime}" SelectedItem="{x:Bind ViewModel.ConversionPresets[0].AudioCodec, Mode=TwoWay}" Visibility="{x:Bind useAudio.IsChecked}">
+                                        <ComboBox ItemsSource="{x:Bind c:GlobalResources.FFmpegCodecs.Audiocodecs, Mode=OneTime}" SelectedItem="{x:Bind ViewModel.ConversionPresets[0].AudioCodec, Mode=TwoWay}" Visibility="{x:Bind useAudio.IsChecked}">
                                             <ComboBox.ItemTemplate>
                                                 <DataTemplate x:DataType="m:FFmpegCodec">
                                                     <TextBlock Text="{x:Bind Name, Mode=OneTime}"/>

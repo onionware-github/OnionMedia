@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
 
 using OnionMedia.Contracts.Services;
-using OnionMedia.ViewModels;
+using OnionMedia.Core.ViewModels;
 using OnionMedia.Views;
 
 namespace OnionMedia.Services

@@ -159,6 +159,9 @@
   <data name="convertedVideos.Header" xml:space="preserve">
     <value>Konvertierte Videodateien:</value>
   </data>
+  <data name="donateBtn.Content" xml:space="preserve">
+    <value>♥ Spenden ♥</value>
+  </data>
   <data name="downloadedAudios.Header" xml:space="preserve">
     <value>Heruntergeladene Audiodateien:</value>
   </data>

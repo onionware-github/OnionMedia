@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 
 using OnionMedia.Contracts.Services;
-using OnionMedia.ViewModels;
+using OnionMedia.Core.ViewModels;
 
 namespace OnionMedia.Activation
 {

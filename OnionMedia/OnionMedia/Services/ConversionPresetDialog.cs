@@ -22,13 +22,13 @@ namespace OnionMedia.Services
     {
         public async Task<ConversionPreset?> ShowCustomPresetDialogAsync(IEnumerable<string> forbiddenNames = null)
         {
-            Views.Dialogs.ConversionPresetDialog dlg = new(forbiddenNames) { XamlRoot = GlobalResources.XamlRoot };
+            Views.Dialogs.ConversionPresetDialog dlg = new(forbiddenNames) { XamlRoot = UIResources.XamlRoot };
             return (await dlg.ShowAsync() is ContentDialogResult.Primary) ? dlg.ConversionPreset : null;
         }
 
         public async Task<ConversionPreset?> ShowCustomPresetDialogAsync(ConversionPreset preset, IEnumerable<string> forbiddenNames = null)
         {
-            Views.Dialogs.ConversionPresetDialog dlg = new(preset, forbiddenNames) { XamlRoot = GlobalResources.XamlRoot };
+            Views.Dialogs.ConversionPresetDialog dlg = new(preset, forbiddenNames) { XamlRoot = UIResources.XamlRoot };
             return (await dlg.ShowAsync() is ContentDialogResult.Primary) ? dlg.ConversionPreset : null;
         }
     }

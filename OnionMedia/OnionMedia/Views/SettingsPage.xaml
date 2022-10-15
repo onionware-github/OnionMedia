@@ -17,6 +17,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:m="using:OnionMedia.Core.Models"
     xmlns:g="using:OnionMedia"
+    xmlns:c="using:OnionMedia.Core"
     xmlns:e="using:OnionMedia.Core.Enums"
     xmlns:ext="using:CommunityToolkit.WinUI.UI"
     xmlns:ctc="using:CommunityToolkit.WinUI.UI.Controls"
@@ -59,44 +60,6 @@
 
             <ScrollViewer x:Name="ContentArea" VerticalScrollBarVisibility="Auto" Padding="10,0">
                 <StackPanel Margin="{StaticResource XSmallTopMargin}" Spacing="15" Padding="15">
-                    <!-- <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
-            <TextBlock x:Uid="Settings_Personalization" Style="{ThemeResource SubtitleTextBlockStyle}" />
-                <TextBlock x:Uid="Settings_Theme" />
-
-                <StackPanel Margin="{StaticResource XSmallTopMargin}">
-                    <RadioButton
-                        x:Uid="Settings_Theme_Light"
-                        Command="{x:Bind ViewModel.SwitchThemeCommand}"
-                        IsChecked="{x:Bind ViewModel.ElementTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Light, Mode=OneWay}"
-                        FontSize="15"
-                        GroupName="AppTheme">
-                        <RadioButton.CommandParameter>
-                            <xaml:ElementTheme>Light</xaml:ElementTheme>
-                        </RadioButton.CommandParameter>
-                    </RadioButton>
-                    <RadioButton
-                        x:Uid="Settings_Theme_Dark"
-                        Command="{x:Bind ViewModel.SwitchThemeCommand}"
-                        IsChecked="{x:Bind ViewModel.ElementTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Dark, Mode=OneWay}"
-                        FontSize="15"
-                        GroupName="AppTheme">
-                        <RadioButton.CommandParameter>
-                            <xaml:ElementTheme>Dark</xaml:ElementTheme>
-                        </RadioButton.CommandParameter>
-                    </RadioButton>
-                    <RadioButton
-                        x:Uid="Settings_Theme_Default"
-                        Command="{x:Bind ViewModel.SwitchThemeCommand}"
-                        IsChecked="{x:Bind ViewModel.ElementTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Default, Mode=OneWay}"
-                        FontSize="15"
-                        GroupName="AppTheme">
-                        <RadioButton.CommandParameter>
-                            <xaml:ElementTheme>Default</xaml:ElementTheme>
-                        </RadioButton.CommandParameter>
-                    </RadioButton>
-                </StackPanel>
-            </StackPanel> -->
-
                     <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
                         <Expander.Header>
                             <Grid ColumnSpacing="10" Height="60">
@@ -157,7 +120,7 @@
                                     <TextBox x:Name="filenameSuffix"
                                              x:Uid="/SettingsPage/filenameSuffix"
                                              Text="{x:Bind m:AppSettings.Instance.ConvertedFilenameSuffix}"
-                                             ext:TextBoxExtensions.Regex="{x:Bind g:GlobalResources.INVALIDFILENAMECHARACTERSREGEX, Mode=OneTime}"
+                                             ext:TextBoxExtensions.Regex="{x:Bind c:GlobalResources.INVALIDFILENAMECHARACTERSREGEX, Mode=OneTime}"
                                              ext:TextBoxExtensions.IsValid="{x:Bind ViewModel.InvalidFilename}"/>
                                     <TeachingTip x:Uid="/SettingsPage/forbiddenChars"
                                                  Target="{x:Bind filenameSuffix, Mode=OneTime}"
@@ -204,7 +167,7 @@
                                 <CheckBox x:Name="convertToH264" x:Uid="/SettingsPage/autoConvertToH264" IsChecked="{x:Bind m:AppSettings.Instance.AutoConvertToH264AfterDownload}"/>
                                 <StackPanel Visibility="{x:Bind convertToH264.IsChecked, Mode=OneWay}">
                                     <CheckBox x:Name="useHwAccelerated" x:Uid="/SettingsPage/useHwAccelerated" Margin="15,0" IsChecked="{x:Bind m:AppSettings.Instance.UseHardwareAcceleratedEncoding}"/>
-                                    <ComboBox x:Uid="/SettingsPage/hardwareEncoder" Margin="15,0" ItemsSource="{x:Bind g:GlobalResources.HardwareEncoders, Mode=OneTime}" SelectedItem="{x:Bind m:AppSettings.Instance.HardwareEncoder}" Visibility="{x:Bind useHwAccelerated.IsChecked, Mode=OneWay}">
+                                    <ComboBox x:Uid="/SettingsPage/hardwareEncoder" Margin="15,0" ItemsSource="{x:Bind c:GlobalResources.HardwareEncoders, Mode=OneTime}" SelectedItem="{x:Bind m:AppSettings.Instance.HardwareEncoder}" Visibility="{x:Bind useHwAccelerated.IsChecked, Mode=OneWay}">
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate x:DataType="m:HardwareEncoder">
                                                 <ContentPresenter Content="{x:Bind Converter={StaticResource EnumDisplayNameConverter}, Mode=OneTime}"/>
@@ -215,7 +178,7 @@
                                         <m:HardwareEncoder>2</m:HardwareEncoder>
                                     </ComboBox>
                                 </StackPanel>
-                                <ComboBox x:Uid="/SettingsPage/audioDownloadFormat" ItemsSource="{x:Bind g:GlobalResources.AudioConversionFormats, Mode=OneTime}" SelectedItem="{x:Bind m:AppSettings.Instance.DownloadsAudioFormat}"/>
+                                <ComboBox x:Uid="/SettingsPage/audioDownloadFormat" ItemsSource="{x:Bind c:GlobalResources.AudioConversionFormats, Mode=OneTime}" SelectedItem="{x:Bind m:AppSettings.Instance.DownloadsAudioFormat}"/>
 
                                 <ComboBox x:Uid="/SettingsPage/videoOrPlaylist" ItemsSource="{x:Bind m:AppSettings.VideoAddModes, Mode=OneTime}" SelectedItem="{x:Bind m:AppSettings.Instance.VideoAddMode}">
                                     <ComboBox.ItemTemplate>
@@ -240,11 +203,11 @@
                                 <StackPanel Orientation="Horizontal" Spacing="15" Visibility="{x:Bind autoSelectThreadCount.IsChecked, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True, Mode=OneWay}">
                                     <NumberBox Value="{x:Bind m:AppSettings.Instance.MaxThreadCountForConversion}"
                                        Minimum="1"
-                                       Maximum="{x:Bind g:GlobalResources.SystemThreadCount, Mode=OneTime}"
+                                       Maximum="{x:Bind c:GlobalResources.SystemThreadCount, Mode=OneTime}"
                                        NumberFormatter="{x:Bind RoundingFormatter, Mode=OneTime}"/>
                                     <TextBlock VerticalAlignment="Center">
                                 <Run Text="/  "/>
-                                <Run Text="{x:Bind g:GlobalResources.SystemThreadCount, Mode=OneTime}"/>
+                                <Run Text="{x:Bind c:GlobalResources.SystemThreadCount, Mode=OneTime}"/>
                                     </TextBlock>
                                 </StackPanel>
                             </StackPanel>
@@ -289,6 +252,7 @@
                             <HyperlinkButton x:Uid="/SettingsPage/contactBtn" Command="{x:Bind ViewModel.OpenContactMailCommand}"/>
                             <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/onionware-github/OnionMedia"/>
                         </ctc:WrapPanel>
+                        <HyperlinkButton x:Uid="/SettingsPage/donateBtn" NavigateUri="https://www.paypal.com/donate/?hosted_button_id=5TABD3FZYH452" HorizontalAlignment="Stretch" BorderBrush="SlateGray" BorderThickness="1"/>
 
                         <ctc:WrapPanel Orientation="Horizontal" HorizontalSpacing="40" VerticalSpacing="30" MaxHeight="350" Margin="{StaticResource SmallTopMargin}">
                             <Image Source="../Assets/OnionMedia_Icon_New.png" Height="200" VerticalAlignment="Top"/>
@@ -317,6 +281,7 @@
                         <HyperlinkButton x:Uid="/SettingsPage/contactBtn" Command="{x:Bind ViewModel.OpenContactMailCommand}"/>
                         <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/onionware-github/OnionMedia"/>
                     </ctc:WrapPanel>
+                    <HyperlinkButton x:Uid="/SettingsPage/donateBtn" NavigateUri="https://www.paypal.com/donate/?hosted_button_id=5TABD3FZYH452" HorizontalAlignment="Stretch" BorderBrush="SlateGray" BorderThickness="1"/>
 
                     <ctc:WrapPanel Orientation="Horizontal" HorizontalSpacing="40" VerticalSpacing="30" MaxHeight="350" Margin="{StaticResource SmallTopMargin}">
                         <Image Source="../Assets/OnionMedia_Icon_New.png" Height="200" VerticalAlignment="Top"/>

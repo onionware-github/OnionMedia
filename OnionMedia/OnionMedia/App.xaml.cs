@@ -34,6 +34,8 @@ using OnionMedia.Core.Models;
 using FFMpegCore;
 using OnionMedia.Core;
 using OnionMedia.Core.Services;
+using OnionMedia.Core.ViewModels;
+using OnionMedia.Core.ViewModels;
 
 // To learn more about WinUI3, see: https://docs.microsoft.com/windows/apps/winui/winui3/.
 namespace OnionMedia
@@ -49,7 +51,7 @@ namespace OnionMedia
             var services = ConfigureServices();
             Ioc.Default.ConfigureServices(services);
             IoC.Default.InitializeServices(services);
-            GlobalFFOptions.Configure(options => options.BinaryFolder = GlobalResources.Installpath + @"\ExternalBinaries\ffmpeg+yt-dlp\binaries");
+            GlobalFFOptions.Configure(options => options.BinaryFolder = IoC.Default.GetService<IPathProvider>().ExternalBinariesDir);
         }
 
         private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
@@ -106,44 +108,15 @@ namespace OnionMedia
             {
                 Debug.WriteLine(ex.Message);
             }
-
-            byte[] hash;
-            FFmpegCodecConfig codecs;
-            using (var md5 = MD5.Create())
-            {
-                using (var stream = File.OpenRead(GlobalResources.FFmpegPath))
-                    hash = md5.ComputeHash(stream);
-            }
-
-            string serializedCodecsPath = ApplicationData.Current.LocalCacheFolder.Path + @"\codecs.json";
-            try
-            {
-                try
-                {
-                    //Try to read from codecs.json file
-                    codecs = JsonSerializer.Deserialize<FFmpegCodecConfig>(File.ReadAllText(Path.Combine(GlobalResources.Installpath, @"Data\codecs.json")));
-                    GlobalResources.FFmpegCodecs = codecs.FFmpegHash.SequenceEqual(hash) ? codecs : throw new Exception();
-                }
-                catch
-                {
-                    //When something goes wrong while deserializing the file, look at the LocalCache Directory
-                    codecs = JsonSerializer.Deserialize<FFmpegCodecConfig>(await File.ReadAllTextAsync(serializedCodecsPath));
-                    GlobalResources.FFmpegCodecs = codecs.FFmpegHash.SequenceEqual(hash) ? codecs : throw new Exception();
-                }
-            }
-            catch
-            {
-                //When no (valid) file was found, generate a new one in the LocalCache Directory
-                GlobalResources.FFmpegCodecs = new FFmpegCodecConfig(FFmpegCodec.GetEncodableVideoCodecs(), FFmpegCodec.GetEncodableAudioCodecs(), FFMpeg.GetContainerFormats().Where(f => f.MuxingSupported).Select(f => new FFmpegContainerFormat(f.Name, f.Description)), hash);
-                File.WriteAllText(serializedCodecsPath, JsonSerializer.Serialize(GlobalResources.FFmpegCodecs));
-            }
             finally
             {
+                var ffmpegStartup = IoC.Default.GetService<IFFmpegStartup>();
+                await ffmpegStartup.InitializeFormatsAndCodecsAsync();
                 await activationService.ActivateAsync(args);
             }
         }
 
-        private IServiceProvider ConfigureServices()
+        private static IServiceProvider ConfigureServices()
         {
             //Register your services, viewmodels and pages here
             var services = new ServiceCollection();
@@ -167,12 +140,17 @@ namespace OnionMedia
             services.AddSingleton<IThirdPartyLicenseDialog, ThirdPartyLicenseDialog>();
             services.AddSingleton<IConversionPresetDialog, ConversionPresetDialog>();
             services.AddSingleton<IFiletagEditorDialog, FiletagEditorDialog>();
+            services.AddSingleton<ICustomPresetSelectorDialog, CustomPresetSelectorDialog>();
             services.AddSingleton<IDispatcherService, DispatcherService>();
             services.AddSingleton<INetworkStatusService, NetworkStatusService>();
             services.AddSingleton<IUrlService, UrlService>();
             services.AddSingleton<IToastNotificationService, ToastNotificationService>();
             services.AddSingleton<IStringResourceService, StringResourceService>();
             services.AddSingleton<ISettingsService, SettingsService>();
+            services.AddSingleton<IPathProvider, PathProvider>();
+            services.AddSingleton<IVersionService, VersionService>();
+            services.AddSingleton<IWindowClosingService, WindowClosingService>();
+            services.AddSingleton<IFFmpegStartup, FFmpegStartup>();
 
             // Views and ViewModels
             services.AddTransient<ShellPage>();

@@ -15,7 +15,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using OnionMedia.ViewModels;
+using OnionMedia.Core.ViewModels;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace OnionMedia.Views
@@ -34,7 +34,7 @@ namespace OnionMedia.Views
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            GlobalResources.XamlRoot = ((MediaPage)sender).XamlRoot;
+            UIResources.XamlRoot = ((MediaPage)sender).XamlRoot;
 
             //Workaround for a bug from WinUI 3 (freezing ProgressRing)
             btnProgressRing.IsActive = false;
