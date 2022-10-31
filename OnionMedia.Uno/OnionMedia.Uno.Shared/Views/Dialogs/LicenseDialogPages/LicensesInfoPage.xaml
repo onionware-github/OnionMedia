@@ -1,0 +1,42 @@
+﻿<!--
+ * Copyright (C) 2022 Jaden Phil Nebel (Onionware)
+ *
+ * This file is part of OnionMedia.
+ * OnionMedia is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
+
+ * OnionMedia is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ 
+ * You should have received a copy of the GNU Affero General Public License along with OnionMedia. If not, see <https://www.gnu.org/licenses/> .
+-->
+
+<Page
+    x:Class="OnionMedia.Uno.Views.Dialogs.LicenseDialogPages.LicensesInfoPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:OnionMedia.Views.Dialogs.LicenseDialogPages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="Transparent">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="15">
+            <TextBlock FontWeight="SemiBold" TextWrapping="WrapWholeWords">
+                <Run x:Uid="/LicenseDialogs/name"/>
+                <Run Text="{x:Bind lib.Libraryname}"/>
+            </TextBlock>
+            <TextBlock FontWeight="SemiBold" TextWrapping="WrapWholeWords">
+                <Run x:Uid="/LicenseDialogs/author"/>
+                <Run Text="{x:Bind lib.Author}"/>
+            </TextBlock>
+            <TextBlock FontWeight="SemiBold" TextWrapping="WrapWholeWords">
+                <Run x:Uid="/LicenseDialogs/licensetype"/>
+                <Run Text="{x:Bind lib.LicenseType}"/>
+            </TextBlock>
+            <HyperlinkButton HorizontalAlignment="Stretch" NavigateUri="{x:Bind lib.ProjectUrl}">
+                <TextBlock x:Uid="/LicenseDialogs/viewSource" FontWeight="SemiBold"/>
+            </HyperlinkButton>
+            <TextBlock Text="{x:Bind licenseText}" TextWrapping="WrapWholeWords"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

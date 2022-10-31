@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>6279c845-92f8-4333-ab99-3d213163593c</ProjectGuid>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\CodeSharing\Microsoft.CodeSharing.Common.Default.props" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\CodeSharing\Microsoft.CodeSharing.Common.props" />
+  <PropertyGroup />
+  <Import Project="OnionMedia.Uno.Shared.projitems" Label="Shared" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\CodeSharing\Microsoft.CodeSharing.CSharp.targets" />
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Styles\Page.xaml" />
+    <UpToDateCheckInput Remove="Styles\TextBlock.xaml" />
+    <UpToDateCheckInput Remove="Styles\_FontSizes.xaml" />
+    <UpToDateCheckInput Remove="Styles\_Thickness.xaml" />
+    <UpToDateCheckInput Remove="Themes\Generic.xaml" />
+    <UpToDateCheckInput Remove="UserControls\TimeRangeSelector.xaml" />
+    <UpToDateCheckInput Remove="Views\Dialogs\ConversionPresetDialog.xaml" />
+    <UpToDateCheckInput Remove="Views\Dialogs\CustomPresetSelectorDialog.xaml" />
+    <UpToDateCheckInput Remove="Views\Dialogs\EditTagsDialog.xaml" />
+    <UpToDateCheckInput Remove="Views\Dialogs\LicenseDialogPages\LicensesInfoPage.xaml" />
+    <UpToDateCheckInput Remove="Views\Dialogs\LicenseDialogPages\LicensesListPage.xaml" />
+    <UpToDateCheckInput Remove="Views\Dialogs\LicensesDialog.xaml" />
+    <UpToDateCheckInput Remove="Views\Dialogs\PlaylistSelectorDialog.xaml" />
+    <UpToDateCheckInput Remove="Views\MediaPage.xaml" />
+    <UpToDateCheckInput Remove="Views\PlaylistsPage.xaml" />
+    <UpToDateCheckInput Remove="Views\SettingsPage.xaml" />
+    <UpToDateCheckInput Remove="Views\YouTubeDownloaderPage.xaml" />
+    <UpToDateCheckInput Remove="XamlDicts\ExternalResources.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <_Globbed_Compile Remove="BitrateFormatter.cs" />
+    <_Globbed_Compile Remove="Services\ConversionPresetDialog.cs" />
+    <_Globbed_Compile Remove="Services\CustomPresetSelectorDialog.cs" />
+    <_Globbed_Compile Remove="Services\DispatcherService.cs" />
+    <_Globbed_Compile Remove="Services\DownloaderDialogService.cs" />
+    <_Globbed_Compile Remove="Services\FiletagEditorDialog.cs" />
+    <_Globbed_Compile Remove="Services\NetworkStatusService.cs" />
+    <_Globbed_Compile Remove="Services\PathProvider.cs" />
+    <_Globbed_Compile Remove="Services\SettingsService.cs" />
+    <_Globbed_Compile Remove="Services\StringResourceService.cs" />
+    <_Globbed_Compile Remove="Services\ThirdPartyLicenseDialog.cs" />
+    <_Globbed_Compile Remove="Services\UrlService.cs" />
+    <_Globbed_Compile Remove="Services\VersionService.cs" />
+    <_Globbed_Compile Remove="Services\WindowClosingService.cs" />
+    <_Globbed_Compile Remove="UIResources.cs" />
+    <_Globbed_Compile Remove="UserControls\TimeRangeSelector.xaml.cs" />
+    <_Globbed_Compile Remove="ValueConverters\BitToKilobitConverter.cs" />
+    <_Globbed_Compile Remove="ValueConverters\BoolToVisibilityConverter.cs" />
+    <_Globbed_Compile Remove="ValueConverters\EnumDisplayNameConverter.cs" />
+    <_Globbed_Compile Remove="ValueConverters\EqualsVisibilityConverter.cs" />
+    <_Globbed_Compile Remove="ValueConverters\FFmpegConversionStateToVisibilityConverter.cs" />
+    <_Globbed_Compile Remove="ValueConverters\FileSizeConverter.cs" />
+    <_Globbed_Compile Remove="ValueConverters\InverseBoolConverter.cs" />
+    <_Globbed_Compile Remove="ValueConverters\ItemClickEventArgsToClickedItemConverter.cs" />
+    <_Globbed_Compile Remove="ValueConverters\ResourceNameToTextConverter.cs" />
+    <_Globbed_Compile Remove="ValueConverters\TimeSpanToStringConverter.cs" />
+    <_Globbed_Compile Remove="Views\Dialogs\ConversionPresetDialog.xaml.cs" />
+    <_Globbed_Compile Remove="Views\Dialogs\CustomPresetSelectorDialog.xaml.cs" />
+    <_Globbed_Compile Remove="Views\Dialogs\EditTagsDialog.xaml.cs" />
+    <_Globbed_Compile Remove="Views\Dialogs\LicenseDialogPages\LicensesInfoPage.xaml.cs" />
+    <_Globbed_Compile Remove="Views\Dialogs\LicenseDialogPages\LicensesListPage.xaml.cs" />
+    <_Globbed_Compile Remove="Views\Dialogs\LicensesDialog.xaml.cs" />
+    <_Globbed_Compile Remove="Views\Dialogs\PlaylistSelectorDialog.xaml.cs" />
+    <_Globbed_Compile Remove="Views\MediaPage.xaml.cs" />
+    <_Globbed_Compile Remove="Views\PlaylistsPage.xaml.cs" />
+    <_Globbed_Compile Remove="Views\SettingsPage.xaml.cs" />
+    <_Globbed_Compile Remove="Views\YouTubeDownloaderPage.xaml.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <_Globbed_Content Remove="Assets\AGPLv3_Logo.svg" />
+    <_Globbed_Content Remove="Assets\OnionMedia_Icon.svg" />
+    <_Globbed_Content Remove="Assets\OnionMedia_Icon_New.png" />
+    <_Globbed_Content Remove="Assets\OnionMedia_Icon_New.svg" />
+    <_Globbed_Content Remove="Assets\OnionMedia_Icon_transparent.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <_Globbed_PRIResource Remove="Strings\de-de\Dialogs\ConversionPresetDialog.resw" />
+    <_Globbed_PRIResource Remove="Strings\de-de\Dialogs\DeletePresetDialog.resw" />
+    <_Globbed_PRIResource Remove="Strings\de-de\Dialogs\DialogResources.resw" />
+    <_Globbed_PRIResource Remove="Strings\de-de\Dialogs\EditTagsDialog.resw" />
+    <_Globbed_PRIResource Remove="Strings\de-de\Dialogs\LicenseDialogs.resw" />
+    <_Globbed_PRIResource Remove="Strings\de-de\Dialogs\PlaylistSelectorDialog.resw" />
+    <_Globbed_PRIResource Remove="Strings\de-de\DownloaderPage.resw" />
+    <_Globbed_PRIResource Remove="Strings\de-de\MediaPage.resw" />
+    <_Globbed_PRIResource Remove="Strings\de-de\ProgressStates.resw" />
+    <_Globbed_PRIResource Remove="Strings\de-de\Resources.resw" />
+    <_Globbed_PRIResource Remove="Strings\de-de\SettingsPage.resw" />
+    <_Globbed_PRIResource Remove="Strings\en-us\Dialogs\ConversionPresetDialog.resw" />
+    <_Globbed_PRIResource Remove="Strings\en-us\Dialogs\DeletePresetDialog.resw" />
+    <_Globbed_PRIResource Remove="Strings\en-us\Dialogs\DialogResources.resw" />
+    <_Globbed_PRIResource Remove="Strings\en-us\Dialogs\EditTagsDialog.resw" />
+    <_Globbed_PRIResource Remove="Strings\en-us\Dialogs\LicenseDialogs.resw" />
+    <_Globbed_PRIResource Remove="Strings\en-us\Dialogs\PlaylistSelectorDialog.resw" />
+    <_Globbed_PRIResource Remove="Strings\en-us\DownloaderPage.resw" />
+    <_Globbed_PRIResource Remove="Strings\en-us\MediaPage.resw" />
+    <_Globbed_PRIResource Remove="Strings\en-us\ProgressStates.resw" />
+    <_Globbed_PRIResource Remove="Strings\en-us\Resources.resw" />
+    <_Globbed_PRIResource Remove="Strings\en-us\SettingsPage.resw" />
+    <_Globbed_PRIResource Remove="Strings\es\Dialogs\ConversionPresetDialog.resw" />
+    <_Globbed_PRIResource Remove="Strings\es\Dialogs\DeletePresetDialog.resw" />
+    <_Globbed_PRIResource Remove="Strings\es\Dialogs\DialogResources.resw" />
+    <_Globbed_PRIResource Remove="Strings\es\Dialogs\EditTagsDialog.resw" />
+    <_Globbed_PRIResource Remove="Strings\es\Dialogs\LicenseDialogs.resw" />
+    <_Globbed_PRIResource Remove="Strings\es\Dialogs\PlaylistSelectorDialog.resw" />
+    <_Globbed_PRIResource Remove="Strings\es\DownloaderPage.resw" />
+    <_Globbed_PRIResource Remove="Strings\es\MediaPage.resw" />
+    <_Globbed_PRIResource Remove="Strings\es\ProgressStates.resw" />
+    <_Globbed_PRIResource Remove="Strings\es\Resources.resw" />
+    <_Globbed_PRIResource Remove="Strings\es\SettingsPage.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <_Globbled_Page Remove="Styles\Page.xaml" />
+    <_Globbled_Page Remove="Styles\TextBlock.xaml" />
+    <_Globbled_Page Remove="Styles\_FontSizes.xaml" />
+    <_Globbled_Page Remove="Styles\_Thickness.xaml" />
+    <_Globbled_Page Remove="Themes\Generic.xaml" />
+    <_Globbled_Page Remove="UserControls\TimeRangeSelector.xaml" />
+    <_Globbled_Page Remove="Views\Dialogs\ConversionPresetDialog.xaml" />
+    <_Globbled_Page Remove="Views\Dialogs\CustomPresetSelectorDialog.xaml" />
+    <_Globbled_Page Remove="Views\Dialogs\EditTagsDialog.xaml" />
+    <_Globbled_Page Remove="Views\Dialogs\LicenseDialogPages\LicensesInfoPage.xaml" />
+    <_Globbled_Page Remove="Views\Dialogs\LicenseDialogPages\LicensesListPage.xaml" />
+    <_Globbled_Page Remove="Views\Dialogs\LicensesDialog.xaml" />
+    <_Globbled_Page Remove="Views\Dialogs\PlaylistSelectorDialog.xaml" />
+    <_Globbled_Page Remove="Views\MediaPage.xaml" />
+    <_Globbled_Page Remove="Views\PlaylistsPage.xaml" />
+    <_Globbled_Page Remove="Views\SettingsPage.xaml" />
+    <_Globbled_Page Remove="Views\YouTubeDownloaderPage.xaml" />
+    <_Globbled_Page Remove="XamlDicts\ExternalResources.xaml" />
+  </ItemGroup>
+</Project>

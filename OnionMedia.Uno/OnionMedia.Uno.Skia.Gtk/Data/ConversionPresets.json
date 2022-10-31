@@ -1,0 +1,198 @@
+[
+  {
+    "Name": "MP4 Video (H264 + AAC)",
+    "Format": {
+      "Name": "mp4",
+      "Description": "MP4 (MPEG-4 Part 14)"
+    },
+    "VideoAvailable": true,
+    "VideoCodec": {
+      "Name": "h264",
+      "Description": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+      "Encoders": [
+        "libx264",
+        "libx264rgb",
+        "h264_amf",
+        "h264_mf",
+        "h264_nvenc",
+        "h264_qsv"
+      ],
+      "MultipleEncoders": true
+    },
+    "AudioAvailable": true,
+    "AudioCodec": {
+      "Name": "aac",
+      "Description": "AAC (Advanced Audio Coding)",
+      "Encoders": [
+        "aac",
+        "aac_mf"
+      ],
+      "MultipleEncoders": true
+    },
+    "VideoEncoder": "libx264",
+    "AudioEncoder": "aac"
+  },
+  {
+    "Name": "MP4 Video (H265 + AAC)",
+    "Format": {
+      "Name": "mp4",
+      "Description": "MP4 (MPEG-4 Part 14)"
+    },
+    "VideoAvailable": true,
+    "VideoCodec": {
+      "Name": "hevc",
+      "Description": "H.265 / HEVC (High Efficiency Video Coding)",
+      "Encoders": [
+        "libx265",
+        "hevc_amf",
+        "hevc_mf",
+        "hevc_nvenc",
+        "hevc_qsv"
+      ],
+      "MultipleEncoders": true
+    },
+    "AudioAvailable": true,
+    "AudioCodec": {
+      "Name": "aac",
+      "Description": "AAC (Advanced Audio Coding)",
+      "Encoders": [
+        "aac",
+        "aac_mf"
+      ],
+      "MultipleEncoders": true
+    },
+    "VideoEncoder": "libx265",
+    "AudioEncoder": "aac"
+  },
+  {
+    "Name": "MP3 Audio",
+    "Format": {
+      "Name": "mp3",
+      "Description": "MP3 (MPEG audio layer 3)"
+    },
+    "VideoAvailable": false,
+    "VideoCodec": {
+      "Name": "h264",
+      "Description": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+      "Encoders": [
+        "libx264",
+        "libx264rgb",
+        "h264_amf",
+        "h264_mf",
+        "h264_nvenc",
+        "h264_qsv"
+      ],
+      "MultipleEncoders": true
+    },
+    "AudioAvailable": true,
+    "AudioCodec": {
+      "Name": "mp3",
+      "Description": "MP3 (MPEG audio layer 3)",
+      "Encoders": [
+        "libmp3lame",
+        "libshine",
+        "mp3_mf"
+      ],
+      "MultipleEncoders": true
+    },
+    "VideoEncoder": "libx264",
+    "AudioEncoder": "libmp3lame"
+  },
+  {
+    "Name": "OGG Audio",
+    "Format": {
+      "Name": "ogg",
+      "Description": "Ogg"
+    },
+    "VideoAvailable": false,
+    "VideoCodec": {
+      "Name": "h264",
+      "Description": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+      "Encoders": [
+        "libx264",
+        "libx264rgb",
+        "h264_amf",
+        "h264_mf",
+        "h264_nvenc",
+        "h264_qsv"
+      ],
+      "MultipleEncoders": true
+    },
+    "AudioAvailable": true,
+    "AudioCodec": {
+      "Name": "vorbis",
+      "Description": "Vorbis",
+      "Encoders": [
+        "vorbis",
+        "libvorbis"
+      ],
+      "MultipleEncoders": true
+    },
+    "VideoEncoder": "libx264",
+    "AudioEncoder": "libvorbis"
+  },
+  {
+    "Name": "Wave Audio",
+    "Format": {
+      "Name": "wav",
+      "Description": "WAV / WAVE (Waveform Audio)"
+    },
+    "VideoAvailable": false,
+    "VideoCodec": {
+      "Name": "h264",
+      "Description": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+      "Encoders": [
+        "libx264",
+        "libx264rgb",
+        "h264_amf",
+        "h264_mf",
+        "h264_nvenc",
+        "h264_qsv"
+      ],
+      "MultipleEncoders": true
+    },
+    "AudioAvailable": true,
+    "AudioCodec": {
+      "Name": "pcm_s16le",
+      "Description": "PCM signed 16-bit little-endian",
+      "Encoders": [
+      ],
+      "MultipleEncoders": false
+    },
+    "VideoEncoder": "libx264",
+    "AudioEncoder": null
+  },
+  {
+    "Name": "M4A Audio",
+    "Format": {
+      "Name": "m4a",
+      "Description": "MPEG-4 audio (aac)"
+    },
+    "VideoAvailable": false,
+    "VideoCodec": {
+      "Name": "h264",
+      "Description": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+      "Encoders": [
+        "libx264",
+        "libx264rgb",
+        "h264_amf",
+        "h264_mf",
+        "h264_nvenc",
+        "h264_qsv"
+      ],
+      "MultipleEncoders": true
+    },
+    "AudioAvailable": true,
+    "AudioCodec": {
+      "Name": "aac",
+      "Description": "AAC (Advanced Audio Coding)",
+      "Encoders": [
+        "aac",
+        "aac_mf"
+      ],
+      "MultipleEncoders": true
+    },
+    "VideoEncoder": "libx264",
+    "AudioEncoder": "aac"
+  }
+]
