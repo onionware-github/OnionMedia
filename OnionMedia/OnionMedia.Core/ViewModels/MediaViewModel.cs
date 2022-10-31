@@ -33,13 +33,27 @@ namespace OnionMedia.Core.ViewModels
     [ObservableObject]
     public sealed partial class MediaViewModel
     {
-        public MediaViewModel(IDialogService dialogService, IDispatcherService dispatcher, IConversionPresetDialog conversionPresetDialog, IFiletagEditorDialog filetagEditorDialog, IToastNotificationService toastNotificationService)
+        public MediaViewModel(IDialogService dialogService, IDispatcherService dispatcher, IConversionPresetDialog conversionPresetDialog, IFiletagEditorDialog filetagEditorDialog, IToastNotificationService toastNotificationService, ITaskbarProgressService taskbarProgressService)
         {
             this.dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             this.conversionPresetDialog = conversionPresetDialog ?? throw new ArgumentNullException(nameof(conversionPresetDialog));
             this.filetagEditorDialog = filetagEditorDialog ?? throw new ArgumentNullException(nameof(filetagEditorDialog));
             this.toastNotificationService = toastNotificationService ?? throw new ArgumentNullException(nameof(toastNotificationService));
             this.dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+            this.taskbarProgressService = taskbarProgressService;
+
+            if (this.taskbarProgressService != null)
+                PropertyChanged += (o, e) =>
+                {
+                    if (e.PropertyName != nameof(Progress)) return;
+                    if (allCanceled || Progress == 100)
+                    {
+                        this.taskbarProgressService.UpdateProgress(typeof(MediaViewModel), 0);
+                        this.taskbarProgressService.UpdateState(typeof(MediaViewModel), ProgressBarState.None);
+                        return;
+                    }
+                    this.taskbarProgressService.UpdateProgress(typeof(MediaViewModel), (float)Progress);
+                };
 
             InsertConversionPresetsFromJson();
 
@@ -95,6 +109,7 @@ namespace OnionMedia.Core.ViewModels
         private readonly IFiletagEditorDialog filetagEditorDialog;
         private readonly IToastNotificationService toastNotificationService;
         private readonly IDispatcherService dispatcher;
+        private readonly ITaskbarProgressService taskbarProgressService;
 
         private static readonly IPathProvider pathProvider = IoC.Default.GetService<IPathProvider>() ?? throw new ArgumentNullException();
 
@@ -355,6 +370,8 @@ namespace OnionMedia.Core.ViewModels
                 if (path == null) return;
             }
 
+            allCanceled = false;
+            taskbarProgressService?.SetType(typeof(MediaViewModel));
             var files = new List<MediaItemModel>(Files);
             var queue = new SemaphoreSlim(AppSettings.Instance.SimultaneousOperationCount, AppSettings.Instance.SimultaneousOperationCount);
             List<Task> tasks = new();
@@ -431,10 +448,14 @@ namespace OnionMedia.Core.ViewModels
                 try { Directory.Delete(dir, true); }
                 catch { /* Dont crash if a directory cant be deleted */ }
             }
-
+            
             if (unauthorizedAccessExceptions + directoryNotFoundExceptions + notEnoughSpaceExceptions > 0)
+            {
+                taskbarProgressService?.UpdateState(typeof(MediaViewModel), ProgressBarState.Error);
                 await GlobalResources.DisplayFileSaveErrorDialog(unauthorizedAccessExceptions, directoryNotFoundExceptions, notEnoughSpaceExceptions);
+            }
 
+            taskbarProgressService?.UpdateState(typeof(MediaViewModel), ProgressBarState.None);
             if (!AppSettings.Instance.SendMessageAfterConversion) return;
             if (completed == 1)
             {
@@ -479,10 +500,15 @@ namespace OnionMedia.Core.ViewModels
             }
         }
 
+        private bool allCanceled = false;
         [ICommand]
-        private void CancelAll() => Files.Where(f => f.ConversionState is FFmpegConversionState.None or FFmpegConversionState.Converting or FFmpegConversionState.Moving)
-                                         .OrderBy(f => f.ConversionState)
-                                         .ForEach(f => f.RaiseCancel());
+        private void CancelAll()
+        {
+            Files.Where(f => f.ConversionState is FFmpegConversionState.None or FFmpegConversionState.Converting or FFmpegConversionState.Moving)
+                .OrderBy(f => f.ConversionState)
+                .ForEach(f => f.RaiseCancel());
+            allCanceled = true;
+        }
 
         [ICommand]
         private void RemoveAll()

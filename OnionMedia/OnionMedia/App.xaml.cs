@@ -35,7 +35,6 @@ using FFMpegCore;
 using OnionMedia.Core;
 using OnionMedia.Core.Services;
 using OnionMedia.Core.ViewModels;
-using OnionMedia.Core.ViewModels;
 
 // To learn more about WinUI3, see: https://docs.microsoft.com/windows/apps/winui/winui3/.
 namespace OnionMedia
@@ -144,6 +143,7 @@ namespace OnionMedia
             services.AddSingleton<IDispatcherService, DispatcherService>();
             services.AddSingleton<INetworkStatusService, NetworkStatusService>();
             services.AddSingleton<IUrlService, UrlService>();
+            services.AddSingleton<ITaskbarProgressService, TaskbarProgressService>();
             services.AddSingleton<IToastNotificationService, ToastNotificationService>();
             services.AddSingleton<IStringResourceService, StringResourceService>();
             services.AddSingleton<ISettingsService, SettingsService>();
@@ -153,11 +153,11 @@ namespace OnionMedia
             services.AddSingleton<IFFmpegStartup, FFmpegStartup>();
 
             // Views and ViewModels
-            services.AddTransient<ShellPage>();
             services.AddTransient<ShellViewModel>();
-            services.AddTransient<MediaViewModel>();
+            services.AddTransient<ShellPage>();
+            services.AddSingleton<MediaViewModel>();
             services.AddTransient<MediaPage>();
-            services.AddTransient<YouTubeDownloaderViewModel>();
+            services.AddSingleton<YouTubeDownloaderViewModel>();
             services.AddTransient<YouTubeDownloaderPage>();
             services.AddTransient<PlaylistsViewModel>();
             services.AddTransient<PlaylistsPage>();

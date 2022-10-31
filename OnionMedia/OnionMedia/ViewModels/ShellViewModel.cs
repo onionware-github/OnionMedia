@@ -10,13 +10,13 @@
  */
 
 using System;
-
 using CommunityToolkit.Mvvm.ComponentModel;
-
 using Microsoft.UI.Xaml.Navigation;
-
 using OnionMedia.Contracts.Services;
+using OnionMedia.Core;
 using OnionMedia.Core.Models;
+using OnionMedia.Core.Services;
+using OnionMedia.Core.ViewModels;
 using OnionMedia.Views;
 
 namespace OnionMedia.ViewModels
@@ -60,10 +60,25 @@ namespace OnionMedia.ViewModels
             }
 
             var selectedItem = NavigationViewService.GetSelectedItem(e.SourcePageType);
-            if (selectedItem != null)
-            {
-                Selected = selectedItem;
-            }
+            if (selectedItem == null) return;
+
+            Selected = selectedItem;
+
+            SetProgressBarSenderType(e.SourcePageType);
         }
+
+        
+        private void SetProgressBarSenderType(Type sourcePageType)
+        {
+            taskbarProgressService ??= IoC.Default.GetService<ITaskbarProgressService>();
+            if (taskbarProgressService == null || sourcePageType == null) return;
+            
+            if (sourcePageType == typeof(MediaPage) && IoC.Default.GetService<MediaViewModel>()?.StartConversionCommand.IsRunning == true)
+                taskbarProgressService.SetType(typeof(MediaViewModel));
+            
+            if (sourcePageType == typeof(YouTubeDownloaderPage) && IoC.Default.GetService<YouTubeDownloaderViewModel>()?.DownloadFileCommand.IsRunning == true)
+                taskbarProgressService.SetType(typeof(YouTubeDownloaderViewModel));
+        }
+        private ITaskbarProgressService taskbarProgressService;
     }
 }

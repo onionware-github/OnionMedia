@@ -35,7 +35,7 @@ namespace OnionMedia.Core.ViewModels
     [ObservableObject]
     public sealed partial class YouTubeDownloaderViewModel
     {
-        public YouTubeDownloaderViewModel(IDialogService dialogService, IDownloaderDialogService downloaderDialogService, IDispatcherService dispatcher, INetworkStatusService networkStatusService, IToastNotificationService toastNotificationService, IPathProvider pathProvider)
+        public YouTubeDownloaderViewModel(IDialogService dialogService, IDownloaderDialogService downloaderDialogService, IDispatcherService dispatcher, INetworkStatusService networkStatusService, IToastNotificationService toastNotificationService, IPathProvider pathProvider, ITaskbarProgressService taskbarProgressService)
         {
             this.dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             this.downloaderDialogService = downloaderDialogService ?? throw new ArgumentNullException(nameof(downloaderDialogService));
@@ -43,6 +43,7 @@ namespace OnionMedia.Core.ViewModels
             this.toastNotificationService = toastNotificationService ?? throw new ArgumentNullException(nameof(toastNotificationService));
             this.pathProvider = pathProvider ?? throw new ArgumentNullException(nameof(pathProvider));
             this.networkStatusService = networkStatusService;
+            this.taskbarProgressService = taskbarProgressService;
 
             SearchResults.CollectionChanged += (o, e) => OnPropertyChanged(nameof(AnyResults));
             Videos.CollectionChanged += OnProgressChanged;
@@ -71,6 +72,7 @@ namespace OnionMedia.Core.ViewModels
         private readonly INetworkStatusService networkStatusService;
         private readonly IToastNotificationService toastNotificationService;
         private readonly IPathProvider pathProvider;
+        private readonly ITaskbarProgressService taskbarProgressService;
         private static readonly IUrlService urlService = IoC.Default.GetService<IUrlService>() ?? throw new ArgumentNullException();
 
         public static AsyncRelayCommand<string> OpenUrlCommand { get; } = new(async url => await urlService.OpenUrlAsync(url));
@@ -373,6 +375,14 @@ namespace OnionMedia.Core.ViewModels
         {
             OnPropertyChanged(nameof(ResolutionsAvailable));
             OnPropertyChanged(nameof(DownloadProgress));
+
+            if (canceledAll || DownloadProgress == 100)
+            {
+                taskbarProgressService.UpdateProgress(typeof(YouTubeDownloaderViewModel), 0);
+                taskbarProgressService.UpdateState(typeof(YouTubeDownloaderViewModel), ProgressBarState.None);
+                return;
+            }
+            taskbarProgressService.UpdateProgress(typeof(YouTubeDownloaderViewModel), DownloadProgress);
         }
 
         private async Task RemoveVideoAsync()
@@ -409,7 +419,7 @@ namespace OnionMedia.Core.ViewModels
             await Task.CompletedTask;
         }
 
-
+        private bool canceledAll = false;
         private async Task DownloadVideosAsync(IList<StreamItemModel> videos, bool getMp4, string qualityLabel)
         {
             if (videos == null || !videos.Any())
@@ -422,6 +432,8 @@ namespace OnionMedia.Core.ViewModels
                 if (path == null) return;
             }
 
+            canceledAll = false;
+            taskbarProgressService?.SetType(typeof(YouTubeDownloaderViewModel));
             VideoNotFound = false;
             uint finishedCount = 0;
             uint unauthorizedAccessExceptions = 0;
@@ -432,8 +444,7 @@ namespace OnionMedia.Core.ViewModels
             SemaphoreSlim queue = new(AppSettings.Instance.SimultaneousOperationCount, AppSettings.Instance.SimultaneousOperationCount);
             StreamItemModel[] items = videos.ToArray();
             StreamItemModel loadedVideo = null;
-
-            bool canceledAll = false;
+            
             CanceledAll += (o, e) => canceledAll = true;
             items.Where(i => i != null && videos.Contains(i)).ForEach(i => i.SetProgressToDefault());
             items.ForEach(v => v.QualityLabel = qualityLabel);
@@ -490,7 +501,11 @@ namespace OnionMedia.Core.ViewModels
             }
 
             if (unauthorizedAccessExceptions + directoryNotFoundExceptions + notEnoughSpaceExceptions > 0)
+            {
+                taskbarProgressService?.UpdateState(typeof(YouTubeDownloaderViewModel), ProgressBarState.Error);
                 await GlobalResources.DisplayFileSaveErrorDialog(unauthorizedAccessExceptions, directoryNotFoundExceptions, notEnoughSpaceExceptions);
+            }
+            taskbarProgressService?.UpdateState(typeof(YouTubeDownloaderViewModel), ProgressBarState.None);
 
             if (!AppSettings.Instance.SendMessageAfterDownload) return;
             if (finishedCount == 1)
@@ -553,7 +568,7 @@ namespace OnionMedia.Core.ViewModels
         private void CancelAll()
         {
             Videos.ForEach(v => v?.RaiseCancel());
-            CanceledAll?.Invoke(this, new EventArgs());
+            CanceledAll?.Invoke(this, EventArgs.Empty);
         }
         public event EventHandler CanceledAll;
 

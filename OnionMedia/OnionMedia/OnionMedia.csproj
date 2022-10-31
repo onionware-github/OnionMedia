@@ -113,12 +113,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="YoutubeDLSharp">
-      <HintPath>..\..\YoutubeDLSharp-master\YoutubeDLSharp\bin\Release\netstandard2.0\YoutubeDLSharp.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <Page Update="Views\Dialogs\PlaylistSelectorDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -199,6 +193,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\YoutubeDLSharp-master\YoutubeDLSharp\YoutubeDLSharp.csproj" />
     <ProjectReference Include="..\OnionMedia.Core\OnionMedia.Core.csproj" />
   </ItemGroup>
 

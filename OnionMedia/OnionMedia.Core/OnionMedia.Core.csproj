@@ -16,9 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="YoutubeDLSharp">
-        <HintPath>..\..\YoutubeDLSharp-master\YoutubeDLSharp\bin\Release\netstandard2.0\publish\YoutubeDLSharp.dll</HintPath>
-      </Reference>
+      <ProjectReference Include="..\..\YoutubeDLSharp-master\YoutubeDLSharp\YoutubeDLSharp.csproj" />
     </ItemGroup>
 
 </Project>

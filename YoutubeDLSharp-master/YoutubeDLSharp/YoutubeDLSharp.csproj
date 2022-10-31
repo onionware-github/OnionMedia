@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Authors>Bluegrams</Authors>
     <Description>A simple .NET wrapper library for youtube-dl.</Description>
     <Copyright>© 2022 Bluegrams</Copyright>

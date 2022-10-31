@@ -38,6 +38,7 @@ public sealed class FFmpegStartup : IFFmpegStartup
                 hash = md5.ComputeHash(stream);
         }
 
+        //TODO: Use Path.Combine to prevent issues on different OS (Windows = \, Linux = /)
         string serializedCodecsPath = pathProvider.LocalCache + @"\codecs.json";
         try
         {
