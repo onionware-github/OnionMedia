@@ -35,6 +35,8 @@ using FFMpegCore;
 using OnionMedia.Core;
 using OnionMedia.Core.Services;
 using OnionMedia.Core.ViewModels;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
 
 // To learn more about WinUI3, see: https://docs.microsoft.com/windows/apps/winui/winui3/.
 namespace OnionMedia
@@ -111,8 +113,25 @@ namespace OnionMedia
             {
                 var ffmpegStartup = IoC.Default.GetService<IFFmpegStartup>();
                 await ffmpegStartup.InitializeFormatsAndCodecsAsync();
+                CenterMainWindow();
                 await activationService.ActivateAsync(args);
             }
+        }
+
+        static void CenterMainWindow()
+        {
+            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(MainWindow);
+            WindowId windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
+            AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
+            if (appWindow is null) return;
+
+            DisplayArea displayArea = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Nearest);
+            if (displayArea is null) return;
+
+            var CenteredPosition = appWindow.Position;
+            CenteredPosition.X = ((displayArea.WorkArea.Width - appWindow.Size.Width) / 2);
+            CenteredPosition.Y = ((displayArea.WorkArea.Height - appWindow.Size.Height) / 2);
+            appWindow.Move(CenteredPosition);
         }
 
         private static IServiceProvider ConfigureServices()
