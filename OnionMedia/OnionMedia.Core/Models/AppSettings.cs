@@ -62,12 +62,19 @@ namespace OnionMedia.Core.Models
                 this.videoAddMode = VideoAddMode.AskForVideoAddMode;
             else
                 this.videoAddMode = ParseEnum<VideoAddMode>(videoAddMode);
+
+            var startPageType = settingsService.GetSetting("startPageType");
+            if (startPageType == null)
+                this.startPageType = StartPageType.LastOpened;
+            else
+                this.startPageType = ParseEnum<StartPageType>(startPageType);
         }
 
         private readonly ISettingsService settingsService = IoC.Default.GetService<ISettingsService>();
 
         public static AppSettings Instance { get; } = new AppSettings();
         public static VideoAddMode[] VideoAddModes { get; } = Enum.GetValues<VideoAddMode>().ToArray();
+        public static StartPageType[] StartPageTypes { get; } = Enum.GetValues<StartPageType>().ToArray();
 
         //Settings
         public int SimultaneousOperationCount
@@ -240,6 +247,17 @@ namespace OnionMedia.Core.Models
             set => settingsService.SetSetting("downloaderPageIsOpen", value);
         }
 
+        public StartPageType StartPageType
+        {
+            get => startPageType;
+            set
+            {
+                if (SetProperty(ref startPageType, value))
+                    settingsService.SetSetting("startPageType", value.ToString());
+            }
+        }
+        private StartPageType startPageType;
+
         public VideoAddMode VideoAddMode
         {
             get => videoAddMode;
@@ -280,5 +298,12 @@ namespace OnionMedia.Core.Models
         ConvertedAudiofiles,
         DownloadedVideofiles,
         DownloadedAudiofiles
+    }
+
+    public enum StartPageType
+    {
+        LastOpened,
+        ConverterPage,
+        DownloaderPage
     }
 }

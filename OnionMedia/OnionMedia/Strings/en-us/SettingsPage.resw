@@ -159,6 +159,9 @@
   <data name="convertedVideos.Header" xml:space="preserve">
     <value>Converted video files:</value>
   </data>
+  <data name="ConverterPage" xml:space="preserve">
+    <value>Media Converter</value>
+  </data>
   <data name="donateBtn.Content" xml:space="preserve">
     <value>♥ Donate ♥</value>
   </data>
@@ -167,6 +170,9 @@
   </data>
   <data name="downloadedVideos.Header" xml:space="preserve">
     <value>Downloaded video files:</value>
+  </data>
+  <data name="DownloaderPage" xml:space="preserve">
+    <value>Media Downloader</value>
   </data>
   <data name="fallbackToSoftwareEncoding.Content" xml:space="preserve">
     <value>Fallback to software encoding if hardware-accelerated encoding fails.</value>
@@ -182,6 +188,9 @@
   </data>
   <data name="hardwareEncoder.Header" xml:space="preserve">
     <value>Hardwareencoder:</value>
+  </data>
+  <data name="LastOpened" xml:space="preserve">
+    <value>Last opened page</value>
   </data>
   <data name="licenseBtn.Content" xml:space="preserve">
     <value>License</value>
@@ -201,8 +210,14 @@
   <data name="notifyAfterDownload.Header" xml:space="preserve">
     <value>Notify after download</value>
   </data>
+  <data name="personalization.Text" xml:space="preserve">
+    <value>Personalization</value>
+  </data>
   <data name="setStoragePaths.Content" xml:space="preserve">
     <value>Set storage paths</value>
+  </data>
+  <data name="startPageBox.Header" xml:space="preserve">
+    <value>Startpage:</value>
   </data>
   <data name="storagePaths.Text" xml:space="preserve">
     <value>Storage paths</value>

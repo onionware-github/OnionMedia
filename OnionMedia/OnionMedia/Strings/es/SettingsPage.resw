@@ -159,6 +159,9 @@
   <data name="convertedVideos.Header" xml:space="preserve">
     <value>Archivos de vídeo convertidos:</value>
   </data>
+  <data name="ConverterPage" xml:space="preserve">
+    <value>Convertidor</value>
+  </data>
   <data name="donateBtn.Content" xml:space="preserve">
     <value>♥ Donar ♥</value>
   </data>
@@ -167,6 +170,9 @@
   </data>
   <data name="downloadedVideos.Header" xml:space="preserve">
     <value>Archivos de vídeo descargados:</value>
+  </data>
+  <data name="DownloaderPage" xml:space="preserve">
+    <value>Descargador</value>
   </data>
   <data name="fallbackToSoftwareEncoding.Content" xml:space="preserve">
     <value>Retroceda a la codificación de software si falla la codificación acelerada por hardware.</value>
@@ -182,6 +188,9 @@
   </data>
   <data name="hardwareEncoder.Header" xml:space="preserve">
     <value>Hardwareencoder:</value>
+  </data>
+  <data name="LastOpened" xml:space="preserve">
+    <value>Última página abierta</value>
   </data>
   <data name="licenseBtn.Content" xml:space="preserve">
     <value>Licencia</value>
@@ -201,8 +210,14 @@
   <data name="notifyAfterDownload.Header" xml:space="preserve">
     <value>Notificar después de la descarga</value>
   </data>
+  <data name="personalization.Text" xml:space="preserve">
+    <value>Personalización</value>
+  </data>
   <data name="setStoragePaths.Content" xml:space="preserve">
     <value>Fijar las rutas de almacenamiento</value>
+  </data>
+  <data name="startPageBox.Header" xml:space="preserve">
+    <value>Página de inicio:</value>
   </data>
   <data name="storagePaths.Text" xml:space="preserve">
     <value>Rutas de almacenamiento</value>

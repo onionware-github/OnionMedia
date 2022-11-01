@@ -187,7 +187,7 @@
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
-                                
+
                                 <CheckBox x:Uid="/SettingsPage/tryAgainAfterFail" IsChecked="{x:Bind m:AppSettings.Instance.AutoRetryDownload}" Margin="{StaticResource SmallTopMargin}"/>
                                 <NumberBox x:Uid="/SettingsPage/amountOfRetries"
                                            Value="{x:Bind m:AppSettings.Instance.CountOfDownloadRetries}"
@@ -210,6 +210,31 @@
                                 <Run Text="{x:Bind c:GlobalResources.SystemThreadCount, Mode=OneTime}"/>
                                     </TextBlock>
                                 </StackPanel>
+                            </StackPanel>
+                        </Expander.Content>
+                    </Expander>
+
+                    <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
+                        <Expander.Header>
+                            <Grid ColumnSpacing="10" Height="60">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE790;" VerticalAlignment="Center"/>
+                                <TextBlock x:Uid="/SettingsPage/personalization" Grid.Column="1" VerticalAlignment="Center" Margin="0,0,0,2" TextTrimming="CharacterEllipsis" FontSize="20"/>
+                            </Grid>
+                        </Expander.Header>
+                        <Expander.Content>
+                            <StackPanel Spacing="10">
+                                <ComboBox x:Uid="/SettingsPage/startPageBox" ItemsSource="{x:Bind m:AppSettings.StartPageTypes, Mode=OneTime}" SelectedItem="{x:Bind m:AppSettings.Instance.StartPageType}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="m:StartPageType">
+                                            <ContentPresenter Content="{x:Bind Converter={StaticResource ResourceNameToTextConverter}, ConverterParameter=SettingsPage, Mode=OneTime}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
                             </StackPanel>
                         </Expander.Content>
                     </Expander>

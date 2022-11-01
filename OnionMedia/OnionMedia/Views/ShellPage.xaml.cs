@@ -54,7 +54,7 @@ namespace OnionMedia.Views
             KeyboardAccelerators.Add(_backKeyboardAccelerator);
             ConfigureTitleBar();
 
-            if (navigateToDownloadPage)
+            if (AppSettings.Instance.StartPageType is StartPageType.DownloaderPage || (AppSettings.Instance.StartPageType is StartPageType.LastOpened && navigateToDownloadPage))
                 shellFrame.Navigate(typeof(YouTubeDownloaderPage), null, new SuppressNavigationTransitionInfo());
         }
 
