@@ -22,9 +22,9 @@
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:io="using:System.IO"
     xmlns:muxc="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:g="using:OnionMedia"
     xmlns:ctc="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:onionmedia="using:OnionMedia"
+    xmlns:vm="using:OnionMedia.Core.ViewModels"
     mc:Ignorable="d"
     x:DefaultBindMode="OneWay"
     Style="{StaticResource PageStyle}">
@@ -355,6 +355,23 @@
                                                    IsEnabled="{x:Bind ViewModel.SelectedConversionPreset.AudioAvailable}"
                                                    Width="125"/>
                                         <TextBlock Text="kbit/s" Margin="{StaticResource LargeTopMargin}"/>
+                                    </StackPanel>
+                                    <!-- Audiosamplerate -->
+                                    <StackPanel Orientation="Horizontal" Spacing="3" Visibility="{x:Bind ViewModel.SelectedItem.AudioStreamAvailable}">
+                                        <ComboBox PlaceholderText="Audiosamplerate"
+                                                  Header="Audio samplerate"
+                                                  SelectedIndex="0"
+                                                  SelectedItem="{x:Bind ViewModel.SelectedItem.AudioSamplerate, Mode=TwoWay, Converter={StaticResource BitToKilobitConverter}}"
+                                                  IsEnabled="{x:Bind ViewModel.SelectedConversionPreset.AudioAvailable}"
+                                                  ItemsSource="{x:Bind vm:MediaViewModel.KHzSampleRates, Mode=OneTime}"
+                                                  Width="125">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate x:DataType="x:Double">
+                                                    <ContentPresenter Content="{x:Bind Converter={StaticResource SampleRateComboBoxConverter}, Mode=OneTime}"/>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        <TextBlock Text="kHz" Margin="{StaticResource LargeTopMargin}"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" Spacing="3" Visibility="{x:Bind ViewModel.SelectedItem.VideoStreamAvailable}">
                                         <NumberBox x:Uid="/MediaPage/videobitrate"

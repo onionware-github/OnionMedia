@@ -11,7 +11,7 @@
 	<Identity
 	  Name="11715Onionware.OnionMedia"
 	  Publisher="CN=DEDBA644-CCA1-4BC1-A233-7FFFE9747007"
-	  Version="1.1.1.0" />
+	  Version="1.2.0.0" />
 
 	<Properties>
 		<DisplayName>OnionMedia</DisplayName>

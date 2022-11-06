@@ -30,4 +30,5 @@
     <c:BitToKilobitConverter x:Key="BitToKilobitConverter"/>
     <c:FFmpegConversionStateToVisibilityConverter x:Key="FFmpegConversionStateToVisibilityConverter"/>
     <c:FileSizeConverter x:Key="FileSizeConverter"/>
+    <c:SampleRateComboBoxConverter x:Key="SampleRateComboBoxConverter"/>
 </ResourceDictionary>

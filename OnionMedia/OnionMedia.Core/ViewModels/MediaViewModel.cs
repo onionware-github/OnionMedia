@@ -164,6 +164,8 @@ namespace OnionMedia.Core.ViewModels
                 SelectedConversionPreset = ConversionPresets[0];
         }
 
+        public static readonly float[] KHzSampleRates = new[] { 0, 22.05f, 32, 44.1f, 48, 88.2f };
+
         public AsyncRelayCommand AddFileCommand { get; }
         public RelayCommand<MediaItemModel> RemoveFileCommand { get; }
         public AsyncRelayCommand StartConversionCommand { get; }
