@@ -30,6 +30,7 @@
     <None Remove="ExternalBinaries\ffprobe.exe" />
     <None Remove="ExternalBinaries\yt-dlp (2).exe" />
     <None Remove="licenses\onionmedia.txt" />
+    <None Remove="licenses\pinvoke_user32.txt" />
     <None Remove="Strings\de-de\Dialogs\ConversionPresetDialog.resw" />
     <None Remove="Strings\de-de\Dialogs\DeletePresetDialog.resw" />
     <None Remove="Strings\de-de\Dialogs\DialogResources.resw" />
@@ -86,6 +87,7 @@
     <Content Include="licenses\microsoft_mit_license.txt" />
     <Content Include="licenses\newtonsoft_json.txt" />
     <Content Include="licenses\onionmedia.txt" />
+    <Content Include="licenses\pinvoke_user32.txt" />
     <Content Include="licenses\TagLibSharp.txt" />
     <Content Include="licenses\xFFmpeg.NET.txt" />
     <Content Include="licenses\YoutubeDLSharp.txt" />
@@ -106,6 +108,7 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.1" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.0.8" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="PInvoke.User32" Version="0.7.124" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
     <PackageReference Include="xFFmpeg.NET" Version="7.1.3" />
     <PackageReference Include="YoutubeExplode" Version="6.0.7" />
