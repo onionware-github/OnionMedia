@@ -26,13 +26,11 @@
     xmlns:g="using:OnionMedia"
     xmlns:c="using:OnionMedia.Core"
     mc:Ignorable="d"
-    x:DefaultBindMode="OneWay"
-    Style="{StaticResource PageStyle}">
+    x:DefaultBindMode="OneWay">
 
     <Page.Resources>
         <ResourceDictionary Source="../XamlDicts/ExternalResources.xaml"/>
     </Page.Resources>
-
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollMode="Disabled">
 
@@ -40,7 +38,6 @@
         In this case, the positioning of the elements is adjusted to different sizes. -->
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="downloaderPageVisualGroup">
-
                 <VisualState x:Name="normalUnwrappedWindow">
                     <VisualState.StateTriggers>
                         <AdaptiveTrigger MinWindowWidth="850"/>
@@ -110,9 +107,27 @@
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
+            <VisualStateGroup x:Name="theme">
+                <VisualState x:Name="winEleven">
+                    <VisualState.StateTriggers>
+                        <StateTrigger IsActive="{x:Bind g:UIResources.RunningOnWin11, Mode=OneTime}"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="ContentArea.Style" Value="{StaticResource GridStyleWin11}"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="defaultStyle">
+                    <VisualState.StateTriggers>
+                        <StateTrigger IsActive="True"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="ContentArea.Style" Value="{StaticResource GridStyle}"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <Grid x:Name="ContentArea" Margin="{StaticResource MediumLeftRightMargin}">
+        <Grid x:Name="ContentArea" Padding="24,0">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -141,7 +156,7 @@
 
                     <StackPanel>
                         <Grid Margin="0,0,3,0">
-                            <TextBox x:Name="videolink" x:Uid="/DownloaderPage/videolink" Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay}" IsSpellCheckEnabled="False"
+                            <TextBox x:Name="videolink" x:Uid="/DownloaderPage/videolink" Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsSpellCheckEnabled="False"
                                  ext:TextBoxExtensions.Regex="{x:Bind c:GlobalResources.URLREGEX, Mode=OneTime}"
                                  ext:TextBoxExtensions.IsValid="{x:Bind ViewModel.ValidUrl, Mode=TwoWay}">
                                 <TextBox.KeyboardAccelerators>
@@ -166,7 +181,6 @@
                                   SelectionMode="None"
                                   IsItemClickEnabled="True"
                                   Visibility="{x:Bind ViewModel.AnyResults}"
-                                  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                                   BorderBrush="{ThemeResource AppBarItemDisabledForegroundThemeBrush}"
                                   BorderThickness="3,0,3,3" CornerRadius="0,0,5,5"
                                   MaxHeight="400" Margin="0,0,3,0">

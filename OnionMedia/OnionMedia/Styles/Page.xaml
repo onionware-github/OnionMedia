@@ -6,4 +6,25 @@
         <Setter Property="Background" Value="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
     </Style>
 
+    <Style TargetType="Page" x:Key="PageStyleWin11">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style TargetType="Page" x:Key="ShellPageStyle">
+        <Setter Property="Background" Value="{ThemeResource SystemControlAcrylicWindowBrush}" />
+    </Style>
+
+
+    <Style TargetType="Panel" x:Key="GridStyle">
+        <Setter Property="Background" Value="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
+    </Style>
+
+    <Style TargetType="Panel" x:Key="GridStyleWin11">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style TargetType="Panel" x:Key="ShellGridStyle">
+        <Setter Property="Background" Value="{ThemeResource SystemControlAcrylicWindowBrush}" />
+    </Style>
+
 </ResourceDictionary>

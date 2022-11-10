@@ -1,0 +1,4 @@
+ffmpeg.exe and ffprobe.exe in this folder are placeholders, due to GitHubs storage limitation of 100MB. 
+Please download these files manually from: https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-full.7z
+Place ffmpeg.exe and ffprobe.exe into this folder and make sure that the files will be copied to the output in Visual Studio (set "Build type" to "Content")
+Current version: 5.1.2 Full

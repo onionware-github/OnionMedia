@@ -37,15 +37,14 @@ public sealed class FFmpegStartup : IFFmpegStartup
             using (var stream = File.OpenRead(pathProvider.FFmpegPath))
                 hash = md5.ComputeHash(stream);
         }
-
-        //TODO: Use Path.Combine to prevent issues on different OS (Windows = \, Linux = /)
-        string serializedCodecsPath = pathProvider.LocalCache + @"\codecs.json";
+        
+        string serializedCodecsPath = Path.Combine(pathProvider.LocalCache, "codecs.json");
         try
         {
             try
             {
                 //Try to read from codecs.json file
-                codecs = JsonSerializer.Deserialize<FFmpegCodecConfig>(File.ReadAllText(Path.Combine(pathProvider.InstallPath, @"Data\codecs.json")));
+                codecs = JsonSerializer.Deserialize<FFmpegCodecConfig>(File.ReadAllText(Path.Combine(pathProvider.InstallPath, "Data", "codecs.json")));
                 GlobalResources.FFmpegCodecs = codecs.FFmpegHash.SequenceEqual(hash) ? codecs : throw new Exception();
             }
             catch

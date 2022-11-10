@@ -416,6 +416,13 @@
       "MultipleEncoders": false
     },
     {
+      "Name": "phm",
+      "Description": "PHM (Portable HalfFloatMap) image",
+      "Encoders": [
+      ],
+      "MultipleEncoders": false
+    },
+    {
       "Name": "png",
       "Description": "PNG (Portable Network Graphics) image",
       "Encoders": [
@@ -2004,5 +2011,5 @@
       "Description": "YUV4MPEG pipe"
     }
   ],
-  "FFmpegHash": "2iEy1Do7A9rJ0FHt209jIw=="
+  "FFmpegHash": "pImWLMSt4jA6uC9JbPKE7g=="
 }

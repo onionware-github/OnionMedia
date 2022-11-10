@@ -26,9 +26,7 @@
     xmlns:onionmedia="using:OnionMedia"
     xmlns:vm="using:OnionMedia.Core.ViewModels"
     mc:Ignorable="d"
-    x:DefaultBindMode="OneWay"
-    Style="{StaticResource PageStyle}">
-
+    x:DefaultBindMode="OneWay">
     <Page.Resources>
         <ResourceDictionary Source="../XamlDicts/ExternalResources.xaml"/>
     </Page.Resources>
@@ -38,7 +36,6 @@
              In diesem Fall wird die Positionierung der Elemente auf verschiedene Größen angepasst -->
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="mediaPageVisualGroup">
-
                 <VisualState x:Name="normalUnwrappedWindow">
                     <VisualState.StateTriggers>
                         <AdaptiveTrigger MinWindowWidth="750"/>
@@ -86,6 +83,24 @@
                         <Setter Target="addFilesOnLeftViewBox.(Grid.RowSpan)" Value="1"/>
                         <Setter Target="addFilesOnLeftViewBox.(Grid.Column)" Value="0"/>
                         <Setter Target="addFilesOnLeftViewBox.(Grid.ColumnSpan)" Value="3"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="theme">
+                <VisualState x:Name="winEleven">
+                    <VisualState.StateTriggers>
+                        <StateTrigger IsActive="{x:Bind onionmedia:UIResources.RunningOnWin11, Mode=OneTime}"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="ContentArea.Style" Value="{StaticResource GridStyleWin11}"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="defaultStyle">
+                    <VisualState.StateTriggers>
+                        <StateTrigger IsActive="True"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="ContentArea.Style" Value="{StaticResource GridStyle}"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

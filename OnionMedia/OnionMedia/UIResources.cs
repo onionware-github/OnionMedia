@@ -10,11 +10,19 @@
  */
 
 using Microsoft.UI.Xaml;
+using System;
 
 namespace OnionMedia
 {
     static class UIResources
     {
+        static UIResources()
+        {
+            RunningOnWin11 = Environment.OSVersion.Version.Build >= 22000;
+        }
+
         public static XamlRoot XamlRoot { get; set; }
+        public static int SystemThreadCount => Environment.ProcessorCount;
+        public static bool RunningOnWin11 { get; }
     }
 }
