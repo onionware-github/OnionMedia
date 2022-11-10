@@ -141,6 +141,9 @@
   <data name="audioInformation.Text" xml:space="preserve">
     <value>Información de audio</value>
   </data>
+  <data name="audioVolume.Header" xml:space="preserve">
+    <value>Volumen:</value>
+  </data>
   <data name="cancelText.Content" xml:space="preserve">
     <value>Cancelar</value>
   </data>

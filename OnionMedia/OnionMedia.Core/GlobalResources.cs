@@ -27,6 +27,7 @@ namespace OnionMedia.Core
             new LibraryInfo("CommunityToolkit", "Microsoft", "MIT License", pathProvider.LicensesDir + "communitytoolkit.txt", "https://github.com/CommunityToolkit/WindowsCommunityToolkit"),
             new LibraryInfo("FFMpegCore", "Vlad Jerca", "MIT License", pathProvider.LicensesDir + "FFMpegCore.txt", "https://github.com/rosenbjerg/FFMpegCore"),
             new LibraryInfo("Newtonsoft.Json", "James Newton-King", "MIT License", pathProvider.LicensesDir + "newtonsoft_json.txt", "https://github.com/JamesNK/Newtonsoft.Json"),
+            new LibraryInfo("PInvoke.User32", ".NET Foundation", "MIT License", pathProvider.LicensesDir + "pinvoke_user32.txt", "https://github.com/dotnet/pinvoke"),
             new LibraryInfo("TagLib#", "mono", "LGPL v2.1", pathProvider.LicensesDir + "TagLibSharp.txt", "https://github.com/mono/taglib-sharp"),
             new LibraryInfo("xFFmpeg.NET", "Tobias Haimerl(cmxl)", "MIT License", pathProvider.LicensesDir + "xFFmpeg.NET.txt", "https://github.com/cmxl/FFmpeg.NET"),
             new LibraryInfo("XamlBehaviors", "Microsoft", "MIT License", pathProvider.LicensesDir + "microsoft_mit_license.txt", "https://github.com/Microsoft/XamlBehaviors"),

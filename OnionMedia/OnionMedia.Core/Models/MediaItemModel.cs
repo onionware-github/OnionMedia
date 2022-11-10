@@ -256,7 +256,7 @@ namespace OnionMedia.Core.Models
                     argBuilder.Append($"-codec:a {audioCodec} ");
 
                 //Only copy audio codec when there are no changes to audio specific options like bitrate
-                else if (AudioBitrate <= 0 && AudioSamplerate <= 0)
+                else if (AudioBitrate <= 0 && AudioSamplerate <= 0 && AudioVolumeInPercent == 100)
                     argBuilder.Append("-acodec copy ");
 
                 if (AudioBitrate > 0)
@@ -264,6 +264,9 @@ namespace OnionMedia.Core.Models
 
                 if (AudioSamplerate > 0)
                     argBuilder.Append($"-ar {AudioSamplerate} ");
+
+                if (AudioVolumeInPercent != 100)
+                    argBuilder.Append($"-af \"volume={(AudioVolumeInPercent / 100).ToString().Replace(',', '.')}\" ");
             }
 
             //Remove video when video is deactivated
@@ -370,9 +373,12 @@ namespace OnionMedia.Core.Models
         }
         private ConversionPreset customOptions = new();
 
+
         public uint Width { get; set; }
 
         public uint Height { get; set; }
+
+        public double AudioVolumeInPercent { get; set; } = 100;
 
         public double FPS { get; set; }
 

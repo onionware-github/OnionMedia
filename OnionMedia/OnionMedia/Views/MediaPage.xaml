@@ -353,6 +353,16 @@
                                     </StackPanel>
                                 </StackPanel>
                             </ContentControl>
+                            <ContentControl IsEnabled="{x:Bind ViewModel.StartConversionCommand.IsRunning, Converter={StaticResource InverseBoolConverter}}" Visibility="{x:Bind ViewModel.ItemSelected}">
+                                <StackPanel Orientation="Horizontal" Spacing="5" Visibility="{x:Bind ViewModel.SelectedItem.AudioStreamAvailable}">
+                                    <NumberBox x:Uid="/MediaPage/audioVolume"
+                                               IsEnabled="{x:Bind ViewModel.SelectedConversionPreset.AudioAvailable}"
+                                               Value="{x:Bind ViewModel.SelectedItem.AudioVolumeInPercent, Mode=TwoWay}"
+                                               Minimum="0"
+                                               Maximum="100000"/>
+                                    <TextBlock Text="%" VerticalAlignment="Bottom" Margin="5"/>
+                                </StackPanel>
+                            </ContentControl>
 
                             <!-- SHORT VIDEO -->
                             <TextBlock x:Uid="/MediaPage/shortFile" FontSize="20" Margin="{StaticResource XSmallTopMargin}" Visibility="{x:Bind ViewModel.ItemSelected}"/>
