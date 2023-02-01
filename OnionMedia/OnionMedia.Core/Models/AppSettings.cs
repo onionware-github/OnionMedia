@@ -30,8 +30,12 @@ namespace OnionMedia.Core.Models
         private AppSettings()
         {
             simultaneousOperationCount = settingsService.GetSetting("simultaneousOperationCount") as int? ?? 3;
+            ValidateSettingOrSetToDefault(ref simultaneousOperationCount, val => val is > 0 and <= 5, 3);
+            
             limitDownloadSpeed = settingsService.GetSetting("limitDownloadSpeed") as bool? ?? false;
             maxDownloadSpeed = settingsService.GetSetting("maxDownloadSpeed") as double? ?? 10;
+            ValidateSettingOrSetToDefault(ref maxDownloadSpeed, val => val is >= 0, 10);
+            
             clearListsAfterOperation = settingsService.GetSetting("clearListsAfterOperation") as bool? ?? false;
             autoConvertToH264AfterDownload = settingsService.GetSetting("autoConvertToH264AfterDownload") as bool? ?? false;
             useHardwareAcceleratedEncoding = settingsService.GetSetting("useHardwareAcceleratedEncoding") as bool? ?? false;
@@ -39,17 +43,20 @@ namespace OnionMedia.Core.Models
             hardwareEncoder = ParseEnum<HardwareEncoder>(settingsService.GetSetting("hardwareEncoder"));
             autoSelectThreadsForConversion = settingsService.GetSetting("autoSelectThreadsForConversion") as bool? ?? true;
             maxThreadCountForConversion = settingsService.GetSetting("maxThreadCountForConversion") as int? ?? 1;
+            ValidateSettingOrSetToDefault(ref maxThreadCountForConversion, val => val is > 0, 1);
+            
             useFixedStoragePaths = settingsService.GetSetting("useFixedStoragePaths") as bool? ?? true;
             convertedAudioSavePath = settingsService.GetSetting("convertedAudioSavePath") as string ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic), "OnionMedia", "converted".GetLocalized());
             convertedVideoSavePath = settingsService.GetSetting("convertedVideoSavePath") as string ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "OnionMedia", "converted".GetLocalized());
             downloadsAudioSavePath = settingsService.GetSetting("downloadsAudioSavePath") as string ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic), "OnionMedia", "downloaded".GetLocalized());
             downloadsVideoSavePath = settingsService.GetSetting("downloadsVideoSavePath") as string ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "OnionMedia", "downloaded".GetLocalized());
-            convertedFilenameSuffix = settingsService.GetSetting("convertedFilenameSuffix") as string ?? string.Empty;
+            convertedFilenameSuffix = Regex.Replace(settingsService.GetSetting("convertedFilenameSuffix") as string ?? string.Empty, GlobalResources.INVALIDFILENAMECHARACTERSREGEX, string.Empty);
             sendMessageAfterConversion = settingsService.GetSetting("sendMessageAfterConversion") as bool? ?? true;
             sendMessageAfterDownload = settingsService.GetSetting("sendMessageAfterDownload") as bool? ?? true;
             fallBackToSoftwareEncoding = settingsService.GetSetting("fallBackToSoftwareEncoding") as bool? ?? true;
             autoRetryDownload = settingsService.GetSetting("autoRetryDownload") as bool? ?? true;
             countOfDownloadRetries = settingsService.GetSetting("countOfDownloadRetries") as int? ?? 3;
+            ValidateSettingOrSetToDefault(ref countOfDownloadRetries, val => val is >= 0 and <= 5, 3);
 
             var downloadsAudioFormat = settingsService.GetSetting("downloadsAudioFormat");
             if (downloadsAudioFormat == null)
@@ -276,6 +283,15 @@ namespace OnionMedia.Core.Models
                 settingsService.SetSetting(settingName, value);
             else if (forceOnPropertyChanged)
                 OnPropertyChanged(propName);
+        }
+
+        private static bool ValidateSettingOrSetToDefault<T>(ref T fieldValue, Func<T, bool> validation, T defaultValue)
+        {
+            bool result = validation(fieldValue);
+            if (!result)
+                fieldValue = defaultValue;
+            
+            return result;
         }
 
         private static T ParseEnum<T>(object value)
