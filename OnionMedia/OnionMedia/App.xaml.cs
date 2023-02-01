@@ -52,7 +52,7 @@ namespace OnionMedia
         {
             InitializeComponent();
             UnhandledException += App_UnhandledException;
-            var services = ConfigureServices();
+            var services = new ServiceProvider();
             Ioc.Default.ConfigureServices(services);
             IoC.Default.InitializeServices(services);
             GlobalFFOptions.Configure(options => options.BinaryFolder = IoC.Default.GetService<IPathProvider>().ExternalBinariesDir);
@@ -141,57 +141,6 @@ namespace OnionMedia
             appWindow.Move(CenteredPosition);
         }
 
-        private static IServiceProvider ConfigureServices()
-        {
-            //Register your services, viewmodels and pages here
-            var services = new ServiceCollection();
-
-            // Default Activation Handler
-            services.AddTransient<ActivationHandler<LaunchActivatedEventArgs>, DefaultActivationHandler>();
-
-            // Other Activation Handlers
-
-            // Services
-            services.AddSingleton<IThemeSelectorService, ThemeSelectorService>();
-            services.AddTransient<INavigationViewService, NavigationViewService>();
-
-            services.AddSingleton<IActivationService, ActivationService>();
-            services.AddSingleton<IPageService, PageService>();
-            services.AddSingleton<INavigationService, NavigationService>();
-
-            // Core Services
-            services.AddSingleton<IDialogService, DialogService>();
-            services.AddSingleton<IDownloaderDialogService, DownloaderDialogService>();
-            services.AddSingleton<IThirdPartyLicenseDialog, ThirdPartyLicenseDialog>();
-            services.AddSingleton<IConversionPresetDialog, ConversionPresetDialog>();
-            services.AddSingleton<IFiletagEditorDialog, FiletagEditorDialog>();
-            services.AddSingleton<ICustomPresetSelectorDialog, CustomPresetSelectorDialog>();
-            services.AddSingleton<IDispatcherService, DispatcherService>();
-            services.AddSingleton<INetworkStatusService, NetworkStatusService>();
-            services.AddSingleton<IUrlService, UrlService>();
-            services.AddSingleton<ITaskbarProgressService, TaskbarProgressService>();
-            services.AddSingleton<IToastNotificationService, ToastNotificationService>();
-            services.AddSingleton<IStringResourceService, StringResourceService>();
-            services.AddSingleton<ISettingsService, SettingsService>();
-            services.AddSingleton<IPathProvider, PathProvider>();
-            services.AddSingleton<IVersionService, VersionService>();
-            services.AddSingleton<IWindowClosingService, WindowClosingService>();
-            services.AddSingleton<IFFmpegStartup, FFmpegStartup>();
-
-            // Views and ViewModels
-            services.AddTransient<ShellViewModel>();
-            services.AddTransient<ShellPage>();
-            services.AddSingleton<MediaViewModel>();
-            services.AddTransient<MediaPage>();
-            services.AddSingleton<YouTubeDownloaderViewModel>();
-            services.AddTransient<YouTubeDownloaderPage>();
-            services.AddTransient<PlaylistsViewModel>();
-            services.AddTransient<PlaylistsPage>();
-            services.AddTransient<SettingsViewModel>();
-            services.AddTransient<SettingsPage>();
-            return services.BuildServiceProvider();
-        }
-
 
         WindowsSystemDispatcherQueueHelper m_wsdqHelper; // See below for implementation.
         MicaController m_backdropController;
@@ -208,7 +157,7 @@ namespace OnionMedia
             m_configurationSource = new SystemBackdropConfiguration();
             MainWindow.Activated += Window_Activated;
             MainWindow.Closed += Window_Closed;
-            ((FrameworkElement)MainWindow.Content).ActualThemeChanged += Window_ThemeChanged;
+            ((FrameworkElement)MainWindow.Content) .ActualThemeChanged+= Window_ThemeChanged;
 
             // Initial configuration state.
             m_configurationSource.IsInputActive = true;
