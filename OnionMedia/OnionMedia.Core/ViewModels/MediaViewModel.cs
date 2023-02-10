@@ -131,7 +131,7 @@ namespace OnionMedia.Core.ViewModels
                 try
                 {
                     //If the file is missing or corrupted, try to read the supplied file.
-                    ConversionPresets.AddRange(JsonSerializer.Deserialize<IEnumerable<ConversionPreset>>(File.ReadAllText(pathProvider.InstallPath + @"\Data\ConversionPresets.json")));
+                    ConversionPresets.AddRange(JsonSerializer.Deserialize<IEnumerable<ConversionPreset>>(File.ReadAllText(Path.Combine(pathProvider.InstallPath, "Data", "ConversionPresets.json"))));
                 }
                 catch (Exception) { } //Dont crash when the supplied .json file is missing or corrupted too.
                 finally
@@ -519,7 +519,7 @@ namespace OnionMedia.Core.ViewModels
             Files.Clear();
         }
 
-        private readonly string conversionPresetsPath = pathProvider.LocalPath + @"\Media\ConversionPresets.json";
+        private readonly string conversionPresetsPath = Path.Combine(pathProvider.LocalPath, "Media", "ConversionPresets.json");
         private const string resources = "Resources";
         private const string dialogResources = "DialogResources";
         private const string deletePresetDialog = "DeletePresetDialog";
