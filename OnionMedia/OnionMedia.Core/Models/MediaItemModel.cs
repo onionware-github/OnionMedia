@@ -373,14 +373,11 @@ namespace OnionMedia.Core.Models
         }
         private ConversionPreset customOptions = new();
 
-
-        public uint Width { get; set; }
-
-        public uint Height { get; set; }
+        [ObservableProperty] private uint width, height;
+        [ObservableProperty] private double _FPS;
 
         public double AudioVolumeInPercent { get; set; } = 100;
 
-        public double FPS { get; set; }
 
         public int AspectRatioWidth { get; set; }
 
