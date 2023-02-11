@@ -58,6 +58,7 @@ public sealed class FFmpegStartup : IFFmpegStartup
         {
             //When no (valid) file was found, generate a new one in the LocalCache Directory
             GlobalResources.FFmpegCodecs = new FFmpegCodecConfig(FFmpegCodec.GetEncodableVideoCodecs(), FFmpegCodec.GetEncodableAudioCodecs(), FFMpeg.GetContainerFormats().Where(f => f.MuxingSupported).Select(f => new FFmpegContainerFormat(f.Name, f.Description)), hash);
+            Directory.CreateDirectory(pathProvider.LocalCache);
             File.WriteAllText(serializedCodecsPath, JsonSerializer.Serialize(GlobalResources.FFmpegCodecs));
         }
     }
