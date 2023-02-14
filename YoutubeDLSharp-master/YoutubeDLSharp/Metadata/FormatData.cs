@@ -60,7 +60,7 @@ namespace YoutubeDLSharp.Metadata
         [JsonProperty("language_preference")]
         public int? LanguagePreference { get; set; }
         [JsonProperty("quality")]
-        public int? Quality { get; set; }
+        public double? Quality { get; set; }
         [JsonProperty("source_preference")]
         public int? SourcePreference { get; set; }
         [JsonProperty("stretched_ratio")]
