@@ -117,11 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="audioCodec.Header" xml:space="preserve">
+    <value>Audiocodec</value>
+  </data>
+  <data name="audioEncoder.Header" xml:space="preserve">
+    <value>Audioencoder</value>
+  </data>
   <data name="conversionDialog.SecondaryButtonText" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
   <data name="outputFormat.Header" xml:space="preserve">
     <value>Ausgabeformat</value>
+  </data>
+  <data name="presetName.Header" xml:space="preserve">
+    <value>Name</value>
   </data>
   <data name="primarybuttonapply" xml:space="preserve">
     <value>Übernehmen</value>
@@ -152,5 +161,11 @@
   </data>
   <data name="useVideo.Content" xml:space="preserve">
     <value>Video</value>
+  </data>
+  <data name="videoCodec.Header" xml:space="preserve">
+    <value>Videocodec</value>
+  </data>
+  <data name="videoEncoder.Header" xml:space="preserve">
+    <value>Videoencoder</value>
   </data>
 </root>

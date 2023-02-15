@@ -33,13 +33,13 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Spacing="10">
-            <TextBox Header="Name" Text="{x:Bind PresetName, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox x:Uid="/ConversionPresetDialog/presetName" Text="{x:Bind PresetName, UpdateSourceTrigger=PropertyChanged}"/>
             <StackPanel>
                 <TextBlock x:Uid="/DialogResources/nameAlreadyInUse" Foreground="Red" Visibility="{x:Bind NameAlreadyInUse, Mode=OneWay}"/>
                 <TextBlock x:Uid="/DialogResources/nameIsEmpty" Foreground="Red" Visibility="{x:Bind NameIsEmpty, Mode=OneWay}"/>
             </StackPanel>
 
-            <ComboBox Header="Ausgabeformat" SelectedIndex="94" ItemsSource="{x:Bind c:GlobalResources.FFmpegCodecs.ContainerFormats, Mode=OneTime}" SelectedItem="{x:Bind ConversionPreset.Format}">
+            <ComboBox x:Uid="/ConversionPresetDialog/outputFormat" SelectedIndex="94" ItemsSource="{x:Bind c:GlobalResources.FFmpegCodecs.ContainerFormats, Mode=OneTime}" SelectedItem="{x:Bind ConversionPreset.Format}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate x:DataType="m:FFmpegContainerFormat">
                         <TextBlock Text="{x:Bind Name, Mode=OneTime}"/>
@@ -47,28 +47,28 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
 
-            <CheckBox x:Name="useVideo" Content="Video" IsChecked="{x:Bind ConversionPreset.VideoAvailable}"/>
+            <CheckBox x:Name="useVideo" x:Uid="/ConversionPresetDialog/useVideo" IsChecked="{x:Bind ConversionPreset.VideoAvailable}"/>
             <StackPanel Spacing="10" Visibility="{x:Bind useVideo.IsChecked, Mode=OneWay}">
-                <ComboBox Header="Videocodec" ItemsSource="{x:Bind c:GlobalResources.FFmpegCodecs.Videocodecs, Mode=OneTime}" SelectedItem="{x:Bind ConversionPreset.VideoCodec}">
+                <ComboBox x:Uid="/ConversionPresetDialog/videoCodec" ItemsSource="{x:Bind c:GlobalResources.FFmpegCodecs.Videocodecs, Mode=OneTime}" SelectedItem="{x:Bind ConversionPreset.VideoCodec}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate x:DataType="m:FFmpegCodec">
                             <TextBlock Text="{x:Bind Name, Mode=OneTime}"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <ComboBox Header="Videoencoder:" ItemsSource="{x:Bind ConversionPreset.VideoCodec.Encoders, Mode=OneWay}" SelectedItem="{x:Bind ConversionPreset.VideoEncoder}" Visibility="{x:Bind ConversionPreset.VideoCodec.MultipleEncoders, Mode=OneWay}"/>
+                <ComboBox x:Uid="/ConversionPresetDialog/videoEncoder" ItemsSource="{x:Bind ConversionPreset.VideoCodec.Encoders, Mode=OneWay}" SelectedItem="{x:Bind ConversionPreset.VideoEncoder}" Visibility="{x:Bind ConversionPreset.VideoCodec.MultipleEncoders, Mode=OneWay}"/>
             </StackPanel>
 
-            <CheckBox x:Name="useAudio" Content="Audio" IsChecked="{x:Bind ConversionPreset.AudioAvailable}"/>
+            <CheckBox x:Name="useAudio" x:Uid="/ConversionPresetDialog/useAudio" IsChecked="{x:Bind ConversionPreset.AudioAvailable}"/>
             <StackPanel Spacing="10" Visibility="{x:Bind useAudio.IsChecked, Mode=OneWay}">
-                <ComboBox Header="Audiocodec" ItemsSource="{x:Bind c:GlobalResources.FFmpegCodecs.Audiocodecs, Mode=OneTime}" SelectedItem="{x:Bind ConversionPreset.AudioCodec}">
+                <ComboBox x:Uid="/ConversionPresetDialog/audioCodec" ItemsSource="{x:Bind c:GlobalResources.FFmpegCodecs.Audiocodecs, Mode=OneTime}" SelectedItem="{x:Bind ConversionPreset.AudioCodec}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate x:DataType="m:FFmpegCodec">
                             <TextBlock Text="{x:Bind Name, Mode=OneTime}"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <ComboBox Header="Audioencoder:" ItemsSource="{x:Bind ConversionPreset.AudioCodec.Encoders, Mode=OneWay}" SelectedItem="{x:Bind ConversionPreset.AudioEncoder}" Visibility="{x:Bind ConversionPreset.AudioCodec.MultipleEncoders, Mode=OneWay}"/>
+                <ComboBox x:Uid="/ConversionPresetDialog/audioEncoder" ItemsSource="{x:Bind ConversionPreset.AudioCodec.Encoders, Mode=OneWay}" SelectedItem="{x:Bind ConversionPreset.AudioEncoder}" Visibility="{x:Bind ConversionPreset.AudioCodec.MultipleEncoders, Mode=OneWay}"/>
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

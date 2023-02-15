@@ -1,226 +1,226 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
-    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
-    <RootNamespace>OnionMedia</RootNamespace>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Platforms>x86;x64;arm64</Platforms>
-    <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
-    <UseWinUI>true</UseWinUI>
-    <SupportedOSPlatformVersion>10.0.18362.0</SupportedOSPlatformVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Remove="Assets\AGPLv3_Logo.svg" />
-    <None Remove="Assets\OnionMedia_Icon.svg" />
-    <None Remove="Assets\OnionMedia_Icon_New.svg" />
-    <None Remove="Assets\OnionMedia_Icon_transparent.svg" />
-    <None Remove="Data\codecs.json" />
-    <None Remove="Data\ConversionPresets.json" />
-    <None Remove="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffmpeg.exe" />
-    <None Remove="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffprobe.exe" />
-    <None Remove="ExternalBinaries\ffmpeg+yt-dlp\binaries\yt-dlp.exe" />
-    <None Remove="ExternalBinaries\ffmpeg+yt-dlp\FFmpeg_LICENSE" />
-    <None Remove="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-1080p.ffpreset" />
-    <None Remove="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-1080p50_60.ffpreset" />
-    <None Remove="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-360p.ffpreset" />
-    <None Remove="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-720p.ffpreset" />
-    <None Remove="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-720p50_60.ffpreset" />
-    <None Remove="ExternalBinaries\ffmpeg+yt-dlp\README.txt" />
-    <None Remove="ExternalBinaries\ffprobe.exe" />
-    <None Remove="ExternalBinaries\yt-dlp (2).exe" />
-    <None Remove="licenses\onionmedia.txt" />
-    <None Remove="licenses\pinvoke_user32.txt" />
-    <None Remove="Strings\de-de\Dialogs\ConversionPresetDialog.resw" />
-    <None Remove="Strings\de-de\Dialogs\DeletePresetDialog.resw" />
-    <None Remove="Strings\de-de\Dialogs\DialogResources.resw" />
-    <None Remove="Strings\de-de\Dialogs\EditTagsDialog.resw" />
-    <None Remove="Strings\de-de\Dialogs\LicenseDialogs.resw" />
-    <None Remove="Strings\de-de\DownloaderPage.resw" />
-    <None Remove="Strings\de-de\MediaPage.resw" />
-    <None Remove="Strings\de-de\SettingsPage.resw" />
-    <None Remove="Strings\en-us\Dialogs\ConversionPresetDialog.resw" />
-    <None Remove="Strings\en-us\Dialogs\DeletePresetDialog.resw" />
-    <None Remove="Strings\en-us\Dialogs\DialogResources.resw" />
-    <None Remove="Strings\en-us\Dialogs\DownloaderPage.resw" />
-    <None Remove="Strings\en-us\Dialogs\EditTagsDialog.resw" />
-    <None Remove="Strings\en-us\Dialogs\LicenseDialogs.resw" />
-    <None Remove="Strings\en-us\Dialogs\MediaPage.resw" />
-    <None Remove="Strings\en-us\SettingsPage.resw" />
-    <None Remove="licenses\communitytoolkit.txt" />
-    <None Remove="licenses\ffmpeg.txt" />
-    <None Remove="licenses\FFMpegCore.txt" />
-    <None Remove="licenses\microsoft_mit_license.txt" />
-    <None Remove="licenses\newtonsoft_json.txt" />
-    <None Remove="licenses\TagLibSharp.txt" />
-    <None Remove="licenses\xFFmpeg.NET.txt" />
-    <None Remove="licenses\YoutubeDLSharp.txt" />
-    <None Remove="licenses\YoutubeExplode.txt" />
-    <None Remove="licenses\yt-dlp.txt" />
-    <None Remove="UserControls\TimeRangeSelector.xaml" />
-    <None Remove="Views\Dialogs\ConversionPresetDialog.xaml" />
-    <None Remove="Views\Dialogs\CustomPresetSelectorDialog.xaml" />
-    <None Remove="Views\Dialogs\EditTagsDialog.xaml" />
-    <None Remove="Views\Dialogs\LicenseDialogPages\LicensesInfoPage.xaml" />
-    <None Remove="Views\Dialogs\LicenseDialogPages\LicensesListPage.xaml" />
-    <None Remove="Views\Dialogs\LicensesDialog.xaml" />
-    <None Remove="Views\Dialogs\PlaylistSelectorDialog.xaml" />
-    <None Remove="Core\**" />
-    <None Remove="ViewModels\Dialogs\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Data\codecs.json" />
-    <Content Include="Data\ConversionPresets.json" />
-    <Content Include="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffmpeg.exe" />
-    <Content Include="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffprobe.exe" />
-    <Content Include="ExternalBinaries\ffmpeg+yt-dlp\binaries\yt-dlp.exe" />
-    <Content Include="ExternalBinaries\ffmpeg+yt-dlp\FFmpeg_LICENSE" />
-    <Content Include="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-1080p.ffpreset" />
-    <Content Include="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-1080p50_60.ffpreset" />
-    <Content Include="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-360p.ffpreset" />
-    <Content Include="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-720p.ffpreset" />
-    <Content Include="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-720p50_60.ffpreset" />
-    <Content Include="ExternalBinaries\ffmpeg+yt-dlp\README.txt" />
-    <Content Include="licenses\communitytoolkit.txt" />
-    <Content Include="licenses\ffmpeg.txt" />
-    <Content Include="licenses\FFMpegCore.txt" />
-    <Content Include="licenses\microsoft_mit_license.txt" />
-    <Content Include="licenses\newtonsoft_json.txt" />
-    <Content Include="licenses\onionmedia.txt" />
-    <Content Include="licenses\pinvoke_user32.txt" />
-    <Content Include="licenses\TagLibSharp.txt" />
-    <Content Include="licenses\xFFmpeg.NET.txt" />
-    <Content Include="licenses\YoutubeDLSharp.txt" />
-    <Content Include="licenses\YoutubeExplode.txt" />
-    <Content Include="licenses\yt-dlp.txt" />
-  </ItemGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
+		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+		<RootNamespace>OnionMedia</RootNamespace>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<Platforms>x86;x64;arm64</Platforms>
+		<RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+		<UseWinUI>true</UseWinUI>
+		<SupportedOSPlatformVersion>10.0.18362.0</SupportedOSPlatformVersion>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Remove="Assets\AGPLv3_Logo.svg" />
+		<None Remove="Assets\OnionMedia_Icon.svg" />
+		<None Remove="Assets\OnionMedia_Icon_New.svg" />
+		<None Remove="Assets\OnionMedia_Icon_transparent.svg" />
+		<None Remove="Data\codecs.json" />
+		<None Remove="Data\ConversionPresets.json" />
+		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffmpeg.exe" />
+		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffprobe.exe" />
+		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\binaries\yt-dlp.exe" />
+		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\FFmpeg_LICENSE" />
+		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-1080p.ffpreset" />
+		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-1080p50_60.ffpreset" />
+		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-360p.ffpreset" />
+		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-720p.ffpreset" />
+		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-720p50_60.ffpreset" />
+		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\README.txt" />
+		<None Remove="ExternalBinaries\ffprobe.exe" />
+		<None Remove="ExternalBinaries\yt-dlp (2).exe" />
+		<None Remove="licenses\onionmedia.txt" />
+		<None Remove="licenses\pinvoke_user32.txt" />
+		<None Remove="Strings\de-de\Dialogs\ConversionPresetDialog.resw" />
+		<None Remove="Strings\de-de\Dialogs\DeletePresetDialog.resw" />
+		<None Remove="Strings\de-de\Dialogs\DialogResources.resw" />
+		<None Remove="Strings\de-de\Dialogs\EditTagsDialog.resw" />
+		<None Remove="Strings\de-de\Dialogs\LicenseDialogs.resw" />
+		<None Remove="Strings\de-de\DownloaderPage.resw" />
+		<None Remove="Strings\de-de\MediaPage.resw" />
+		<None Remove="Strings\de-de\SettingsPage.resw" />
+		<None Remove="Strings\en-us\Dialogs\ConversionPresetDialog.resw" />
+		<None Remove="Strings\en-us\Dialogs\DeletePresetDialog.resw" />
+		<None Remove="Strings\en-us\Dialogs\DialogResources.resw" />
+		<None Remove="Strings\en-us\Dialogs\DownloaderPage.resw" />
+		<None Remove="Strings\en-us\Dialogs\EditTagsDialog.resw" />
+		<None Remove="Strings\en-us\Dialogs\LicenseDialogs.resw" />
+		<None Remove="Strings\en-us\Dialogs\MediaPage.resw" />
+		<None Remove="Strings\en-us\SettingsPage.resw" />
+		<None Remove="licenses\communitytoolkit.txt" />
+		<None Remove="licenses\ffmpeg.txt" />
+		<None Remove="licenses\FFMpegCore.txt" />
+		<None Remove="licenses\microsoft_mit_license.txt" />
+		<None Remove="licenses\newtonsoft_json.txt" />
+		<None Remove="licenses\TagLibSharp.txt" />
+		<None Remove="licenses\xFFmpeg.NET.txt" />
+		<None Remove="licenses\YoutubeDLSharp.txt" />
+		<None Remove="licenses\YoutubeExplode.txt" />
+		<None Remove="licenses\yt-dlp.txt" />
+		<None Remove="UserControls\TimeRangeSelector.xaml" />
+		<None Remove="Views\Dialogs\ConversionPresetDialog.xaml" />
+		<None Remove="Views\Dialogs\CustomPresetSelectorDialog.xaml" />
+		<None Remove="Views\Dialogs\EditTagsDialog.xaml" />
+		<None Remove="Views\Dialogs\LicenseDialogPages\LicensesInfoPage.xaml" />
+		<None Remove="Views\Dialogs\LicenseDialogPages\LicensesListPage.xaml" />
+		<None Remove="Views\Dialogs\LicensesDialog.xaml" />
+		<None Remove="Views\Dialogs\PlaylistSelectorDialog.xaml" />
+		<None Remove="Core\**" />
+		<None Remove="ViewModels\Dialogs\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="Data\codecs.json" />
+		<Content Include="Data\ConversionPresets.json" />
+		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffmpeg.exe" />
+		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffprobe.exe" />
+		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\binaries\yt-dlp.exe" />
+		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\FFmpeg_LICENSE" />
+		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-1080p.ffpreset" />
+		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-1080p50_60.ffpreset" />
+		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-360p.ffpreset" />
+		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-720p.ffpreset" />
+		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-720p50_60.ffpreset" />
+		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\README.txt" />
+		<Content Include="licenses\communitytoolkit.txt" />
+		<Content Include="licenses\ffmpeg.txt" />
+		<Content Include="licenses\FFMpegCore.txt" />
+		<Content Include="licenses\microsoft_mit_license.txt" />
+		<Content Include="licenses\newtonsoft_json.txt" />
+		<Content Include="licenses\onionmedia.txt" />
+		<Content Include="licenses\pinvoke_user32.txt" />
+		<Content Include="licenses\TagLibSharp.txt" />
+		<Content Include="licenses\xFFmpeg.NET.txt" />
+		<Content Include="licenses\YoutubeDLSharp.txt" />
+		<Content Include="licenses\YoutubeExplode.txt" />
+		<Content Include="licenses\yt-dlp.txt" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="7.1.2" />
-    <PackageReference Include="CommunityToolkit.WinUI" Version="7.1.2" />
-    <PackageReference Include="CommunityToolkit.WinUI.Notifications" Version="7.1.2" />
-    <PackageReference Include="CommunityToolkit.WinUI.UI.Animations" Version="7.1.2" />
-    <PackageReference Include="CommunityToolkit.WinUI.UI.Behaviors" Version="7.1.2" />
-    <PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
-    <PackageReference Include="FFMpegCore" Version="4.7.0" />
-    <PackageReference Include="Jab" Version="0.8.6" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.4" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.1" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.0.8" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="PInvoke.User32" Version="0.7.124" />
-    <PackageReference Include="TagLibSharp" Version="2.3.0" />
-    <PackageReference Include="xFFmpeg.NET" Version="7.1.3" />
-    <PackageReference Include="YoutubeExplode" Version="6.0.7" />
-    <Manifest Include="$(ApplicationManifest)" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="7.1.2" />
+		<PackageReference Include="CommunityToolkit.WinUI" Version="7.1.2" />
+		<PackageReference Include="CommunityToolkit.WinUI.Notifications" Version="7.1.2" />
+		<PackageReference Include="CommunityToolkit.WinUI.UI.Animations" Version="7.1.2" />
+		<PackageReference Include="CommunityToolkit.WinUI.UI.Behaviors" Version="7.1.2" />
+		<PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
+		<PackageReference Include="FFMpegCore" Version="4.7.0" />
+		<PackageReference Include="Jab" Version="0.8.6" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.4" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.1" />
+		<PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.0.8" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="PInvoke.User32" Version="0.7.124" />
+		<PackageReference Include="TagLibSharp" Version="2.3.0" />
+		<PackageReference Include="xFFmpeg.NET" Version="7.1.3" />
+		<PackageReference Include="YoutubeExplode" Version="6.0.7" />
+		<Manifest Include="$(ApplicationManifest)" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\Dialogs\PlaylistSelectorDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Remove="Core\**" />
-    <Page Remove="ViewModels\Dialogs\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\Dialogs\PlaylistSelectorDialog.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Remove="Core\**" />
+		<Page Remove="ViewModels\Dialogs\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\Dialogs\LicenseDialogPages\LicensesInfoPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\Dialogs\LicenseDialogPages\LicensesInfoPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\Dialogs\LicenseDialogPages\LicensesListPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\Dialogs\LicenseDialogPages\LicensesListPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\Dialogs\LicensesDialog.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\Dialogs\EditTagsDialog.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\Dialogs\CustomPresetSelectorDialog.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\Dialogs\ConversionPresetDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\Dialogs\LicensesDialog.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Views\Dialogs\EditTagsDialog.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Views\Dialogs\CustomPresetSelectorDialog.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Views\Dialogs\ConversionPresetDialog.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="UserControls\TimeRangeSelector.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="UserControls\TimeRangeSelector.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Styles\Page.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Styles\TextBlock.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Styles\_FontSizes.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Styles\_Thickness.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Themes\Generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\MediaPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\PlaylistsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\SettingsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\ShellPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\YouTubeDownloaderPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="XamlDicts\ExternalResources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Styles\Page.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Styles\TextBlock.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Styles\_FontSizes.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Styles\_Thickness.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Themes\Generic.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Views\MediaPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Views\PlaylistsPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Views\SettingsPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Views\ShellPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Views\YouTubeDownloaderPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="XamlDicts\ExternalResources.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\YoutubeDLSharp-master\YoutubeDLSharp\YoutubeDLSharp.csproj" />
-    <ProjectReference Include="..\OnionMedia.Core\OnionMedia.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\YoutubeDLSharp-master\YoutubeDLSharp\YoutubeDLSharp.csproj" />
+		<ProjectReference Include="..\OnionMedia.Core\OnionMedia.Core.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Core\**" />
-    <Compile Remove="ViewModels\Dialogs\**" />
-    <Content Remove="ViewModels\Dialogs\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Core\**" />
+		<Compile Remove="ViewModels\Dialogs\**" />
+		<Content Remove="ViewModels\Dialogs\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Remove="Core\**" />
-    <EmbeddedResource Remove="ViewModels\Dialogs\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Remove="Core\**" />
+		<EmbeddedResource Remove="ViewModels\Dialogs\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PRIResource Remove="Core\**" />
-    <PRIResource Remove="ViewModels\Dialogs\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<PRIResource Remove="Core\**" />
+		<PRIResource Remove="ViewModels\Dialogs\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="ViewModels\MediaViewModel.cs" />
-    <Compile Remove="ViewModels\PlaylistsViewModel.cs" />
-    <Compile Remove="ViewModels\SettingsViewModel.cs" />
-    <Compile Remove="ViewModels\YouTubeDownloaderViewModel.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="ViewModels\MediaViewModel.cs" />
+		<Compile Remove="ViewModels\PlaylistsViewModel.cs" />
+		<Compile Remove="ViewModels\SettingsViewModel.cs" />
+		<Compile Remove="ViewModels\YouTubeDownloaderViewModel.cs" />
+	</ItemGroup>
 </Project>

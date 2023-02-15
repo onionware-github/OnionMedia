@@ -117,11 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="audioCodec.Header" xml:space="preserve">
+    <value>Audio codec</value>
+  </data>
+  <data name="audioEncoder.Header" xml:space="preserve">
+    <value>Audio encoder</value>
+  </data>
   <data name="conversionDialog.SecondaryButtonText" xml:space="preserve">
     <value>Cancel</value>
   </data>
   <data name="outputFormat.Header" xml:space="preserve">
     <value>Output format</value>
+  </data>
+  <data name="presetName.Header" xml:space="preserve">
+    <value>Name</value>
   </data>
   <data name="primarybuttonapply" xml:space="preserve">
     <value>Apply</value>
@@ -130,10 +139,10 @@
     <value>Create</value>
   </data>
   <data name="specificOptions.PrimaryButtonText" xml:space="preserve">
-    <value>Übernehmen</value>
+    <value>Apply</value>
   </data>
   <data name="specificOptions.SecondaryButtonText" xml:space="preserve">
-    <value>Abbrechen</value>
+    <value>Cancel</value>
   </data>
   <data name="specificOptions.Title" xml:space="preserve">
     <value>Specific convertoptions</value>
@@ -152,5 +161,11 @@
   </data>
   <data name="useVideo.Content" xml:space="preserve">
     <value>Video</value>
+  </data>
+  <data name="videoCodec.Header" xml:space="preserve">
+    <value>Video codec</value>
+  </data>
+  <data name="videoEncoder.Header" xml:space="preserve">
+    <value>Video encoder</value>
   </data>
 </root>
