@@ -35,7 +35,7 @@ namespace OnionMedia.Core.ViewModels
     [ObservableObject]
     public sealed partial class YouTubeDownloaderViewModel
     {
-        public YouTubeDownloaderViewModel(IDialogService dialogService, IDownloaderDialogService downloaderDialogService, IDispatcherService dispatcher, INetworkStatusService networkStatusService, IToastNotificationService toastNotificationService, IPathProvider pathProvider, ITaskbarProgressService taskbarProgressService)
+        public YouTubeDownloaderViewModel(IDialogService dialogService, IDownloaderDialogService downloaderDialogService, IDispatcherService dispatcher, INetworkStatusService networkStatusService, IToastNotificationService toastNotificationService, IPathProvider pathProvider, ITaskbarProgressService taskbarProgressService, IWindowClosingService windowClosingService)
         {
             this.dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             this.downloaderDialogService = downloaderDialogService ?? throw new ArgumentNullException(nameof(downloaderDialogService));
@@ -61,6 +61,7 @@ namespace OnionMedia.Core.ViewModels
             AddVideoCommand.PropertyChanged += (o, e) => UpdateProgressStateProperties();
             AddSearchedVideo.PropertyChanged += (o, e) => UpdateProgressStateProperties();
             Videos.CollectionChanged += (o, e) => UpdateProgressStateProperties();
+            windowClosingService.Closed += (o, e) => CancelAll();
             networkAvailable = this.networkStatusService?.IsNetworkConnectionAvailable() ?? true;
             if (this.networkStatusService != null)
                 this.networkStatusService.ConnectionStateChanged += (o, e) => this.dispatcher.Enqueue(() => NetworkAvailable = e);
