@@ -86,7 +86,7 @@ namespace OnionMedia.Core.Classes
 			try
 			{
 				Debug.WriteLine($"Current State of Progress: {stream.ProgressInfo.Progress}");
-				ytOptions.Output = $@"{videotempdir}\%(id)s.%(ext)s";
+				ytOptions.Output = Path.Combine(videotempdir, "%(id)s.%(ext)s");
 
 				if (stream.CustomTimes)
 				{
@@ -220,7 +220,7 @@ namespace OnionMedia.Core.Classes
 		private static string CreateVideoTempDir()
 		{
 			string videotempdir;
-			do videotempdir = pathProvider.DownloaderTempdir + $@"\{Path.GetRandomFileName()}";
+			do videotempdir = Path.Combine(pathProvider.DownloaderTempdir, Path.GetRandomFileName());
 			while (Directory.Exists(videotempdir));
 			Directory.CreateDirectory(videotempdir);
 			return videotempdir;
@@ -285,27 +285,17 @@ namespace OnionMedia.Core.Classes
 			bool removeFormat = false;
 
 			//Don't use DASH in trimmed videos
-			if (stream.CustomTimes && stream.QualityLabel.IsNullOrEmpty())
-			{
-				//Find the best NonDASH Preset
-				ytOptions.AddCustomOption("-S", "proto,hdr:SDR");
-			}
-			else if (stream.CustomTimes)
+			if (stream.CustomTimes)
 			{
 				//formatData = GetBestFormatWithoutDash(stream, out originalSize);
 				formatData = GetBestTrimmableFormat(stream);
-				if (formatData == null)
-				{
-					//Find the best NonDASH format
-					ytOptions.AddCustomOption("-S", $"proto,hdr:SDR,res:{stream.GetVideoHeight},ext");
-					removeFormat = true;
-				}
 			}
 			else
 			{
 				//TODO: Check if that works on weaker PCs with less threads.
 				//Download multiple fragments at the same time to increase speed.
-				ytOptions.AddCustomOption("-N", 15);
+				//TODO: CURRENTLY DISABLED BECAUSE THERE'S A YT-DLP BUG THAT SHOWS THE WRONG PROGRESS. RE-ENABLE IT WHEN THE BUG GOT FIXED;
+				//ytOptions.AddCustomOption("-N", 15);
 			}
 
 			string? formatString;
@@ -367,10 +357,13 @@ namespace OnionMedia.Core.Classes
 
 		private static FormatData GetBestTrimmableFormat(StreamItemModel stream)
 		{
-			var validFormats = stream.FormatQualityLabels.Where(f => f.Key.Protocol != "http_dash_segments" && f.Key.Extension != "3gp" && f.Key.HDR == "SDR");
+			bool isFromYoutube = stream.Video.Url.Contains("youtube.com") || stream.Video.Url.Contains("youtu.be");
+			var validFormats = stream.FormatQualityLabels.Where(f => ((f.Key.Protocol != "http_dash_segments" && !isFromYoutube) || (isFromYoutube && !f.Key.FormatNote.ToLower().Contains("dash video"))) && f.Key.Extension != "3gp" && f.Key.HDR == "SDR");
 			var heightSortedFormats = validFormats.OrderByDescending(f => f.Key.Height);
 			var extSortedFormats = heightSortedFormats.ThenBy(f => f.Key.Extension == "mp4" ? 0 : 1);
-			var selectedFormat = extSortedFormats.FirstOrDefault(f => f.Key.Height <= stream.GetVideoHeight).Key;
+			var selectedFormat = stream.QualityLabel.IsNullOrEmpty()
+				? extSortedFormats.FirstOrDefault().Key
+				: extSortedFormats.FirstOrDefault(f => f.Key.Height <= stream.GetVideoHeight).Key;
 			return selectedFormat;
 		}
 
@@ -562,7 +555,7 @@ namespace OnionMedia.Core.Classes
 
 			Directory.CreateDirectory(savefilepath);
 			int maxFilenameLength = 250 - (savefilepath.Length + extension.Length);
-			string filename = @$"{savefilepath}\{videoname.TrimToFilename(maxFilenameLength)}{extension}";
+			string filename = Path.Combine(savefilepath, videoname.TrimToFilename(maxFilenameLength) + extension);
 
 			if (!File.Exists(filename))
 				await Task.Run(async () => await GlobalResources.MoveFileAsync(tempfile, filename, cancellationToken));
@@ -574,7 +567,7 @@ namespace OnionMedia.Core.Classes
 
 				//Increases the number until a possible file name is found
 				for (int i = 2; File.Exists(filename); i++)
-					filename = $@"{dir}\{name}_{i}{extension}";
+					filename = Path.Combine(dir, $"{name}_{i}{extension}");
 
 				await Task.Run(async () => await GlobalResources.MoveFileAsync(tempfile, filename, cancellationToken));
 			}
