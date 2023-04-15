@@ -19,6 +19,7 @@
 		<None Remove="Data\ConversionPresets.json" />
 		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffmpeg.exe" />
 		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffprobe.exe" />
+		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\binaries\yt-dlp-license-information.txt" />
 		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\binaries\yt-dlp.exe" />
 		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\FFmpeg_LICENSE" />
 		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-1080p.ffpreset" />
@@ -73,6 +74,7 @@
 		<Content Include="Data\ConversionPresets.json" />
 		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffmpeg.exe" />
 		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffprobe.exe" />
+		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\binaries\yt-dlp-license-information.txt" />
 		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\binaries\yt-dlp.exe" />
 		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\FFmpeg_LICENSE" />
 		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\presets\libvpx-1080p.ffpreset" />

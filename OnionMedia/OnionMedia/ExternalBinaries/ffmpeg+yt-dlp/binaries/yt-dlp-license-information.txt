@@ -1,0 +1,8 @@
+Used dependencies:
+certifi (MPLv2)
+brotli (MIT)
+websockets (BSD-3-Clause)
+mutagen (GPLv2+)
+pycryptodomex (BSD-2-Clause)
+
+Source: https://github.com/yt-dlp/yt-dlp/pull/6685
