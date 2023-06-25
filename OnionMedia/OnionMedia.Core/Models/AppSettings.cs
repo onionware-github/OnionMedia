@@ -15,6 +15,7 @@ using OnionMedia.Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -58,6 +59,11 @@ namespace OnionMedia.Core.Models
             countOfDownloadRetries = settingsService.GetSetting("countOfDownloadRetries") as int? ?? 3;
             ValidateSettingOrSetToDefault(ref countOfDownloadRetries, val => val is >= 0 and <= 5, 3);
 
+            customAccentColorHex = settingsService.GetSetting("customAccentColorHex") as string;
+            useCustomAccentColor = settingsService.GetSetting("useCustomAccentColor") as bool? ?? false;
+            selectedTheme = ParseEnum<ThemeType>(settingsService.GetSetting("selectedTheme"));
+            appFlowDirection = ParseEnum<AppFlowDirection>(settingsService.GetSetting("appFlowDirection"));
+            
             var downloadsAudioFormat = settingsService.GetSetting("downloadsAudioFormat");
             if (downloadsAudioFormat == null)
                 this.downloadsAudioFormat = AudioConversionFormat.Mp3;
@@ -82,6 +88,8 @@ namespace OnionMedia.Core.Models
         public static AppSettings Instance { get; } = new AppSettings();
         public static VideoAddMode[] VideoAddModes { get; } = Enum.GetValues<VideoAddMode>().ToArray();
         public static StartPageType[] StartPageTypes { get; } = Enum.GetValues<StartPageType>().ToArray();
+        public static ThemeType[] ThemeTypes { get; } = Enum.GetValues<ThemeType>().ToArray();
+        public static AppFlowDirection[] FlowDirections { get; } = Enum.GetValues<AppFlowDirection>().ToArray();
 
         //Settings
         public int SimultaneousOperationCount
@@ -247,6 +255,44 @@ namespace OnionMedia.Core.Models
         }
         private string convertedFilenameSuffix;
 
+        public bool UseCustomAccentColor
+        {
+            get => useCustomAccentColor;
+            set => SetSetting(ref useCustomAccentColor, value, "useCustomAccentColor");
+        }
+        private bool useCustomAccentColor;
+        
+        public string? CustomAccentColorHex
+        {
+            get => customAccentColorHex;
+            set => SetSetting(ref customAccentColorHex, value, "customAccentColorHex");
+        }
+        private string? customAccentColorHex;
+        
+        public ThemeType SelectedTheme
+        {
+            get => selectedTheme;
+            set
+            {
+                if (SetProperty(ref selectedTheme, value))
+                    settingsService.SetSetting("selectedTheme", value.ToString());
+            }
+        }
+
+        private ThemeType selectedTheme;
+        
+        public AppFlowDirection AppFlowDirection
+        {
+            get => appFlowDirection;
+            set
+            {
+                if (SetProperty(ref appFlowDirection, value))
+                    settingsService.SetSetting("appFlowDirection", value.ToString());
+            }
+        }
+
+        private AppFlowDirection appFlowDirection;
+
         //Last opened page
         public bool DownloaderPageIsOpen
         {
@@ -321,5 +367,18 @@ namespace OnionMedia.Core.Models
         LastOpened,
         ConverterPage,
         DownloaderPage
+    }
+
+    public enum ThemeType
+    {
+        Default,
+        Light,
+        Dark
+    }
+
+    public enum AppFlowDirection
+    {
+        LeftToRight,
+        RightToLeft
     }
 }

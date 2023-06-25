@@ -10,16 +10,12 @@
  */
 
 using OnionMedia.Core.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 using YoutubeDLSharp;
 
 namespace OnionMedia.Core.Models
 {
-    public class ProgressModel
+    public partial class ProgressModel : ObservableObject
     {
         private int progress;
         public int Progress
@@ -40,6 +36,7 @@ namespace OnionMedia.Core.Models
 
                 else if (!IsDone && progress < value)
                     progress = value;
+                OnPropertyChanged();
             }
         }
 
@@ -53,14 +50,19 @@ namespace OnionMedia.Core.Models
                 //Set progress to 0 when the download was restarted.
                 if (isDone != value && !value)
                     progress = 0;
+                OnPropertyChanged();
             }
         }
         public bool IsCancelledOrFailed { get; set; }
 
-        public string DownloadSpeed { get; set; }
+        [ObservableProperty] private string downloadSpeed;
+        
+        [ObservableProperty]
+        [AlsoNotifyChangeFor(nameof(State))]
+        private DownloadState downloadState;
+        
         public string TotalSize { get; set; }
-
-        public DownloadState DownloadState { get; set; }
+        
         public string State
         {
             get

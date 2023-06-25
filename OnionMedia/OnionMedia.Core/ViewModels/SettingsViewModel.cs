@@ -41,14 +41,8 @@ namespace OnionMedia.Core.ViewModels
         private readonly IPathProvider pathProvider;
         private readonly IVersionService versionService;
 
+        [ObservableProperty]
         private string _versionDescription;
-
-        public string VersionDescription
-        {
-            get { return _versionDescription; }
-
-            set { SetProperty(ref _versionDescription, value); }
-        }
 
         [ICommand]
         private async Task ChangePathAsync(PathType pathType)
@@ -81,7 +75,7 @@ namespace OnionMedia.Core.ViewModels
         private async Task ShowLicenseAsync()
         {
             string title = "licenseTitle".GetLocalized();
-            string license = await File.ReadAllTextAsync(pathProvider.LicensesDir + "onionmedia.txt");
+            string license = await File.ReadAllTextAsync(Path.Combine(pathProvider.LicensesDir, "onionmedia.txt"));
             await dialogService.ShowInfoDialogAsync(title, license, "OK");
         }
 

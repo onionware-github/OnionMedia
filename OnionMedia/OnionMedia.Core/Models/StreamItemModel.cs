@@ -117,6 +117,7 @@ namespace OnionMedia.Core.Models
         /// </summary>
         public VideoData Video { get; }
         public TimeSpan Duration { get; }
+        public string? UploadDate => Video.UploadDate?.ToShortDateString();
         public TimeSpanGroup TimeSpanGroup { get; }
         public bool CustomTimes => TimeSpanGroup != null && !TimeSpanGroup.StartTime.Equals(TimeSpan.Zero) || !TimeSpanGroup.EndTime.Equals(TimeSpanGroup.Duration);
 

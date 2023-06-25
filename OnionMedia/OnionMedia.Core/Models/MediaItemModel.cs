@@ -40,6 +40,10 @@ namespace OnionMedia.Core.Models
                 Width = (uint)MediaInfo.PrimaryVideoStream.Width;
                 Height = (uint)MediaInfo.PrimaryVideoStream.Height;
                 (AspectRatioWidth, AspectRatioHeight) = MediaInfo.PrimaryVideoStream.DisplayAspectRatio;
+                if (AspectRatioWidth is 0 || AspectRatioHeight is 0)
+                {
+                    (AspectRatioWidth, AspectRatioHeight) = ReduceFraction(new((int)Width, (int)Height));
+                }
                 FPS = MediaInfo.PrimaryVideoStream.FrameRate;
             }
             else if (AudioStreamAvailable) AudioOnly = true;
@@ -436,5 +440,30 @@ namespace OnionMedia.Core.Models
             }
             OnPropertyChanged(nameof(UseCustomOptions));
         }
+        
+        static Fraction ReduceFraction(Fraction input)
+        {
+            int divisor = GetGreatestDivisor(input.numerator, input.denominator);
+            while(divisor > 1)
+            {
+                input = new(input.numerator / divisor, input.denominator / divisor);
+                divisor = GetGreatestDivisor(input.numerator, input.denominator);
+            }
+            return input;
+        }
+	
+        static int GetGreatestDivisor(params int[] numbers)
+        {
+            if (!numbers.Any()) return 1;
+            int smallestNum = numbers.Select(n => n < 0 ? -n : n).Min();
+            for (int i = smallestNum; i > 1; i--)
+            {
+                if (numbers.All(n => n % i == 0))
+                    return i;
+            }
+            return 1;
+        }
+	
+        record struct Fraction(int numerator, int denominator);
     }
 }

@@ -89,13 +89,6 @@ namespace OnionMedia.Core.ViewModels
                 OnPropertyChanged(nameof(CanEditTags));
             };
             EditTagsCommand = new(EditTagsAsync);
-            SetResolutionCommand = new(res =>
-            {
-                if (SelectedItem == null) return;
-                SelectedItem.Width = res.Width;
-                SelectedItem.Height = res.Height;
-                OnPropertyChanged(nameof(SelectedItem));
-            });
             SetFramerateCommand = new(fps =>
             {
                 if (SelectedItem == null) return;
@@ -164,7 +157,7 @@ namespace OnionMedia.Core.ViewModels
                 SelectedConversionPreset = ConversionPresets[0];
         }
 
-        public static readonly float[] KHzSampleRates = new[] { 0, 22.05f, 32, 44.1f, 48, 88.2f };
+        public static readonly double[] KHzSampleRates = { 0, 22.05, 32, 44.1, 48, 88.2 };
 
         public AsyncRelayCommand AddFileCommand { get; }
         public RelayCommand<MediaItemModel> RemoveFileCommand { get; }
@@ -173,7 +166,6 @@ namespace OnionMedia.Core.ViewModels
         public AsyncRelayCommand<ConversionPreset> EditConversionPresetCommand { get; }
         public AsyncRelayCommand<ConversionPreset> DeleteConversionPresetCommand { get; }
         public AsyncRelayCommand EditTagsCommand { get; }
-        public RelayCommand<Resolution> SetResolutionCommand { get; }
         public RelayCommand<double> SetFramerateCommand { get; }
 
         public ObservableCollection<MediaItemModel> Files { get; } = new();
@@ -204,7 +196,7 @@ namespace OnionMedia.Core.ViewModels
                 OnPropertyChanged(nameof(VideoEnabled));
                 OnPropertyChanged(nameof(CanEditTags));
 
-                if (value != null && value.MediaInfo.PrimaryVideoStream != null)
+                if (value?.MediaInfo.PrimaryVideoStream is not null)
                     Resolutions[0] = new Resolution("source".GetLocalized(resources), (uint)value.MediaInfo.PrimaryVideoStream.Width, (uint)value.MediaInfo.PrimaryVideoStream.Height);
                 else
                     Resolutions[0] = defaultResolution;
@@ -445,11 +437,15 @@ namespace OnionMedia.Core.ViewModels
 
             Debug.WriteLine("Conversion done");
 
-            foreach (var dir in Directory.GetDirectories(pathProvider.ConverterTempdir))
+            try
             {
-                try { Directory.Delete(dir, true); }
-                catch { /* Dont crash if a directory cant be deleted */ }
+                foreach (var dir in Directory.GetDirectories(pathProvider.ConverterTempdir))
+                {
+                    try { Directory.Delete(dir, true); }
+                    catch { /* Dont crash if a directory cant be deleted */ }
+                }
             }
+            catch {Console.WriteLine("Failed to get temporary conversion folders.");}
             
             if (unauthorizedAccessExceptions + directoryNotFoundExceptions + notEnoughSpaceExceptions > 0)
             {
@@ -469,6 +465,14 @@ namespace OnionMedia.Core.ViewModels
             }
         }
 
+        [ICommand]
+        public void SetResolution(Resolution res)
+        {
+            if (SelectedItem is null) return;
+            SelectedItem.Width = res.Width;
+            SelectedItem.Height = res.Height;
+            OnPropertyChanged(nameof(SelectedItem));
+        }
 
         private async Task EditTagsAsync()
         {

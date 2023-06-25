@@ -294,8 +294,7 @@ namespace OnionMedia.Core.Classes
 			{
 				//TODO: Check if that works on weaker PCs with less threads.
 				//Download multiple fragments at the same time to increase speed.
-				//TODO: CURRENTLY DISABLED BECAUSE THERE'S A YT-DLP BUG THAT SHOWS THE WRONG PROGRESS. RE-ENABLE IT WHEN THE BUG GOT FIXED;
-				//ytOptions.AddCustomOption("-N", 15);
+				ytOptions.AddCustomOption("-N", 15);
 			}
 
 			string? formatString;
