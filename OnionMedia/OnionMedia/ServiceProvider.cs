@@ -2,6 +2,7 @@
 using Jab;
 using OnionMedia.Activation;
 using OnionMedia.Contracts.Services;
+using OnionMedia.Core.Models;
 using OnionMedia.Core.Services;
 using OnionMedia.Core.ViewModels;
 using OnionMedia.Services;
@@ -19,6 +20,7 @@ namespace OnionMedia;
 [Transient(typeof(ActivationHandler<LaunchActivatedEventArgs>), typeof(DefaultActivationHandler))]
 [Singleton(typeof(IActivationService), typeof(ActivationService))]
 //Core Services
+[Singleton(typeof(IDataCollectionProvider<LibraryInfo>), typeof(LibraryInfoProvider))]
 [Singleton(typeof(IDialogService), typeof(DialogService))]
 [Singleton(typeof(IDownloaderDialogService), typeof(DownloaderDialogService))]
 [Singleton(typeof(IThirdPartyLicenseDialog), typeof(ThirdPartyLicenseDialog))]

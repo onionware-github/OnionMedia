@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+<data name="conversionFilesCantBeSaved" xml:space="preserve">
+<value>{0} bestanden konden niet worden opgeslagen op de geselecteerde locatie. Het pad is niet gevonden, er zijn geen schrijfrechten of onvoldoende opslagruimte beschikbaar.</value>
+</data>
+<data name="conversionFilesCantBeSavedTitle" xml:space="preserve">
+<value>Fout tijdens het opslaan van bestanden.</value>
+</data>
+<data name="conversionFilesNoWriteAccess" xml:space="preserve">
+<value>{0} bestand(en) kunnen niet worden opgeslagen op de geselecteerde locatie omdat het pad niet beschrijfbaar is.</value>
+</data>
+<data name="conversionFilesNoWriteAccessTitle" xml:space="preserve">
+<value>Geen schrijftoegang tot het geselecteerde opslagpad.</value>
+</data>
+<data name="conversionFilesPathNotFound" xml:space="preserve">
+<value>{0} bestand(en) kunnen niet worden opgeslagen omdat het pad niet is gevonden.</value>
+</data>
+<data name="conversionFilesPathNotFoundTitle" xml:space="preserve">
+<value>Folder niet gevonden.</value>
+</data>
+<data name="fileNotSupported" xml:space="preserve">
+<value>Bestand wordt niet ondersteund.</value>
+</data>
+<data name="fileNotSupportedText" xml:space="preserve">
+<value>Delen van het bestand worden niet ondersteund.</value>
+</data>
+<data name="filesNotSupported" xml:space="preserve">
+<value>Bestanden worden niet ondersteund.</value>
+</data>
+<data name="filesNotSupportedText" xml:space="preserve">
+<value>Delen van de bestanden worden niet ondersteund.</value>
+</data>
+<data name="nameAlreadyInUse.Text" xml:space="preserve">
+<value>Deze naam is al in gebruik.</value>
+</data>
+<data name="nameIsEmpty.Text" xml:space="preserve">
+<value>Voer een naam in voor de preset.</value>
+</data>
+<data name="notEnoughSpace" xml:space="preserve">
+<value>{0} bestand(en) konden niet worden opgeslagen omdat er onvoldoende schijfruimte is.</value>
+</data>
+<data name="notEnoughSpaceTitle" xml:space="preserve">
+<value>Niet genoeg opslagruimte beschikbaar.</value>
+</data>
+<data name="specificFilesNotSupported" xml:space="preserve">
+<value>Bestand(en) worden niet ondersteund.</value>
+</data>
+<data name="specificFilesNotSupportedText" xml:space="preserve">
+<value>Delen van {0} bestand(en) worden niet ondersteund.</value>
+</data>
+
+  <!-- Example
+  <data name="videolink.PlaceholderText" xml:space="preserve">
+    <value>Search video or paste URL...</value>
+  </data> -->
+</root>

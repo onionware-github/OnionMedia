@@ -18,5 +18,5 @@ namespace OnionMedia.Core.Models
     /// <param name="Author">The author of the library.</param>
     /// <param name="LicenseType">The type of license that the library uses.</param>
     /// <param name="LicensePath">The path to the textfile that contains the license.</param>
-    public record LibraryInfo(string Libraryname, string Author, string LicenseType, string LicensePath, string ProjectUrl);
+    public record LibraryInfo(string Libraryname, string Author, string LicenseType, string LicensePath, string ProjectUrl, int Year = 0);
 }

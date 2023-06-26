@@ -18,7 +18,7 @@ namespace OnionMedia.Services;
 
 sealed class PathProvider : IPathProvider
 {
-    public string InstallPath => Package.Current.Installed­Location.Path;
+    public string InstallPath => Package.Current.InstalledLocation.Path;
     public string LocalPath => ApplicationData.Current.LocalFolder.Path;
     public string LocalCache => ApplicationData.Current.LocalCacheFolder.Path;
     public string Tempdir => Path.GetTempPath() + @"\Onionmedia";

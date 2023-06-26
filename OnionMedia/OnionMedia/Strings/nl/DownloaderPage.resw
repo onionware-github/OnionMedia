@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+<data name="addToPlaylistBtn.Text" xml:space="preserve">
+<value>Opslaan</value>
+</data>
+<data name="addVideosOnLeft.Text" xml:space="preserve">
+<value>Voeg video's toe met behulp van de linkerkant.</value>
+</data>
+<data name="converting.Text" xml:space="preserve">
+<value>Converteren...</value>
+</data>
+<data name="currentPlaylist.Text" xml:space="preserve">
+<value>Huidige afspeellijst</value>
+</data>
+<data name="done.Text" xml:space="preserve">
+<value>Klaar</value>
+</data>
+<data name="downloading.Text" xml:space="preserve">
+<value>Downloaden...</value>
+</data>
+<data name="downloadStreamBtn.Text" xml:space="preserve">
+<value>Download</value>
+</data>
+<data name="failed.Text" xml:space="preserve">
+<value>Mislukt</value>
+</data>
+<data name="Mp3.Content" xml:space="preserve">
+<value>Alleen audio</value>
+</data>
+<data name="Mp4.Content" xml:space="preserve">
+<value>Video</value>
+</data>
+<data name="noInternetConnection.Text" xml:space="preserve">
+<value>Geen internet verbinding</value>
+</data>
+<data name="noInternetConnectionDescription.Text" xml:space="preserve">
+<value>Zorg ervoor dat u verbonden bent met internet, zodat bestanden kunnen worden gedownload.</value>
+</data>
+<data name="noVideoFound.Subtitle" xml:space="preserve">
+<value>Geen video gevonden voor deze URL.</value>
+</data>
+<data name="noVideoFound.Title" xml:space="preserve">
+<value>Video niet gevonden</value>
+</data>
+<data name="openURLInBrowser.Text" xml:space="preserve">
+<value>Open URL in browser</value>
+</data>
+<data name="progress.Text" xml:space="preserve">
+<value>Voortgang:</value>
+</data>
+<data name="removeBtn.Text" xml:space="preserve">
+<value>Verwijder</value>
+</data>
+<data name="restartBtn.Text" xml:space="preserve">
+<value>Herstart</value>
+</data>
+<data name="savingFile.Text" xml:space="preserve">
+<value>Opslaan...</value>
+</data>
+<data name="selectFileFormat.Text" xml:space="preserve">
+<value>Selecteer een bestandsformaat:</value>
+</data>
+<data name="selectQuality.Text" xml:space="preserve">
+<value>Selecteer de kwaliteit:</value>
+</data>
+<data name="shortVideo.Text" xml:space="preserve">
+<value>Video inkorten</value>
+</data>
+<data name="upTo.Text" xml:space="preserve">
+<value>Oplopend tot:</value>
+</data>
+<data name="videoInfoHeaderText.Text" xml:space="preserve">
+<value>Video Infos</value>
+</data>
+<data name="videolink.PlaceholderText" xml:space="preserve">
+<value>Zoek video of plak link...</value>
+</data>
+
+  <!-- Example
+  <data name="videolink.PlaceholderText" xml:space="preserve">
+    <value>Search video or paste URL...</value>
+  </data> -->
+</root>

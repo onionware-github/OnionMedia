@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+<data name="Shell_Media.Content" xml:space="preserve">
+<value>Media Converterder</value>
+</data>
+<data name="Shell_YouTubeDownloader.Content" xml:space="preserve">
+<value>Media-downloader</value>
+</data>
+<data name="Shell_Playlists.Content" xml:space="preserve">
+<value>Afspeellijsten</value>
+</data>
+<data name="Settings_Personalization.Text" xml:space="preserve">
+<value>Personalisatie</value>
+</data>
+<data name="Settings_Theme.Text" xml:space="preserve">
+<value>Thema</value>
+</data>
+<data name="Settings_Theme_Light.Content" xml:space="preserve">
+<value>Licht</value>
+</data>
+<data name="Settings_Theme_Dark.Content" xml:space="preserve">
+<value>Donker</value>
+</data>
+<data name="Settings_Theme_Default.Content" xml:space="preserve">
+<value>Standaard</value>
+</data>
+<data name="Settings_About.Text" xml:space="preserve">
+<value>Over deze applicatie</value>
+</data>
+<data name="Settings_AboutDescription.Text" xml:space="preserve">
+<value>OnionMedia is een gratis converter en downloader voor video- en audiobestanden die werkt met ffmpeg en yt-dlp. Het ondersteunt een groot aantal formaten en codecs en is beschikbaar op GitHub en de Microsoft Store.</value>
+</data>
+<data name="SettingsPage_PrivacyTermsLink.Content" xml:space="preserve">
+<value>Privacyverklaring</value>
+</data>
+<data name="SettingsPage_PrivacyTermsLink.NavigateUri" xml:space="preserve">
+<value>https://github.com/onionware-github/OnionMedia/blob/main/Privacy.md</value>
+</data>
+<data name="nextBtn" xml:space="preserve">
+<value>Toevoegen</value>
+</data>
+<data name="searchBtn" xml:space="preserve">
+<value>Zoeken</value>
+</data>
+<data name="openFolder" xml:space="preserve">
+<value>Open folder</value>
+</data>
+<data name="playFile" xml:space="preserve">
+<value>Afspelen</value>
+</data>
+<data name="downloadFinished" xml:space="preserve">
+<value>Download voltooid.</value>
+</data>
+<data name="videosDownloaded" xml:space="preserve">
+<value>video's gedownload.</value>
+</data>
+<data name="from.Text" xml:space="preserve">
+<value>Vanaf:</value>
+</data>
+<data name="hours.PlaceholderText" xml:space="preserve">
+<value>Uren</value>
+</data>
+<data name="minutes.PlaceholderText" xml:space="preserve">
+<value>Minuten</value>
+</data>
+<data name="seconds.PlaceholderText" xml:space="preserve">
+<value>Seconden</value>
+</data>
+<data name="to.Text" xml:space="preserve">
+<value>Tot:</value>
+</data>
+<data name="unnamed" xml:space="preserve">
+<value>Naamloos</value>
+</data>
+<data name="newPreset" xml:space="preserve">
+<value>Nieuwe preset</value>
+</data>
+<data name="source" xml:space="preserve">
+<value>Bron</value>
+</data>
+<data name="custom" xml:space="preserve">
+<value>Aangepast</value>
+</data>
+<data name="changesErrorMsg" xml:space="preserve">
+<value>Wijzigingen kunnen niet worden toegepast.</value>
+</data>
+<data name="error" xml:space="preserve">
+<value>Er is een fout opgetreden.</value>
+</data>
+<data name="fileNotFound" xml:space="preserve">
+<value>Bestand niet gevonden.</value>
+</data>
+<data name="fileNotFoundText" xml:space="preserve">
+<value>Het bestand is niet gevonden en wordt uit de lijst verwijderd.</value>
+</data>
+<data name="tagerrormsg" xml:space="preserve">
+<value>Er is een fout opgetreden bij het opslaan van de nieuwe tags.</value>
+</data>
+<data name="conversionDone" xml:space="preserve">
+<value>Conversie gedaan.</value>
+</data>
+<data name="filesConverted" xml:space="preserve">
+<value>{0} bestanden zijn geconverteerd.</value>
+</data>
+<data name="livestreamDlgContent" xml:space="preserve">
+<value>Probeer het opnieuw nadat de livestream is beëindigd.</value>
+</data>
+<data name="livestreamDlgTitle" xml:space="preserve">
+<value>Dit is een livestream.</value>
+</data>
+<data name="converted" xml:space="preserve">
+<value>Geconverteerd</value>
+</data>
+<data name="downloaded" xml:space="preserve">
+<value>Gedownload</value>
+</data>
+<data name="removeAll.Text" xml:space="preserve">
+<value>Verwijder alles</value>
+</data>
+<data name="cancel.Text" xml:space="preserve">
+<value>Annuleer</value>
+</data>
+<data name="licenseTitle" xml:space="preserve">
+<value>OnionMedia License</value>
+</data>
+<data name="specialThanks" xml:space="preserve">
+<value>Speciale dank aan:</value>
+</data>
+<data name="specialThanksText" xml:space="preserve">
+<value>Marvin Miltkau (Ontwerpconcepten, pictogrammen)
+
+BobaFett012345 (Veel testen en bugrapporten)
+Onionware | Lorenz Otto (Veel testen en bugrapporten)
+
+pukkandan (ontwikkeling en ondersteuning voor yt-dlp)</value>
+</data>
+<data name="AppDescription" xml:space="preserve">
+<value>OnionMedia is een gratis converter en downloader voor video- en audiobestanden. Het ondersteunt een groot aantal formaten en codecs en is beschikbaar op GitHub en de Microsoft Store.</value>
+</data>
+<data name="askForPlaylistDownloadContent" xml:space="preserve">
+<value>Je hebt een URL naar een afspeellijst ingevoerd. Wil je alleen de video of de hele afspeellijst toevoegen?</value>
+</data>
+<data name="askForPlaylistDownloadTitle" xml:space="preserve">
+<value>De afspeellijst downloaden?</value>
+</data>
+<data name="playlist" xml:space="preserve">
+<value>Afspeellijst</value>
+</data>
+<data name="video" xml:space="preserve">
+<value>Video</value>
+</data>
+<data name="mediaFiles" xml:space="preserve">
+<value>Mediabestanden</value>
+</data>
+
+  <!-- Example
+  <data name="videolink.PlaceholderText" xml:space="preserve">
+    <value>Search video or paste URL...</value>
+  </data> -->
+</root>

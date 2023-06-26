@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+<data name="conversionDialog.SecondaryButtonText" xml:space="preserve">
+<value>Annuleren</value>
+</data>
+<data name="outputFormat.Header" xml:space="preserve">
+<value>Uitvoer formaat</value>
+</data>
+<data name="primarybuttonapply" xml:space="preserve">
+<value>Toepassen</value>
+</data>
+<data name="primarybuttoncreate" xml:space="preserve">
+<value>Creëren</value>
+</data>
+<data name="specificOptions.PrimaryButtonText" xml:space="preserve">
+<value>Toepassen</value>
+</data>
+<data name="specificOptions.SecondaryButtonText" xml:space="preserve">
+<value>Annuleren</value>
+</data>
+<data name="specificOptions.Title" xml:space="preserve">
+<value>Specifieke conversieopties</value>
+</data>
+<data name="titleEditPreset" xml:space="preserve">
+<value>Bewerk preset</value>
+</data>
+<data name="titleNewPreset" xml:space="preserve">
+<value>Nieuwe preset maken</value>
+</data>
+<data name="useAudio.Content" xml:space="preserve">
+<value>Audio</value>
+</data>
+<data name="useSpecificOptions.Content" xml:space="preserve">
+<value>Gebruik aangepaste conversieopties voor dit bestand</value>
+</data>
+<data name="useVideo.Content" xml:space="preserve">
+<value>Video</value>
+</data>
+<data name="presetName.Header" xml:space="preserve">
+<value>Naam</value>
+</data>
+<data name="videoCodec.Header" xml:space="preserve">
+<value>Video codec</value>
+</data>
+<data name="videoEncoder.Header" xml:space="preserve">
+<value>Video encoder</value>
+</data>
+<data name="audioCodec.Header" xml:space="preserve">
+<value>Audio codec</value>
+</data>
+<data name="audioEncoder.Header" xml:space="preserve">
+<value>Audio encoder</value>
+</data>
+
+  <!-- Example
+  <data name="videolink.PlaceholderText" xml:space="preserve">
+    <value>Search video or paste URL...</value>
+  </data> -->
+</root>

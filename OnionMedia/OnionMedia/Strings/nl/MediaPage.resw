@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+<data name="addBtn.Text" xml:space="preserve">
+<value>Toevoegen</value>
+</data>
+<data name="addFilesOnLeft.Text" xml:space="preserve">
+<value>Voeg bestanden toe met de knoppen aan de linker kant.</value>
+</data>
+<data name="addTooltip.ToolTipService.ToolTip" xml:space="preserve">
+<value>Voeg een preset toe</value>
+</data>
+<data name="aspectRatio.Text" xml:space="preserve">
+<value>Aspect ratio:</value>
+</data>
+<data name="audiobitrate.Header" xml:space="preserve">
+<value>Audiobitrate</value>
+</data>
+<data name="audiobitrate.PlaceholderText" xml:space="preserve">
+<value>Audiobitrate</value>
+</data>
+<data name="audiocodec.Content" xml:space="preserve">
+<value>Audiocodec</value>
+</data>
+<data name="audioInformation.Text" xml:space="preserve">
+<value>Audio informatie</value>
+</data>
+<data name="audioVolume.Header" xml:space="preserve">
+<value>Audio volume:</value>
+</data>
+<data name="cancelText.Content" xml:space="preserve">
+<value>Annuleer</value>
+</data>
+<data name="convertBtn.Text" xml:space="preserve">
+<value>Converteer</value>
+</data>
+<data name="custom" xml:space="preserve">
+<value>Aangepast</value>
+</data>
+<data name="editTagsBtn.Content" xml:space="preserve">
+<value>Tags bewerken</value>
+</data>
+<data name="editTooltip.ToolTipService.ToolTip" xml:space="preserve">
+<value>Bewerk preset</value>
+</data>
+<data name="file.Text" xml:space="preserve">
+<value>- Bestand</value>
+</data>
+<data name="fileAudioCodec.Text" xml:space="preserve">
+<value>Audiocodec:</value>
+</data>
+<data name="fileDuration.Text" xml:space="preserve">
+<value>Afspeelduur:</value>
+</data>
+<data name="fileInfo.Text" xml:space="preserve">
+<value>Bestandsinformatie</value>
+</data>
+<data name="fileName.Text" xml:space="preserve">
+<value>Naam:</value>
+</data>
+<data name="fileResolution.Text" xml:space="preserve">
+<value>Resolutie:</value>
+</data>
+<data name="fileSize.Text" xml:space="preserve">
+<value>Grootte:</value>
+</data>
+<data name="fileSuffix.Header" xml:space="preserve">
+<value>Achtervoegsel bestandsnaam:</value>
+</data>
+<data name="fileSuffix.PlaceholderText" xml:space="preserve">
+<value>Bijvoorbeeld: _converted</value>
+</data>
+<data name="fileType.Text" xml:space="preserve">
+<value>Type:</value>
+</data>
+<data name="fileVideoCodec.Text" xml:space="preserve">
+<value>Videocodec:</value>
+</data>
+<data name="fps.Header" xml:space="preserve">
+<value>Frames per seconde:</value>
+</data>
+<data name="framesPerSecond.Text" xml:space="preserve">
+<value>Frames per seconde:</value>
+</data>
+<data name="keepAspectRatio.Content" xml:space="preserve">
+<value>Stem de beeldverhouding af op de resolutie</value>
+</data>
+<data name="mergeFiles.Content" xml:space="preserve">
+<value>Bestanden samenvoegen</value>
+</data>
+<data name="outputFormat.Header" xml:space="preserve">
+<value>Uitvoer formaat</value>
+</data>
+<data name="progress.Text" xml:space="preserve">
+<value>Voortgang:</value>
+</data>
+<data name="removeBtn.Text" xml:space="preserve">
+<value>Verwijder</value>
+</data>
+<data name="removeTooltip.ToolTipService.ToolTip" xml:space="preserve">
+<value>Verwijder preset</value>
+</data>
+<data name="resolution.Text" xml:space="preserve">
+<value>Resolutie:</value>
+</data>
+<data name="selectPreset.Header" xml:space="preserve">
+<value>Selecteer een conversie-preset:</value>
+</data>
+<data name="shortFile.Text" xml:space="preserve">
+<value>Bestand inkorten</value>
+</data>
+<data name="tagChanges.Subtitle" xml:space="preserve">
+<value>De tags voor dit bestand zijn bijgewerkt.</value>
+</data>
+<data name="tagChanges.Title" xml:space="preserve">
+<value>Wijzigingen toegepast!</value>
+</data>
+<data name="useCustomBitrates.Text" xml:space="preserve">
+<value>Gebruik aangepaste bitrates:</value>
+</data>
+<data name="videobitrate.Header" xml:space="preserve">
+<value>Videobitrate</value>
+</data>
+<data name="videobitrate.PlaceholderText" xml:space="preserve">
+<value>Videobitrate</value>
+</data>
+<data name="videocodec.Content" xml:space="preserve">
+<value>Videocodec</value>
+</data>
+<data name="videoinformation.Text" xml:space="preserve">
+<value>Video-informatie</value>
+</data>
+
+  <!-- Example
+  <data name="videolink.PlaceholderText" xml:space="preserve">
+    <value>Search video or paste URL...</value>
+  </data> -->
+</root>

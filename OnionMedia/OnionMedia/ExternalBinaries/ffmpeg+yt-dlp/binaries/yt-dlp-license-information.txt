@@ -4,5 +4,11 @@ brotli (MIT)
 websockets (BSD-3-Clause)
 mutagen (GPLv2+)
 pycryptodomex (BSD-2-Clause)
+phantomJS (BSD-3-Clause)
 
-Source: https://github.com/yt-dlp/yt-dlp/pull/6685
+Source: https://github.com/yt-dlp/yt-dlp/commit/447afb9eaa65bc677e3245c83e53a8e69c174a3c
+Merged PR: https://github.com/yt-dlp/yt-dlp/pull/3345
+Manual changed line 447 in fragment.py from
+    def download_and_append_fragments_multiple(self, *args, pack_func=None, finish_func=None):
+to
+    def download_and_append_fragments_multiple(self, *args, pack_func=None, finish_func=None, is_fatal=None):
