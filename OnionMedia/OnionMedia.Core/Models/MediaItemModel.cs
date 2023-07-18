@@ -148,7 +148,7 @@ namespace OnionMedia.Core.Models
 
             //Create a new temp directory
             string fileTempDir;
-            do fileTempDir = pathProvider.ConverterTempdir + $@"\{Path.GetRandomFileName()}";
+            do fileTempDir = Path.Combine(pathProvider.ConverterTempdir, Path.GetRandomFileName());
             while (Directory.Exists(fileTempDir));
             Directory.CreateDirectory(fileTempDir);
 

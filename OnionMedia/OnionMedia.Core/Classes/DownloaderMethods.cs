@@ -299,7 +299,7 @@ namespace OnionMedia.Core.Classes
 
 			string? formatString;
 			if (formatData?.FormatId != null)
-				formatString = $"{formatData.FormatId}{(stream.Video.Formats.Any(f => f.VideoBitrate == null && f.AudioBitrate != null) ? "+bestaudio[ext=m4a]" : string.Empty)}";
+				formatString = $"{formatData.FormatId}{((formatData.AudioCodec.IsNullOrWhiteSpace() || formatData.AudioCodec == "none") && formatData.AudioBitrate is null or 0 && stream.Video.Formats.Any(f => f.VideoBitrate is null or 0 && f.AudioBitrate > 0) ? "+bestaudio[ext=m4a]" : string.Empty)}";
 			else
 				formatString = stream.QualityLabel.IsNullOrEmpty() ? "bestvideo+bestaudio/best" : stream.Format;
 
@@ -357,7 +357,7 @@ namespace OnionMedia.Core.Classes
 		private static FormatData GetBestTrimmableFormat(StreamItemModel stream)
 		{
 			bool isFromYoutube = stream.Video.Url.Contains("youtube.com") || stream.Video.Url.Contains("youtu.be");
-			var validFormats = stream.FormatQualityLabels.Where(f => ((f.Key.Protocol != "http_dash_segments" && !isFromYoutube) || (isFromYoutube && !f.Key.FormatNote.ToLower().Contains("dash video"))) && f.Key.Extension != "3gp" && f.Key.HDR == "SDR");
+			var validFormats = stream.FormatQualityLabels.Where(f => ((f.Key.Protocol != "http_dash_segments" && !isFromYoutube) || (isFromYoutube && !(f.Key.FormatNote ?? string.Empty).ToLower().Contains("dash video"))) && f.Key.Extension != "3gp" && f.Key.HDR == "SDR");
 			var heightSortedFormats = validFormats.OrderByDescending(f => f.Key.Height);
 			var extSortedFormats = heightSortedFormats.ThenBy(f => f.Key.Extension == "mp4" ? 0 : 1);
 			var selectedFormat = stream.QualityLabel.IsNullOrEmpty()

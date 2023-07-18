@@ -29,6 +29,7 @@ using OnionMedia.Core.Classes;
 using OnionMedia.Core.Extensions;
 using System.Text.RegularExpressions;
 using OnionMedia.Core.Services;
+using YoutubeDLSharp.Options;
 
 namespace OnionMedia.Core.ViewModels
 {
@@ -214,7 +215,7 @@ namespace OnionMedia.Core.ViewModels
                 }
 
                 ScanVideoCount++;
-                var data = await DownloaderMethods.downloadClient.RunVideoDataFetch(videolink);
+                var data = await DownloaderMethods.downloadClient.RunVideoDataFetch(videolink, overrideOptions: OptionSet.FromString(new[] {"--extractor-args \"youtube:player_client=android,web\""}));
 
                 if (data.Data == null && urlClone == SearchTerm)
                 {
