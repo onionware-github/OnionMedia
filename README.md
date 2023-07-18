@@ -1,5 +1,8 @@
 
 # OnionMedia - The Free Media Converter and Downloader
+
+You use Linux? Check out [OnionMedia X](https://github.com/onionware-github/OnionMedia-X)!
+
 <a href="https://github.com/onionware-github/OnionMedia/blob/main/images/icon.svg">
   <img src="https://github.com/onionware-github/OnionMedia/blob/main/images/icon.svg" width="275"/>
 </a>
