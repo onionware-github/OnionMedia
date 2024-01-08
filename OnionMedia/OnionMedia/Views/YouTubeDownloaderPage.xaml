@@ -482,7 +482,7 @@
             </Grid.ColumnDefinitions>
             <FontIcon Glyph="&#xEB52;" FontSize="35" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{ThemeResource SystemAccentColor}"/>
             <TextBlock x:Uid="/DownloaderPage/donationBanner" Grid.Column="1" Margin="15,5" FontSize="16" TextWrapping="Wrap" VerticalAlignment="Center" MaxLines="4" TextTrimming="CharacterEllipsis"/>
-            <Button Grid.Column="3" Content="Donate ❤" Click="OpenDonationPage" Style="{StaticResource AccentButtonStyle}"/>
+            <Button Grid.Column="3" x:Uid="/DownloaderPage/donationBtn" Click="OpenDonationPage" Style="{StaticResource AccentButtonStyle}"/>
         </Grid>
     </Grid>
 </Page>

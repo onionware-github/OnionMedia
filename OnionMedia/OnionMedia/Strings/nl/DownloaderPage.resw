@@ -132,6 +132,9 @@
   <data name="donationBanner.Text" xml:space="preserve">
     <value>OnionMedia is een vrijwillig project van een individuele ontwikkelaar, open en advertentievrij. Als u mijn werk waardeert en het zich kunt veroorloven, kunt u mij steunen met een kleine donatie.</value>
   </data>
+  <data name="donationBtn.Content" xml:space="preserve">
+    <value>Doneer ❤</value>
+  </data>
   <data name="done.Text" xml:space="preserve">
     <value>Klaar</value>
   </data>
