@@ -65,6 +65,7 @@ namespace OnionMedia.Core.Classes
 				throw new ArgumentNullException(nameof(stream));
 
 			OptionSet ytOptions = new() { RestrictFilenames = true };
+			ytOptions.AddCustomOption("--extractor-args", "youtube:player_client=android,web");
 
 			//Creates a temp directory if it does not already exist.
 			Directory.CreateDirectory(pathProvider.DownloaderTempdir);
