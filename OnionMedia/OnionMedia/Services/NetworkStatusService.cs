@@ -19,14 +19,23 @@ namespace OnionMedia.Services
     {
         public NetworkStatusService()
         {
-            NetworkInformation.NetworkStatusChanged += o => ConnectionStateChanged?.Invoke(this, NetworkInformation.GetInternetConnectionProfile() != null);
+            NetworkInformation.NetworkStatusChanged += o => ConnectionStateChanged?.Invoke(this, IsNetworkConnectionAvailable());
         }
 
         public event EventHandler<bool> ConnectionStateChanged;
 
         public bool IsNetworkConnectionAvailable()
         {
-            return NetworkInformation.GetInternetConnectionProfile() != null;
+	        try
+	        {
+		        var connectionProfile = NetworkInformation.GetInternetConnectionProfile();
+				return connectionProfile is not null;
+			}
+	        catch
+	        {
+				//if in doubt, return true
+				return true;
+	        }
         }
     }
 }

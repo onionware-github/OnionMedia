@@ -288,6 +288,7 @@ namespace OnionMedia.Core.Models
                 argBuilder.Append($"-threads {AppSettings.Instance.MaxThreadCountForConversion} ");
 
             outputPath = Path.ChangeExtension(filePath, options.Format.Name);
+            argBuilder.Append("-map 0 ");
             argBuilder.Append($"\"{outputPath}\"");
             return argBuilder.ToString();
         }

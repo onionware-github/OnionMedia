@@ -216,6 +216,9 @@
   <data name="setStoragePaths.Content" xml:space="preserve">
     <value>Set storage paths</value>
   </data>
+  <data name="showDonationBanner.Header" xml:space="preserve">
+    <value>Show donation banner</value>
+  </data>
   <data name="startPageBox.Header" xml:space="preserve">
     <value>Startpage:</value>
   </data>

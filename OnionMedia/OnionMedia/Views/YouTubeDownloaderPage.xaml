@@ -32,8 +32,7 @@
         <ResourceDictionary Source="../XamlDicts/ExternalResources.xaml"/>
     </Page.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollMode="Disabled">
-
+    <Grid x:Name="mainFrame">
         <!-- Different values for different scenarios are set via Visual States.
         In this case, the positioning of the elements is adjusted to different sizes. -->
         <VisualStateManager.VisualStateGroups>
@@ -113,7 +112,7 @@
                         <StateTrigger IsActive="{x:Bind g:UIResources.RunningOnWin11, Mode=OneTime}"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="ContentArea.Style" Value="{StaticResource GridStyleWin11}"/>
+                        <Setter Target="mainFrame.Style" Value="{StaticResource GridStyleWin11}"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="defaultStyle">
@@ -121,180 +120,180 @@
                         <StateTrigger IsActive="True"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="ContentArea.Style" Value="{StaticResource GridStyle}"/>
+                        <Setter Target="mainFrame.Style" Value="{StaticResource GridStyle}"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <Grid x:Name="ContentArea" Padding="24,0">
+            <StackPanel Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{x:Bind ViewModel.NetworkAvailable, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
+                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xEB5E;" FontSize="40" HorizontalAlignment="Center"/>
+                <TextBlock x:Uid="/DownloaderPage/noInternetConnection" FontSize="20" HorizontalAlignment="Center"/>
+                <TextBlock x:Uid="/DownloaderPage/noInternetConnectionDescription" TextWrapping="WrapWholeWords" HorizontalAlignment="Center"/>
+            </StackPanel>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
+        <ScrollViewer x:Name="scrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollMode="Disabled" VerticalAlignment="Top">
+            <Grid x:Name="ContentArea" Padding="24,0">
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
 
-            <Grid x:Name="connectionErrorGrid" Grid.RowSpan="2" Grid.ColumnSpan="2" Visibility="{x:Bind ViewModel.NetworkAvailable, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
-                <StackPanel Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xEB5E;" FontSize="40" HorizontalAlignment="Center"/>
-                    <TextBlock x:Uid="/DownloaderPage/noInternetConnection" FontSize="20" HorizontalAlignment="Center"/>
-                    <TextBlock x:Uid="/DownloaderPage/noInternetConnectionDescription" TextWrapping="WrapWholeWords" HorizontalAlignment="Center"/>
-                </StackPanel>
-            </Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
 
-            <StackPanel x:Name="editGrid" Margin="0,10" Padding="10" Spacing="10" Visibility="{x:Bind ViewModel.NetworkAvailable}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="45"/>
-                    </Grid.ColumnDefinitions>
+                <StackPanel x:Name="editGrid" Margin="0,10" Padding="10" Spacing="10" Visibility="{x:Bind ViewModel.NetworkAvailable}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="45"/>
+                        </Grid.ColumnDefinitions>
 
-                    <StackPanel>
-                        <Grid Margin="0,0,3,0">
-                            <TextBox x:Name="videolink" x:Uid="/DownloaderPage/videolink" Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsSpellCheckEnabled="False"
+                        <StackPanel>
+                            <Grid Margin="0,0,3,0">
+                                <TextBox x:Name="videolink" x:Uid="/DownloaderPage/videolink" Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsSpellCheckEnabled="False"
                                  ext:TextBoxExtensions.Regex="{x:Bind c:GlobalResources.URLREGEX, Mode=OneTime}"
                                  ext:TextBoxExtensions.IsValid="{x:Bind ViewModel.ValidUrl, Mode=TwoWay}">
-                                <TextBox.KeyboardAccelerators>
-                                    <KeyboardAccelerator Modifiers="None" Key="Enter">
-                                        <i:Interaction.Behaviors>
-                                            <core:EventTriggerBehavior EventName="Invoked">
-                                                <core:InvokeCommandAction Command="{x:Bind ViewModel.AddVideoCommand}" CommandParameter="{x:Bind videolink.Text}"/>
-                                            </core:EventTriggerBehavior>
-                                        </i:Interaction.Behaviors>
-                                    </KeyboardAccelerator>
-                                </TextBox.KeyboardAccelerators>
-                                <i:Interaction.Behaviors>
-                                    <core:EventTriggerBehavior EventName="TextChanged">
-                                        <core:InvokeCommandAction Command="{x:Bind ViewModel.ClearResultsCommand}"/>
-                                    </core:EventTriggerBehavior>
-                                </i:Interaction.Behaviors>
-                            </TextBox>
-                            <ProgressRing IsActive="{x:Bind ViewModel.AddingVideo}" Margin="0,0,30,0" Width="20" Height="20" HorizontalAlignment="Right"/>
-                        </Grid>
+                                    <TextBox.KeyboardAccelerators>
+                                        <KeyboardAccelerator Modifiers="None" Key="Enter">
+                                            <i:Interaction.Behaviors>
+                                                <core:EventTriggerBehavior EventName="Invoked">
+                                                    <core:InvokeCommandAction Command="{x:Bind ViewModel.AddVideoCommand}" CommandParameter="{x:Bind videolink.Text}"/>
+                                                </core:EventTriggerBehavior>
+                                            </i:Interaction.Behaviors>
+                                        </KeyboardAccelerator>
+                                    </TextBox.KeyboardAccelerators>
+                                    <i:Interaction.Behaviors>
+                                        <core:EventTriggerBehavior EventName="TextChanged">
+                                            <core:InvokeCommandAction Command="{x:Bind ViewModel.ClearResultsCommand}"/>
+                                        </core:EventTriggerBehavior>
+                                    </i:Interaction.Behaviors>
+                                </TextBox>
+                                <ProgressRing IsActive="{x:Bind ViewModel.AddingVideo}" Margin="0,0,30,0" Width="20" Height="20" HorizontalAlignment="Right"/>
+                            </Grid>
 
-                        <ListView ItemsSource="{x:Bind ViewModel.SearchResults}"
+                            <ListView ItemsSource="{x:Bind ViewModel.SearchResults}"
                                   SelectionMode="None"
                                   IsItemClickEnabled="True"
                                   Visibility="{x:Bind ViewModel.AnyResults}"
                                   BorderBrush="{ThemeResource AppBarItemDisabledForegroundThemeBrush}"
                                   BorderThickness="3,0,3,3" CornerRadius="0,0,5,5"
-                                  MaxHeight="400" Margin="0,0,3,0">
+                                  MaxHeight="400" Margin="0,0,3,0" x:Name="searchResultsList">
 
-                            <i:Interaction.Behaviors>
-                                <core:EventTriggerBehavior EventName="ItemClick">
-                                    <core:InvokeCommandAction Command="{x:Bind ViewModel.AddSearchedVideo}" InputConverter="{StaticResource ItemClickEventArgsToClickedItemConverter}"/>
-                                </core:EventTriggerBehavior>
-                            </i:Interaction.Behaviors>
+                                <i:Interaction.Behaviors>
+                                    <core:EventTriggerBehavior EventName="ItemClick">
+                                        <core:InvokeCommandAction Command="{x:Bind ViewModel.AddSearchedVideo}" InputConverter="{StaticResource ItemClickEventArgsToClickedItemConverter}"/>
+                                    </core:EventTriggerBehavior>
+                                </i:Interaction.Behaviors>
 
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="m:SearchItemModel" x:DefaultBindMode="OneTime">
-                                    <Grid>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="m:SearchItemModel" x:DefaultBindMode="OneTime">
+                                        <Grid>
 
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="80"/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="80"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
 
-                                        <Image Source="{x:Bind ThumbnailUrl}"/>
+                                            <Image Source="{x:Bind ThumbnailUrl}"/>
 
-                                        <Grid Column="1">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="3*"/>
-                                                <RowDefinition Height="2*"/>
-                                            </Grid.RowDefinitions>
+                                            <Grid Column="1">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="3*"/>
+                                                    <RowDefinition Height="2*"/>
+                                                </Grid.RowDefinitions>
 
-                                            <TextBlock Text="{x:Bind Title}" Style="{StaticResource MetaInfoTextStyle}"/>
-                                            <TextBlock Text="{x:Bind Author}" Grid.Row="1" Margin="5,0"/>
+                                                <TextBlock Text="{x:Bind Title}" Style="{StaticResource MetaInfoTextStyle}"/>
+                                                <TextBlock Text="{x:Bind Author}" Grid.Row="1" Margin="5,0"/>
+                                            </Grid>
                                         </Grid>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
 
-                    <Button x:Name="searchButton"
+                        <Button x:Name="searchButton"
                             Command="{x:Bind ViewModel.AddVideoCommand}"
                             CommandParameter="{x:Bind videolink.Text}"
                             IsEnabled="{x:Bind ViewModel.DownloadFileCommand.IsRunning, Converter={StaticResource InverseBoolConverter}}"
                             Grid.Column="1" VerticalAlignment="Top" Width="45">
-                        <Grid>
-                            <SymbolIcon Symbol="Add" Visibility="{x:Bind ViewModel.ValidUrl}">
-                                <ani:Explicit.Animations>
-                                    <ani:AnimationSet x:Name="RotateInAddIcon">
-                                        <ani:RotationInDegreesAnimation From="270"
+                            <Grid>
+                                <SymbolIcon Symbol="Add" Visibility="{x:Bind ViewModel.ValidUrl}">
+                                    <ani:Explicit.Animations>
+                                        <ani:AnimationSet x:Name="RotateInAddIcon">
+                                            <ani:RotationInDegreesAnimation From="270"
                                                                         To="360"
                                                                         Duration="0:0:0.2"
                                                                         EasingType="Sine"
                                                                         EasingMode="EaseOut"/>
-                                    </ani:AnimationSet>
-                                </ani:Explicit.Animations>
-                                <i:Interaction.Behaviors>
-                                    <core:DataTriggerBehavior Binding="{x:Bind ViewModel.ValidUrl}" Value="True">
-                                        <bhv:StartAnimationAction Animation="{x:Bind RotateInAddIcon, Mode=OneTime}"/>
-                                    </core:DataTriggerBehavior>
-                                </i:Interaction.Behaviors>
-                            </SymbolIcon>
-                            <SymbolIcon Symbol="Find" Visibility="{x:Bind ViewModel.ValidUrl, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
-                                <ani:Explicit.Animations>
-                                    <ani:AnimationSet x:Name="RotateInSearchIcon">
-                                        <ani:RotationInDegreesAnimation From="90"
+                                        </ani:AnimationSet>
+                                    </ani:Explicit.Animations>
+                                    <i:Interaction.Behaviors>
+                                        <core:DataTriggerBehavior Binding="{x:Bind ViewModel.ValidUrl}" Value="True">
+                                            <bhv:StartAnimationAction Animation="{x:Bind RotateInAddIcon, Mode=OneTime}"/>
+                                        </core:DataTriggerBehavior>
+                                    </i:Interaction.Behaviors>
+                                </SymbolIcon>
+                                <SymbolIcon Symbol="Find" Visibility="{x:Bind ViewModel.ValidUrl, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
+                                    <ani:Explicit.Animations>
+                                        <ani:AnimationSet x:Name="RotateInSearchIcon">
+                                            <ani:RotationInDegreesAnimation From="90"
                                                                         To="0"
                                                                         Duration="0:0:0.2"
                                                                         EasingType="Sine"
                                                                         EasingMode="EaseOut"/>
-                                    </ani:AnimationSet>
-                                </ani:Explicit.Animations>
-                                <i:Interaction.Behaviors>
-                                    <core:DataTriggerBehavior Binding="{x:Bind ViewModel.ValidUrl}" x:Name="rotateInSearchIconTrigger">
-                                        <bhv:StartAnimationAction Animation="{x:Bind RotateInSearchIcon, Mode=OneTime}"/>
-                                    </core:DataTriggerBehavior>
-                                </i:Interaction.Behaviors>
-                            </SymbolIcon>
-                        </Grid>
-                    </Button>
-                    <TeachingTip x:Uid="/DownloaderPage/noVideoFound"
+                                        </ani:AnimationSet>
+                                    </ani:Explicit.Animations>
+                                    <i:Interaction.Behaviors>
+                                        <core:DataTriggerBehavior Binding="{x:Bind ViewModel.ValidUrl}" x:Name="rotateInSearchIconTrigger">
+                                            <bhv:StartAnimationAction Animation="{x:Bind RotateInSearchIcon, Mode=OneTime}"/>
+                                        </core:DataTriggerBehavior>
+                                    </i:Interaction.Behaviors>
+                                </SymbolIcon>
+                            </Grid>
+                        </Button>
+                        <TeachingTip x:Uid="/DownloaderPage/noVideoFound"
                                  IsOpen="{x:Bind ViewModel.VideoNotFound}"
                                  Target="{x:Bind videolink, Mode=OneTime}"/>
-                </Grid>
+                    </Grid>
 
 
-                <StackPanel>
-                    <TextBlock x:Uid="/DownloaderPage/selectFileFormat" Margin="0,10" FontWeight="SemiBold" FontSize="16"/>
-                    <RadioButton GroupName="FormatSelection" x:Uid="/DownloaderPage/Mp3" IsEnabled="{x:Bind ViewModel.QueueIsNotEmpty}"/>
-                    <RadioButton GroupName="FormatSelection" x:Uid="/DownloaderPage/Mp4" IsEnabled="{x:Bind ViewModel.QueueIsNotEmpty}" IsChecked="{x:Bind ViewModel.GetMP4, Mode=TwoWay}"/>
-                </StackPanel>
+                    <StackPanel>
+                        <TextBlock x:Uid="/DownloaderPage/selectFileFormat" Margin="0,10" FontWeight="SemiBold" FontSize="16"/>
+                        <RadioButton GroupName="FormatSelection" x:Uid="/DownloaderPage/Mp3" IsEnabled="{x:Bind ViewModel.QueueIsNotEmpty}"/>
+                        <RadioButton GroupName="FormatSelection" x:Uid="/DownloaderPage/Mp4" IsEnabled="{x:Bind ViewModel.QueueIsNotEmpty}" IsChecked="{x:Bind ViewModel.GetMP4, Mode=TwoWay}"/>
+                    </StackPanel>
 
-                <StackPanel Visibility="{x:Bind ViewModel.ResolutionsAvailable}">
-                    <TextBlock x:Uid="/DownloaderPage/selectQuality" Margin="0,0,0,5" FontWeight="SemiBold" FontSize="16"/>
-                    <TextBlock x:Uid="/DownloaderPage/upTo" Foreground="Gray" Visibility="{x:Bind ViewModel.MultipleVideos}"/>
-                    <ComboBox Name="qualitySelection"
+                    <StackPanel Visibility="{x:Bind ViewModel.ResolutionsAvailable}">
+                        <TextBlock x:Uid="/DownloaderPage/selectQuality" Margin="0,0,0,5" FontWeight="SemiBold" FontSize="16"/>
+                        <TextBlock x:Uid="/DownloaderPage/upTo" Foreground="Gray" Visibility="{x:Bind ViewModel.MultipleVideos}"/>
+                        <ComboBox Name="qualitySelection"
                               Margin="0,2"
                               ItemsSource="{x:Bind ViewModel.Resolutions}"
                               SelectedItem="{x:Bind ViewModel.SelectedQuality, Mode=TwoWay}"
                               IsEnabled="{x:Bind ViewModel.QueueIsNotEmpty}"/>
+                    </StackPanel>
+
+                    <!-- TRIM VIDEO -->
+                    <TextBlock x:Uid="/DownloaderPage/shortVideo" Margin="0,5,0,0" HorizontalAlignment="Left" FontWeight="SemiBold" FontSize="16" Visibility="{x:Bind ViewModel.QueueIsEmpty, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"/>
+                    <uc:TimeRangeSelector TimeSpanGroup="{x:Bind ViewModel.SelectedVideo.TimeSpanGroup}" IsReadOnly="{x:Bind ViewModel.SelectionIsInRange(ViewModel.Videos, videoQueue.SelectedIndex, x:True)}" IsEnabled="{x:Bind ViewModel.QueueIsNotEmpty}" Visibility="{x:Bind ViewModel.QueueIsEmpty, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"/>
                 </StackPanel>
 
-                <!-- TRIM VIDEO -->
-                <TextBlock x:Uid="/DownloaderPage/shortVideo" Margin="0,5,0,0" HorizontalAlignment="Left" FontWeight="SemiBold" FontSize="16" Visibility="{x:Bind ViewModel.QueueIsEmpty, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"/>
-                <uc:TimeRangeSelector TimeSpanGroup="{x:Bind ViewModel.SelectedVideo.TimeSpanGroup}" IsReadOnly="{x:Bind ViewModel.SelectionIsInRange(ViewModel.Videos, videoQueue.SelectedIndex, x:True)}" IsEnabled="{x:Bind ViewModel.QueueIsNotEmpty}" Visibility="{x:Bind ViewModel.QueueIsEmpty, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"/>
-            </StackPanel>
+                <Grid Grid.Column="1" x:Name="infoGrid" Visibility="{x:Bind ViewModel.NetworkAvailable}">
 
-            <Grid Grid.Column="1" x:Name="infoGrid" Visibility="{x:Bind ViewModel.NetworkAvailable}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="20"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-
-                <!-- <TextBlock x:Uid="/DownloaderPage/videoInfoHeaderText" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="40" Grid.Row="1" TextWrapping="WrapWholeWords"  Visibility="{x:Bind ViewModel.QueueIsEmpty, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"/>
+                    <!-- <TextBlock x:Uid="/DownloaderPage/videoInfoHeaderText" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="40" Grid.Row="1" TextWrapping="WrapWholeWords"  Visibility="{x:Bind ViewModel.QueueIsEmpty, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"/>
                 <StackPanel Grid.Row="2" Visibility="{x:Bind ViewModel.QueueIsNotEmpty}">
                     <TextBlock Name="videoName" Text="{x:Bind ViewModel.SelectedVideo.Video.Title}" Style="{StaticResource MetaInfoTextStyle}"/>
                     <TextBlock Name="videoUploader" Text="{x:Bind ViewModel.SelectedVideo.Video.Uploader}" Style="{StaticResource MetaInfoTextStyle}"/>
@@ -302,177 +301,188 @@
                 </StackPanel> -->
 
 
-                <StackPanel Grid.Row="3" Name="playlistGrid">
+                    <StackPanel Grid.Row="3" Name="playlistGrid">
 
-                    <!--Grid for the ListView-->
-                    <Grid Background="{ThemeResource AppBarItemDisabledForegroundThemeBrush}"
+                        <!--Grid for the ListView-->
+                        <Grid Background="{ThemeResource AppBarItemDisabledForegroundThemeBrush}"
                       CornerRadius="10">
 
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="10"/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="10"/>
-                        </Grid.ColumnDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="10"/>
+                            </Grid.ColumnDefinitions>
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="30"/>
-                            <RowDefinition/>
-                            <RowDefinition Height="10"/>
-                        </Grid.RowDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition/>
+                                <RowDefinition Height="10"/>
+                            </Grid.RowDefinitions>
 
 
-                        <TextBlock x:Uid="/DownloaderPage/currentPlaylist" FontSize="18" FontWeight="SemiBold" Foreground="Black" Margin="3" Grid.Column="1"/>
+                            <TextBlock x:Uid="/DownloaderPage/currentPlaylist" FontSize="18" FontWeight="SemiBold" Foreground="Black" Margin="3" Grid.Column="1"/>
 
-                        <ListView Name="videoQueue" Grid.Column="1" Grid.Row="1"
+                            <ListView Name="videoQueue" Grid.Column="1" Grid.Row="1"
                                   ItemsSource="{x:Bind ViewModel.Videos}" CornerRadius="10"
                                   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                                   SelectedItem="{x:Bind ViewModel.SelectedVideo, Mode=TwoWay}" MaxHeight="300">
 
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="m:StreamItemModel">
-                                    <ListViewItem x:Name="itemRoot">
-                                        <Grid Padding="5" MinHeight="85">
-                                            <Grid.ContextFlyout>
-                                                <MenuFlyout>
-                                                    <MenuFlyoutItem x:Uid="/DownloaderPage/openURLInBrowser" Command="{x:Bind vm:YouTubeDownloaderViewModel.OpenUrlCommand}" CommandParameter="{x:Bind Video.Url}"/>
-                                                </MenuFlyout>
-                                            </Grid.ContextFlyout>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="m:StreamItemModel">
+                                        <ListViewItem x:Name="itemRoot">
+                                            <Grid Padding="5" MinHeight="85">
+                                                <Grid.ContextFlyout>
+                                                    <MenuFlyout>
+                                                        <MenuFlyoutItem x:Uid="/DownloaderPage/openURLInBrowser" Command="{x:Bind vm:YouTubeDownloaderViewModel.OpenUrlCommand}" CommandParameter="{x:Bind Video.Url}"/>
+                                                    </MenuFlyout>
+                                                </Grid.ContextFlyout>
 
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="80"/>
-                                                <ColumnDefinition Width="auto"/>
-                                                <ColumnDefinition/>
-                                            </Grid.ColumnDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="80"/>
+                                                    <ColumnDefinition Width="auto"/>
+                                                    <ColumnDefinition/>
+                                                </Grid.ColumnDefinitions>
 
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition/>
-                                                <RowDefinition Height="auto"/>
-                                                <RowDefinition Height="auto"/>
-                                            </Grid.RowDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition/>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="auto"/>
+                                                </Grid.RowDefinitions>
 
 
-                                            <Frame x:Name="frame" MaxHeight="75" CornerRadius="3" VerticalAlignment="Center" Grid.RowSpan="2">
-                                                <Image Source="{x:Bind Video.Thumbnail, Mode=OneTime}" Stretch="Uniform"/>
-                                            </Frame>
+                                                <Frame x:Name="frame" MaxHeight="75" CornerRadius="3" VerticalAlignment="Center" Grid.RowSpan="2">
+                                                    <Image Source="{x:Bind Video.Thumbnail, Mode=OneTime}" Stretch="Uniform"/>
+                                                </Frame>
 
-                                            <TextBlock Text="{x:Bind Video.Title, Mode=OneTime}" TextTrimming="CharacterEllipsis" MaxLines="2" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource MetaInfoTextStyle}"/>
+                                                <TextBlock Text="{x:Bind Video.Title, Mode=OneTime}" TextTrimming="CharacterEllipsis" MaxLines="2" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource MetaInfoTextStyle}"/>
 
-                                            <ProgressRing Grid.Row="1" Grid.Column="1" Margin="5,0" IsIndeterminate="False" Value="{x:Bind ProgressInfo.Progress}" Visibility="{x:Bind Downloading}"/>
-                                            <ProgressRing Grid.Row="1" Grid.Column="1" Margin="5,0" IsIndeterminate="False" Value="{x:Bind ConversionProgress}" Visibility="{x:Bind Converting}"/>
-                                            <ProgressRing Grid.Row="1" Grid.Column="1" Margin="5,0" IsIndeterminate="True" Visibility="{x:Bind Moving}"/>
-                                            <StackPanel Grid.Row="1" Grid.Column="2" Margin="5,2" Visibility="{x:Bind CustomTimes, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
-                                                <TextBlock Text="{x:Bind ProgressInfo.State}" Visibility="{x:Bind Downloading}"/>
-                                                <TextBlock Text="{x:Bind ProgressInfo.DownloadSpeed}" Visibility="{x:Bind Downloading}"/>
-                                                <TextBlock x:Uid="/DownloaderPage/savingFile" Visibility="{x:Bind Moving}"/>
-                                            </StackPanel>
-                                            <Grid Grid.Row="1" Grid.Column="2" Margin="5,2" Visibility="{x:Bind CustomTimes}">
-                                                <TextBlock x:Uid="/DownloaderPage/downloading" Visibility="{x:Bind Downloading}"/>
-                                            </Grid>
-                                            <TextBlock x:Uid="/DownloaderPage/converting" Grid.Row="1" Grid.Column="2" Margin="5,2" Visibility="{x:Bind Converting}"/>
-                                            <StackPanel Orientation="Horizontal" Spacing="5" Grid.Row="1" Grid.Column="2" Margin="10,0,10,5" Visibility="{x:Bind Success}">
-                                                <SymbolIcon Symbol="Accept" Foreground="Green"/>
-                                                <TextBlock x:Uid="/DownloaderPage/done"/>
-                                            </StackPanel>
-                                            <StackPanel Orientation="Horizontal" Spacing="5" Grid.Row="1" Grid.Column="2" Margin="10,0,10,5" Visibility="{x:Bind Failed}">
-                                                <SymbolIcon Symbol="Cancel" Foreground="Red"/>
-                                                <TextBlock x:Uid="/DownloaderPage/failed"/>
-                                            </StackPanel>
-                                            <TextBlock Grid.Row="2" Grid.ColumnSpan="3" Margin="0,5" MaxLines="2" TextTrimming="CharacterEllipsis" Visibility="{Binding ElementName=itemRoot, Path=IsSelected, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                                <ProgressRing Grid.Row="1" Grid.Column="1" Margin="5,0" IsIndeterminate="False" Value="{x:Bind ProgressInfo.Progress}" Visibility="{x:Bind Downloading}"/>
+                                                <ProgressRing Grid.Row="1" Grid.Column="1" Margin="5,0" IsIndeterminate="False" Value="{x:Bind ConversionProgress}" Visibility="{x:Bind Converting}"/>
+                                                <ProgressRing Grid.Row="1" Grid.Column="1" Margin="5,0" IsIndeterminate="True" Visibility="{x:Bind Moving}"/>
+                                                <StackPanel Grid.Row="1" Grid.Column="2" Margin="5,2" Visibility="{x:Bind CustomTimes, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
+                                                    <TextBlock Text="{x:Bind ProgressInfo.State}" Visibility="{x:Bind Downloading}"/>
+                                                    <TextBlock Text="{x:Bind ProgressInfo.DownloadSpeed}" Visibility="{x:Bind Downloading}"/>
+                                                    <TextBlock x:Uid="/DownloaderPage/savingFile" Visibility="{x:Bind Moving}"/>
+                                                </StackPanel>
+                                                <Grid Grid.Row="1" Grid.Column="2" Margin="5,2" Visibility="{x:Bind CustomTimes}">
+                                                    <TextBlock x:Uid="/DownloaderPage/downloading" Visibility="{x:Bind Downloading}"/>
+                                                </Grid>
+                                                <TextBlock x:Uid="/DownloaderPage/converting" Grid.Row="1" Grid.Column="2" Margin="5,2" Visibility="{x:Bind Converting}"/>
+                                                <StackPanel Orientation="Horizontal" Spacing="5" Grid.Row="1" Grid.Column="2" Margin="10,0,10,5" Visibility="{x:Bind Success}">
+                                                    <SymbolIcon Symbol="Accept" Foreground="Green"/>
+                                                    <TextBlock x:Uid="/DownloaderPage/done"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Spacing="5" Grid.Row="1" Grid.Column="2" Margin="10,0,10,5" Visibility="{x:Bind Failed}">
+                                                    <SymbolIcon Symbol="Cancel" Foreground="Red"/>
+                                                    <TextBlock x:Uid="/DownloaderPage/failed"/>
+                                                </StackPanel>
+                                                <TextBlock Grid.Row="2" Grid.ColumnSpan="3" Margin="0,5" MaxLines="2" TextTrimming="CharacterEllipsis" Visibility="{Binding ElementName=itemRoot, Path=IsSelected, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
                                             <Run Text="{x:Bind Video.Uploader}"/>
                                             <Run Text="|"/>
                                             <Run Text="{x:Bind Duration}"/>
                                             <Run Text="|"/>
                                             <Run Text="{x:Bind Video.UploadDate.Value.Date.ToShortDateString()}"/>
-                                            </TextBlock>
-                                        </Grid>
-                                    </ListViewItem>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                            <ListView.Footer>
-                                <Grid Padding="20" Visibility="{x:Bind ViewModel.QueueIsEmpty}">
-                                    <TextBlock x:Uid="/DownloaderPage/addVideosOnLeft" FontWeight="SemiBold" FontSize="18" TextTrimming="CharacterEllipsis" HorizontalTextAlignment="Center"/>
-                                </Grid>
-                            </ListView.Footer>
-                        </ListView>
-                    </Grid>
+                                                </TextBlock>
+                                            </Grid>
+                                        </ListViewItem>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                                <ListView.Footer>
+                                    <Grid Padding="20" Visibility="{x:Bind ViewModel.QueueIsEmpty}">
+                                        <TextBlock x:Uid="/DownloaderPage/addVideosOnLeft" FontWeight="SemiBold" FontSize="18" TextTrimming="CharacterEllipsis" HorizontalTextAlignment="Center"/>
+                                    </Grid>
+                                </ListView.Footer>
+                            </ListView>
+                        </Grid>
 
-                    <Grid Margin="2,5">
+                        <Grid Margin="2,5">
 
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition Height="auto"/>
-                        </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
 
-                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                            <Button Margin="2"
+                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                <Button Margin="2"
                                 Command="{x:Bind ViewModel.RestartDownloadCommand}"
                                 CommandParameter="{x:Bind videoQueue.SelectedItem}"
                                 Visibility="Collapsed">
+                                    <StackPanel>
+                                        <SymbolIcon Symbol="Refresh"/>
+                                        <TextBlock x:Uid="/DownloaderPage/restartBtn"/>
+                                    </StackPanel>
+                                </Button>
 
-                                <StackPanel>
-                                    <SymbolIcon Symbol="Refresh"/>
-                                    <TextBlock x:Uid="/DownloaderPage/restartBtn"/>
-                                </StackPanel>
-                            </Button>
-
-                            <Button Margin="2"
+                                <Button Margin="2"
                                     Style="{StaticResource AccentButtonStyle}"
                                     IsEnabled="{x:Bind ViewModel.ReadyToDownload}"
                                     Command="{x:Bind ViewModel.DownloadFileCommand}"
                                     CommandParameter="{x:Bind qualitySelection.SelectedItem}"
                                     VerticalAlignment="Stretch">
 
-                                <StackPanel>
-                                    <SymbolIcon Symbol="Download" Visibility="{x:Bind ViewModel.DownloadFileCommand.IsRunning, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true}"/>
-                                    <ProgressRing x:Name="btnProgressRing" Visibility="{x:Bind ViewModel.DownloadFileCommand.IsRunning}"/>
-                                    <TextBlock x:Uid="/DownloaderPage/downloadStreamBtn" Visibility="{x:Bind ViewModel.DownloadFileCommand.IsRunning, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true}"/>
-                                </StackPanel>
-                            </Button>
+                                    <StackPanel>
+                                        <SymbolIcon Symbol="Download" Visibility="{x:Bind ViewModel.DownloadFileCommand.IsRunning, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true}"/>
+                                        <ProgressRing x:Name="btnProgressRing" Visibility="{x:Bind ViewModel.DownloadFileCommand.IsRunning}"/>
+                                        <TextBlock x:Uid="/DownloaderPage/downloadStreamBtn" Visibility="{x:Bind ViewModel.DownloadFileCommand.IsRunning, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true}"/>
+                                    </StackPanel>
+                                </Button>
 
-                            <SplitButton
+                                <SplitButton
                                 Margin="2"
                                 VerticalAlignment="Stretch"
                                 Command="{x:Bind ViewModel.RemoveCommand}"
                                 CommandParameter="{x:Bind videoQueue.SelectedIndex}"
                                 IsEnabled="{x:Bind ViewModel.SelectionIsInRange(ViewModel.Videos, videoQueue.SelectedIndex, x:False)}">
-                                <StackPanel>
-                                    <SymbolIcon Symbol="Delete"/>
-                                    <TextBlock x:Uid="/DownloaderPage/removeBtn"/>
-                                </StackPanel>
-                                <SplitButton.Flyout>
-                                    <Flyout x:Name="removeBtnFlyout" Placement="Bottom">
-                                        <Button Margin="-10" Click="RemoveAll_Clicked" Command="{x:Bind ViewModel.RemoveAllCommand}" IsEnabled="{x:Bind ViewModel.QueueIsEmpty, Converter={StaticResource InverseBoolConverter}}">
-                                            <StackPanel Orientation="Horizontal" Spacing="5">
-                                                <SymbolIcon Symbol="Cancel"/>
-                                                <TextBlock x:Uid="removeAll"/>
-                                            </StackPanel>
-                                        </Button>
-                                    </Flyout>
-                                </SplitButton.Flyout>
-                            </SplitButton>
+                                    <StackPanel>
+                                        <SymbolIcon Symbol="Delete"/>
+                                        <TextBlock x:Uid="/DownloaderPage/removeBtn"/>
+                                    </StackPanel>
+                                    <SplitButton.Flyout>
+                                        <Flyout x:Name="removeBtnFlyout" Placement="Bottom">
+                                            <Button Margin="-10" Click="RemoveAll_Clicked" Command="{x:Bind ViewModel.RemoveAllCommand}" IsEnabled="{x:Bind ViewModel.QueueIsEmpty, Converter={StaticResource InverseBoolConverter}}">
+                                                <StackPanel Orientation="Horizontal" Spacing="5">
+                                                    <SymbolIcon Symbol="Cancel"/>
+                                                    <TextBlock x:Uid="removeAll"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </Flyout>
+                                    </SplitButton.Flyout>
+                                </SplitButton>
 
-                            <Button Margin="2"
+                                <Button Margin="2"
                                     Command="{x:Bind ViewModel.CancelAllCommand}"
                                     Visibility="{x:Bind ViewModel.DownloadFileCommand.IsRunning}"
                                     VerticalAlignment="Stretch">
-                                <StackPanel>
-                                    <SymbolIcon Symbol="Cancel"/>
-                                    <TextBlock x:Uid="cancel"/>
-                                </StackPanel>
-                            </Button>
-                        </StackPanel>
+                                    <StackPanel>
+                                        <SymbolIcon Symbol="Cancel"/>
+                                        <TextBlock x:Uid="cancel"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
 
-                        <StackPanel x:Name="progressBarPanel" Grid.Column="1" VerticalAlignment="Center" Visibility="{x:Bind ViewModel.DownloadFileCommand.IsRunning}">
-                            <TextBlock x:Uid="/DownloaderPage/progress" Margin="3"/>
-                            <ProgressBar Margin="3" Value="{x:Bind ViewModel.DownloadProgress}"/>
-                        </StackPanel>
-                    </Grid>
-                </StackPanel>
+                            <StackPanel x:Name="progressBarPanel" Grid.Column="1" VerticalAlignment="Center" Visibility="{x:Bind ViewModel.DownloadFileCommand.IsRunning}">
+                                <TextBlock x:Uid="/DownloaderPage/progress" Margin="3"/>
+                                <ProgressBar Margin="3" Value="{x:Bind ViewModel.DownloadProgress}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
             </Grid>
+        </ScrollViewer>
+
+        <Grid Canvas.ZIndex="-1" x:Name="donationGrid" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="#00000066" BorderBrush="SlateGray" BorderThickness="0,1,0,0" Padding="15,0" Height="100">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <FontIcon Glyph="&#xEB52;" FontSize="35" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{ThemeResource SystemAccentColor}"/>
+            <TextBlock x:Uid="/DownloaderPage/donationBanner" Grid.Column="1" Margin="15,5" FontSize="16" TextWrapping="Wrap" VerticalAlignment="Center" MaxLines="4" TextTrimming="CharacterEllipsis"/>
+            <Button Grid.Column="3" Content="Donate ❤" Click="OpenDonationPage" Style="{StaticResource AccentButtonStyle}"/>
         </Grid>
-    </ScrollViewer>
+    </Grid>
 </Page>

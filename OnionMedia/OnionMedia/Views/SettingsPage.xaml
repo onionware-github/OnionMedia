@@ -253,6 +253,8 @@
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
+
+                                <ToggleSwitch x:Uid="/SettingsPage/showDonationBanner" IsOn="{x:Bind m:AppSettings.Instance.ShowDonationBanner}"/>
                             </StackPanel>
                         </Expander.Content>
                     </Expander>

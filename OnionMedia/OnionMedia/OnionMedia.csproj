@@ -104,7 +104,6 @@
 		<PackageReference Include="CommunityToolkit.WinUI.UI.Animations" Version="7.1.2" />
 		<PackageReference Include="CommunityToolkit.WinUI.UI.Behaviors" Version="7.1.2" />
 		<PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
-		<PackageReference Include="FFMpegCore" Version="4.7.0" />
 		<PackageReference Include="Jab" Version="0.8.6" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.4" />

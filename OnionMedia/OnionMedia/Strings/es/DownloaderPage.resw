@@ -129,6 +129,9 @@
   <data name="currentPlaylist.Text" xml:space="preserve">
     <value>Vídeos</value>
   </data>
+  <data name="donationBanner.Text" xml:space="preserve">
+    <value>OnionMedia es un proyecto voluntario de un desarrollador individual, abierto y sin publicidad. Si aprecias mi trabajo y puedes permitírtelo, no dudes en apoyarme con una pequeña donación.</value>
+  </data>
   <data name="done.Text" xml:space="preserve">
     <value>Hecho</value>
   </data>

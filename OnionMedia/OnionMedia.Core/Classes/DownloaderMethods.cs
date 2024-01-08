@@ -117,6 +117,8 @@ namespace OnionMedia.Core.Classes
 			{
 				stream.Downloading = false;
 				stream.Converting = false;
+				Console.WriteLine(ex.Message);
+				Debug.WriteLine(ex.Message);
 				switch (ex)
 				{
 					default:
@@ -173,6 +175,8 @@ namespace OnionMedia.Core.Classes
 			{
 				stream.DownloadState = Enums.DownloadState.IsFailed;
 				stream.ProgressInfo.IsCancelledOrFailed = true;
+				Console.WriteLine(ex.Message);
+				Debug.WriteLine(ex.Message);
 				switch (ex)
 				{
 					default:

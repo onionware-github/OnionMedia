@@ -61,6 +61,7 @@ namespace OnionMedia.Core.Models
 
             customAccentColorHex = settingsService.GetSetting("customAccentColorHex") as string;
             useCustomAccentColor = settingsService.GetSetting("useCustomAccentColor") as bool? ?? false;
+            showDonationBanner = settingsService.GetSetting("showDonationBanner") as bool? ?? true;
             selectedTheme = ParseEnum<ThemeType>(settingsService.GetSetting("selectedTheme"));
             appFlowDirection = ParseEnum<AppFlowDirection>(settingsService.GetSetting("appFlowDirection"));
             
@@ -300,7 +301,14 @@ namespace OnionMedia.Core.Models
             set => settingsService.SetSetting("downloaderPageIsOpen", value);
         }
 
-        public StartPageType StartPageType
+        public bool ShowDonationBanner
+        {
+	        get => showDonationBanner.HasValue && (bool)showDonationBanner;
+	        set => SetSetting(ref showDonationBanner, value, "showDonationBanner");
+        }
+        private bool? showDonationBanner;
+
+		public StartPageType StartPageType
         {
             get => startPageType;
             set

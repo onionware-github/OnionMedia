@@ -129,12 +129,7 @@ namespace YoutubeDLSharp
 			opts.FlatPlaylist = flat;
 			VideoData videoData = null;
 			var process = new YoutubeDLProcess(YoutubeDLPath);
-			process.OutputReceived += (o, e) =>
-			{
-				Debug.WriteLine($"---DATA START---\n{e.Data}\n---DATA END---");
-				videoData = JsonConvert.DeserializeObject<VideoData>(e.Data);
-				videoData = ApplyMissingDataFromEntries(videoData);
-			};
+			process.OutputReceived += (o, e) => videoData = ApplyMissingDataFromEntries(JsonConvert.DeserializeObject<VideoData>(e.Data));
 			(int code, string[] errors) = await runner.RunThrottled(process, new[] { url }, opts, ct);
 			return new RunResult<VideoData>(code == 0, errors, videoData);
 		}
@@ -145,9 +140,8 @@ namespace YoutubeDLSharp
 
 			if (videoData.Duration is null)
 			{
-				//Get the first entry with a duration
-				var entry = videoData.Entries?.FirstOrDefault(vdE => vdE.Duration != null);
-				videoData.Duration = entry?.Duration;
+				//Summarize the duration of all entries
+				videoData.Duration = videoData.Entries?.Sum(e => e.Duration ?? 0);
 			}
 
 			if (videoData.Thumbnail is null)

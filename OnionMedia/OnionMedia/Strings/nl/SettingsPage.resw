@@ -1,5 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -58,127 +117,124 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-
-<data name="AddPlaylist" xml:space="preserve">
-<value>Voeg toe aan de afspeellijst</value>
-</data>
-<data name="AddVideo" xml:space="preserve">
-<value>Voeg de video toe</value>
-</data>
-<data name="amountOfRetries.Header" xml:space="preserve">
-<value>Aantal nieuwe pogingen:</value>
-</data>
-<data name="amountOfSimultaneousOperations.Header" xml:space="preserve">
-<value>Aantal gelijktijdige bewerkingen:</value>
-</data>
-<data name="askForStoragePath.Content" xml:space="preserve">
-<value>Vraag naar de opslaglocatie</value>
-</data>
-<data name="AskForVideoAddMode" xml:space="preserve">
-<value>Vraag altijd</value>
-</data>
-<data name="audioDownloadFormat.Header" xml:space="preserve">
-<value>Formaat voor gedownloade audiobestanden:</value>
-</data>
-<data name="autoConvertToH264.Content" xml:space="preserve">
-<value>Converteer video's na het downloaden automatisch naar H.264</value>
-</data>
-<data name="autoSelectThreadCount.Content" xml:space="preserve">
-<value>Selecteer automatisch</value>
-</data>
-<data name="clearListsAfterOperation.Content" xml:space="preserve">
-<value>Wis lijst na operatie</value>
-</data>
-<data name="contactBtn.Content" xml:space="preserve">
-<value>Contact</value>
-</data>
-<data name="convertAndDownloadSettings.Text" xml:space="preserve">
-<value>Conversie- en downloadinstellingen</value>
-</data>
-<data name="convertedAudios.Header" xml:space="preserve">
-<value>Geconverteerde audiobestanden:</value>
-</data>
-<data name="convertedVideos.Header" xml:space="preserve">
-<value>Geconverteerde videobestanden:</value>
-</data>
-<data name="ConverterPage" xml:space="preserve">
-<value>Media Converterder</value>
-</data>
-<data name="donateBtn.Content" xml:space="preserve">
-<value>♥ Doneer ♥</value>
-</data>
-<data name="downloadedAudios.Header" xml:space="preserve">
-<value>Gedownloade audiobestanden:</value>
-</data>
-<data name="downloadedVideos.Header" xml:space="preserve">
-<value>Gedownloade videobestanden:</value>
-</data>
-<data name="DownloaderPage" xml:space="preserve">
-<value>Media-downloader</value>
-</data>
-<data name="fallbackToSoftwareEncoding.Content" xml:space="preserve">
-<value>Val terug op softwarecodering als hardwareversnelde codering mislukt.</value>
-</data>
-<data name="filenameSuffix.Header" xml:space="preserve">
-<value>Achtervoegsel bestandsnaam voor geconverteerde bestanden:</value>
-</data>
-<data name="forbiddenChars.Subtitle" xml:space="preserve">
-<value>Bevat tekens die niet kunnen worden gebruikt voor bestandsnamen.</value>
-</data>
-<data name="forbiddenChars.Title" xml:space="preserve">
-<value>Verboden karakters</value>
-</data>
-<data name="hardwareEncoder.Header" xml:space="preserve">
-<value>Hardware-encoder:</value>
-</data>
-<data name="LastOpened" xml:space="preserve">
-<value>Laatst geopende pagina</value>
-</data>
-<data name="licenseBtn.Content" xml:space="preserve">
-<value>Licentie</value>
-</data>
-<data name="limitDownloadSpeed.Content" xml:space="preserve">
-<value>Limiteer de downloadsnelheid</value>
-</data>
-<data name="maxDownloadSpeedPerFile.Header" xml:space="preserve">
-<value>Max. downloadsnelheid per bestand:</value>
-</data>
-<data name="notifications.Text" xml:space="preserve">
-<value>Meldingen</value>
-</data>
-<data name="notifyAfterConversion.Header" xml:space="preserve">
-<value>Melding na conversie</value>
-</data>
-<data name="notifyAfterDownload.Header" xml:space="preserve">
-<value>Melding na downloaden</value>
-</data>
-<data name="personalization.Text" xml:space="preserve">
-<value>Personalisatie</value>
-</data>
-<data name="setStoragePaths.Content" xml:space="preserve">
-<value>Stel opslagpaden in</value>
-</data>
-<data name="startPageBox.Header" xml:space="preserve">
-<value>Startpagina:</value>
-</data>
-<data name="storagePaths.Text" xml:space="preserve">
-<value>Opslagpaden</value>
-</data>
-<data name="threadsForConversion.Text" xml:space="preserve">
-<value>Aantal threads voor het converteren:</value>
-</data>
-<data name="tryAgainAfterFail.Content" xml:space="preserve">
-<value>Probeer het opnieuw na een mislukte download</value>
-</data>
-<data name="useHwAccelerated.Content" xml:space="preserve">
-<value>Gebruik hardwareversnelde conversie</value>
-</data>
-<data name="videoOrPlaylist.Header" xml:space="preserve">
-<value>Video of de afspeellijst toevoegen met een afspeellijst-URL?</value>
-</data>
-
-  <!-- Example
-  <data name="videolink.PlaceholderText" xml:space="preserve">
-    <value>Search video or paste URL...</value>
-  </data> -->
+  <data name="AddPlaylist" xml:space="preserve">
+    <value>Voeg toe aan de afspeellijst</value>
+  </data>
+  <data name="AddVideo" xml:space="preserve">
+    <value>Voeg de video toe</value>
+  </data>
+  <data name="amountOfRetries.Header" xml:space="preserve">
+    <value>Aantal nieuwe pogingen:</value>
+  </data>
+  <data name="amountOfSimultaneousOperations.Header" xml:space="preserve">
+    <value>Aantal gelijktijdige bewerkingen:</value>
+  </data>
+  <data name="askForStoragePath.Content" xml:space="preserve">
+    <value>Vraag naar de opslaglocatie</value>
+  </data>
+  <data name="AskForVideoAddMode" xml:space="preserve">
+    <value>Vraag altijd</value>
+  </data>
+  <data name="audioDownloadFormat.Header" xml:space="preserve">
+    <value>Formaat voor gedownloade audiobestanden:</value>
+  </data>
+  <data name="autoConvertToH264.Content" xml:space="preserve">
+    <value>Converteer video's na het downloaden automatisch naar H.264</value>
+  </data>
+  <data name="autoSelectThreadCount.Content" xml:space="preserve">
+    <value>Selecteer automatisch</value>
+  </data>
+  <data name="clearListsAfterOperation.Content" xml:space="preserve">
+    <value>Wis lijst na operatie</value>
+  </data>
+  <data name="contactBtn.Content" xml:space="preserve">
+    <value>Contact</value>
+  </data>
+  <data name="convertAndDownloadSettings.Text" xml:space="preserve">
+    <value>Conversie- en downloadinstellingen</value>
+  </data>
+  <data name="convertedAudios.Header" xml:space="preserve">
+    <value>Geconverteerde audiobestanden:</value>
+  </data>
+  <data name="convertedVideos.Header" xml:space="preserve">
+    <value>Geconverteerde videobestanden:</value>
+  </data>
+  <data name="ConverterPage" xml:space="preserve">
+    <value>Media Converterder</value>
+  </data>
+  <data name="donateBtn.Content" xml:space="preserve">
+    <value>♥ Doneer ♥</value>
+  </data>
+  <data name="downloadedAudios.Header" xml:space="preserve">
+    <value>Gedownloade audiobestanden:</value>
+  </data>
+  <data name="downloadedVideos.Header" xml:space="preserve">
+    <value>Gedownloade videobestanden:</value>
+  </data>
+  <data name="DownloaderPage" xml:space="preserve">
+    <value>Media-downloader</value>
+  </data>
+  <data name="fallbackToSoftwareEncoding.Content" xml:space="preserve">
+    <value>Val terug op softwarecodering als hardwareversnelde codering mislukt.</value>
+  </data>
+  <data name="filenameSuffix.Header" xml:space="preserve">
+    <value>Achtervoegsel bestandsnaam voor geconverteerde bestanden:</value>
+  </data>
+  <data name="forbiddenChars.Subtitle" xml:space="preserve">
+    <value>Bevat tekens die niet kunnen worden gebruikt voor bestandsnamen.</value>
+  </data>
+  <data name="forbiddenChars.Title" xml:space="preserve">
+    <value>Verboden karakters</value>
+  </data>
+  <data name="hardwareEncoder.Header" xml:space="preserve">
+    <value>Hardware-encoder:</value>
+  </data>
+  <data name="LastOpened" xml:space="preserve">
+    <value>Laatst geopende pagina</value>
+  </data>
+  <data name="licenseBtn.Content" xml:space="preserve">
+    <value>Licentie</value>
+  </data>
+  <data name="limitDownloadSpeed.Content" xml:space="preserve">
+    <value>Limiteer de downloadsnelheid</value>
+  </data>
+  <data name="maxDownloadSpeedPerFile.Header" xml:space="preserve">
+    <value>Max. downloadsnelheid per bestand:</value>
+  </data>
+  <data name="notifications.Text" xml:space="preserve">
+    <value>Meldingen</value>
+  </data>
+  <data name="notifyAfterConversion.Header" xml:space="preserve">
+    <value>Melding na conversie</value>
+  </data>
+  <data name="notifyAfterDownload.Header" xml:space="preserve">
+    <value>Melding na downloaden</value>
+  </data>
+  <data name="personalization.Text" xml:space="preserve">
+    <value>Personalisatie</value>
+  </data>
+  <data name="setStoragePaths.Content" xml:space="preserve">
+    <value>Stel opslagpaden in</value>
+  </data>
+  <data name="showDonationBanner.Header" xml:space="preserve">
+    <value>Donatiebanner tonen</value>
+  </data>
+  <data name="startPageBox.Header" xml:space="preserve">
+    <value>Startpagina:</value>
+  </data>
+  <data name="storagePaths.Text" xml:space="preserve">
+    <value>Opslagpaden</value>
+  </data>
+  <data name="threadsForConversion.Text" xml:space="preserve">
+    <value>Aantal threads voor het converteren:</value>
+  </data>
+  <data name="tryAgainAfterFail.Content" xml:space="preserve">
+    <value>Probeer het opnieuw na een mislukte download</value>
+  </data>
+  <data name="useHwAccelerated.Content" xml:space="preserve">
+    <value>Gebruik hardwareversnelde conversie</value>
+  </data>
+  <data name="videoOrPlaylist.Header" xml:space="preserve">
+    <value>Video of de afspeellijst toevoegen met een afspeellijst-URL?</value>
+  </data>
 </root>

@@ -49,7 +49,7 @@
     <AppxBundlePlatforms>x64</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
-    <PackageCertificateThumbprint>1111AC8AA6AD26FF6CAA2E199D1F25D77FC4461E</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>068D2BFA1799318C046DD586A0AE4A8AC2BFBF94</PackageCertificateThumbprint>
     <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">

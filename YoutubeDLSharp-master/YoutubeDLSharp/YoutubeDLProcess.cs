@@ -144,7 +144,7 @@ namespace YoutubeDLSharp
                     progress?.Report(new DownloadProgress(DownloadState.PostProcessing, 1));
                     isDownloading = false;
                 }
-                Debug.WriteLine("[youtube-dl] " + e.Data);
+                //Debug.WriteLine("[youtube-dl] " + e.Data);
                 OutputReceived?.Invoke(this, e);
             };
             var tcsError = new TaskCompletionSource<bool>();
