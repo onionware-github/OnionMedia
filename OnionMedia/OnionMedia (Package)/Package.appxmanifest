@@ -6,7 +6,8 @@
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
   xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
-  IgnorableNamespaces="uap rescap">
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+  IgnorableNamespaces="uap rescap uap3">
 
 	<Identity
 	  Name="11715Onionware.OnionMedia"
@@ -48,7 +49,11 @@
 				<uap:SplashScreen Image="Images\SplashScreen.png" />
 			</uap:VisualElements>
 			<Extensions>
-
+		  <uap3:Extension Category="windows.appExecutionAlias" EntryPoint="Windows.FullTrustApplication">
+			  <uap3:AppExecutionAlias>
+				  <desktop:ExecutionAlias Alias="onionmedia.exe"/>
+			  </uap3:AppExecutionAlias>
+		  </uap3:Extension>
 				<desktop:Extension Category="windows.toastNotificationActivation">
 					<desktop:ToastNotificationActivation ToastActivatorCLSID="657E1225-3DE3-4988-AAB7-337FC8F62943"/>
 				</desktop:Extension>
