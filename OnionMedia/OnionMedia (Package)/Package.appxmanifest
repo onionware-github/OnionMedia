@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
@@ -49,11 +49,11 @@
 				<uap:SplashScreen Image="Images\SplashScreen.png" />
 			</uap:VisualElements>
 			<Extensions>
-		  <uap3:Extension Category="windows.appExecutionAlias" EntryPoint="Windows.FullTrustApplication">
-			  <uap3:AppExecutionAlias>
-				  <desktop:ExecutionAlias Alias="onionmedia.exe"/>
-			  </uap3:AppExecutionAlias>
-		  </uap3:Extension>
+				<uap3:Extension Category="windows.appExecutionAlias" EntryPoint="Windows.FullTrustApplication">
+					<uap3:AppExecutionAlias>
+						<desktop:ExecutionAlias Alias="onionmedia.exe"/>
+					</uap3:AppExecutionAlias>
+				</uap3:Extension>
 				<desktop:Extension Category="windows.toastNotificationActivation">
 					<desktop:ToastNotificationActivation ToastActivatorCLSID="657E1225-3DE3-4988-AAB7-337FC8F62943"/>
 				</desktop:Extension>
