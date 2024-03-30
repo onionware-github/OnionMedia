@@ -69,7 +69,8 @@ Copyright © Jaden Phil Nebel
 <a href="https://github.com/yt-dlp/yt-dlp">
   <img src="https://github.com/onionware-github/OnionMedia/blob/main/images/yt-dlp.svg" width="250" height="65" valign="bottom" margin-left="10"/>
 </a>
-
+<br/><br/><br/>
+Looking for a reliable video downloader on Android? Check out <a href="https://github.com/JunkFood02/Seal">Seal</a> from <a href="https://github.com/JunkFood02">JunkFood02</a>!
 
 ## More information
 You still have open questions? [Join our Discord Server](https://discord.gg/3ahqCzQxs8)
