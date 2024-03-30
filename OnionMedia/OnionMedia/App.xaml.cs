@@ -47,6 +47,7 @@ namespace OnionMedia
     public partial class App : Application
     {
         public static Window MainWindow { get; set; } = new Window() { Title = "OnionMedia" };
+        public static YouTubeDownloaderViewModel DownloaderViewModel => Ioc.Default.GetService<YouTubeDownloaderViewModel>();
 
         public App()
         {
@@ -226,7 +227,7 @@ namespace OnionMedia
             oldWndProc = SetWindowLongPtr(hwnd, PInvoke.User32.WindowLongIndexFlags.GWL_WNDPROC, newWndProc);
         }
 
-        int MinWidth = 330;
+        int MinWidth = 360;
         int MinHeight = 520;
 
         [StructLayout(LayoutKind.Sequential)]

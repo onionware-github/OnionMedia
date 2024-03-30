@@ -17,9 +17,9 @@ namespace OnionMedia.Services
 {
     sealed class NetworkStatusService : INetworkStatusService
     {
-        public NetworkStatusService()
+        public NetworkStatusService(IDispatcherService dispatcher)
         {
-            NetworkInformation.NetworkStatusChanged += o => ConnectionStateChanged?.Invoke(this, IsNetworkConnectionAvailable());
+            NetworkInformation.NetworkStatusChanged += o => dispatcher.Enqueue(() => ConnectionStateChanged?.Invoke(this, IsNetworkConnectionAvailable()));
         }
 
         public event EventHandler<bool> ConnectionStateChanged;

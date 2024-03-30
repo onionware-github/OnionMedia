@@ -32,6 +32,7 @@
 		<None Remove="ExternalBinaries\yt-dlp (2).exe" />
 		<None Remove="licenses\onionmedia.txt" />
 		<None Remove="licenses\pinvoke_user32.txt" />
+		<None Remove="licenses\textcopy.txt" />
 		<None Remove="Strings\de-de\Dialogs\ConversionPresetDialog.resw" />
 		<None Remove="Strings\de-de\Dialogs\DeletePresetDialog.resw" />
 		<None Remove="Strings\de-de\Dialogs\DialogResources.resw" />
@@ -91,6 +92,7 @@
 		<Content Include="licenses\onionmedia.txt" />
 		<Content Include="licenses\pinvoke_user32.txt" />
 		<Content Include="licenses\TagLibSharp.txt" />
+		<Content Include="licenses\textcopy.txt" />
 		<Content Include="licenses\xFFmpeg.NET.txt" />
 		<Content Include="licenses\YoutubeDLSharp.txt" />
 		<Content Include="licenses\YoutubeExplode.txt" />

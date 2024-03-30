@@ -20,11 +20,14 @@
     xmlns:behaviors="using:OnionMedia.Behaviors"
     xmlns:local="using:OnionMedia"
     xmlns:c="using:OnionMedia.Core"
+    xmlns:e="using:OnionMedia.Core.Enums"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     SizeChanged="Page_SizeChanged"
     Loaded="OnLoaded">
-
+    <Page.Resources>
+        <ResourceDictionary Source="../XamlDicts/ExternalResources.xaml"/>
+    </Page.Resources>
     <Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="theme">
@@ -64,7 +67,25 @@
                        Margin="40,0,0,0"/>
             </Grid>
 
-
+            <TeachingTip x:Name="shutdownFlyout"
+                         x:Uid="shutdownFlyout"
+                         IsOpen="{x:Bind ViewModel.ShutdownTipIsOpen, Mode=TwoWay}"
+                         PreferredPlacement="BottomLeft"
+                         ActionButtonClick="ShutdownFlyout_OnActionButtonClick"
+                         CloseButtonClick="ShutdownFlyout_OnCloseButtonClick">
+                <TeachingTip.Content>
+                    <StackPanel x:Name="powerFlyoutPanel">
+                        <ComboBox x:Name="actionSelector" Margin="0,10" ItemsSource="{x:Bind ViewModel.PowerOptions}" SelectedItem="{x:Bind ViewModel.SelectedPowerOption, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="e:PCPowerOption">
+                                    <ContentPresenter Content="{x:Bind Converter={StaticResource ResourceNameToTextConverter}}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <CheckBox x:Uid="executeOnErrors" IsChecked="{x:Bind ViewModel.ExecuteOnError, Mode=TwoWay}"/>
+                    </StackPanel>
+                </TeachingTip.Content>
+            </TeachingTip>
             <NavigationView
         x:Name="navigationView"
         Grid.Row="1"
@@ -73,6 +94,7 @@
         IsBackEnabled="{x:Bind ViewModel.IsBackEnabled, Mode=OneWay}"
         SelectedItem="{x:Bind ViewModel.Selected, Mode=OneWay}"
         IsSettingsVisible="True"
+        DisplayModeChanged="NavigationView_OnDisplayModeChanged"
         ExpandedModeThresholdWidth="1280"
         Header="{x:Bind ((ContentControl)ViewModel.Selected).Content, Mode=OneWay}">
                 <NavigationView.MenuItems>
@@ -88,10 +110,10 @@
                 </NavigationView.MenuItems>
                 <NavigationView.HeaderTemplate>
                     <DataTemplate>
-                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                             <TextBlock
                         Text="{Binding}"
-                        Style="{ThemeResource TitleTextBlockStyle}"/>
+                        Style="{ThemeResource TitleTextBlockStyle}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Grid>
                     </DataTemplate>
                 </NavigationView.HeaderTemplate>
@@ -100,15 +122,23 @@
                 DefaultHeader="{x:Bind ((ContentControl)ViewModel.Selected).Content, Mode=OneWay}">
                         <behaviors:NavigationViewHeaderBehavior.DefaultHeaderTemplate>
                             <DataTemplate>
-                                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <TextBlock
-                                Text="{Binding}"
-                                Style="{ThemeResource TitleTextBlockStyle}"/>
+                                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                    <TextBlock Text="{Binding}" Style="{ThemeResource TitleTextBlockStyle}"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <Button Click="ShutdownBtn_OnClick" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-30,10,0" Visibility="{Binding ViewModel.ShowHeaderPowerButton, ElementName=shellPage}">
+                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="{Binding Glyph, ElementName=shutdownIcon}" Foreground="{Binding Foreground, ElementName=shutdownIcon}"/>
+                                    </Button>
                                 </Grid>
                             </DataTemplate>
                         </behaviors:NavigationViewHeaderBehavior.DefaultHeaderTemplate>
                     </behaviors:NavigationViewHeaderBehavior>
                 </i:Interaction.Behaviors>
+                <NavigationView.PaneFooter>
+                    <NavigationViewItem Tapped="ShutdownBtn_OnClick" Visibility="{x:Bind ViewModel.ShowHeaderPowerButton, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
+                        <NavigationViewItem.Icon>
+                            <FontIcon x:Name="shutdownIcon" FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE7E8;"/>
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                </NavigationView.PaneFooter>
                 <controls:DockPanel>
                     <StackPanel controls:DockPanel.Dock="Top" HorizontalAlignment="Right" Orientation="Horizontal" Spacing="5" Height="30">
                         <TextBlock Visibility="{x:Bind c:GlobalResources.IS_DEBUG}">

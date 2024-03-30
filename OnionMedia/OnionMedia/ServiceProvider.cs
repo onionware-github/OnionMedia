@@ -1,9 +1,10 @@
-﻿using Microsoft.UI.Xaml;
-using Jab;
+﻿using Jab;
+using Microsoft.UI.Xaml;
 using OnionMedia.Activation;
 using OnionMedia.Contracts.Services;
 using OnionMedia.Core.Models;
 using OnionMedia.Core.Services;
+using OnionMedia.Core.Services.Implementations;
 using OnionMedia.Core.ViewModels;
 using OnionMedia.Services;
 using OnionMedia.ViewModels;
@@ -37,6 +38,7 @@ namespace OnionMedia;
 [Singleton(typeof(IPathProvider), typeof(PathProvider))]
 [Singleton(typeof(IVersionService), typeof(VersionService))]
 [Singleton(typeof(IWindowClosingService), typeof(WindowClosingService))]
+[Singleton(typeof(IPCPower), typeof(WindowsPowerService))]
 [Singleton(typeof(IFFmpegStartup), typeof(FFmpegStartup))]
 //Views and ViewModels
 [Transient(typeof(ShellViewModel))]

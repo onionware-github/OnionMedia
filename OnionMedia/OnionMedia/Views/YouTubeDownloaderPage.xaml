@@ -333,7 +333,31 @@
                                             <Grid Padding="5" MinHeight="85">
                                                 <Grid.ContextFlyout>
                                                     <MenuFlyout>
-                                                        <MenuFlyoutItem x:Uid="/DownloaderPage/openURLInBrowser" Command="{x:Bind vm:YouTubeDownloaderViewModel.OpenUrlCommand}" CommandParameter="{x:Bind Video.Url}"/>
+                                                        <MenuFlyoutItem x:Uid="/DownloaderPage/openURLInBrowser" Command="{x:Bind vm:YouTubeDownloaderViewModel.OpenUrlCommand}" CommandParameter="{x:Bind Video.Url}">
+                                                            <MenuFlyoutItem.Icon>
+                                                                <SymbolIcon Symbol="Slideshow"/>
+                                                            </MenuFlyoutItem.Icon>
+                                                        </MenuFlyoutItem>
+                                                        <MenuFlyoutItem x:Uid="/DownloaderPage/copyUrl" Command="{x:Bind g:App.DownloaderViewModel.CopyUrlCommand}" CommandParameter="{x:Bind Video.Url}">
+                                                            <MenuFlyoutItem.Icon>
+                                                                <SymbolIcon Symbol="Copy"/>
+                                                            </MenuFlyoutItem.Icon>
+                                                        </MenuFlyoutItem>
+                                                        <MenuFlyoutItem x:Uid="/DownloaderPage/downloadThumbnail" Command="{x:Bind g:App.DownloaderViewModel.DownloadThumbnailCommand}" CommandParameter="{x:Bind}">
+                                                            <MenuFlyoutItem.Icon>
+                                                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xEB9F;"/>
+                                                            </MenuFlyoutItem.Icon>
+                                                        </MenuFlyoutItem>
+                                                        <MenuFlyoutItem x:Uid="/DownloaderPage/viewLog" Command="{x:Bind g:App.DownloaderViewModel.ShowLogCommand}" CommandParameter="{x:Bind}">
+                                                            <MenuFlyoutItem.Icon>
+                                                                <SymbolIcon Symbol="Document"/>
+                                                            </MenuFlyoutItem.Icon>
+                                                        </MenuFlyoutItem>
+                                                        <MenuFlyoutItem x:Uid="/DownloaderPage/editTags" Command="{x:Bind g:App.DownloaderViewModel.EditTagsCommand}" CommandParameter="{x:Bind}">
+                                                            <MenuFlyoutItem.Icon>
+                                                                <SymbolIcon Symbol="List"/>
+                                                            </MenuFlyoutItem.Icon>
+                                                        </MenuFlyoutItem>
                                                     </MenuFlyout>
                                                 </Grid.ContextFlyout>
 

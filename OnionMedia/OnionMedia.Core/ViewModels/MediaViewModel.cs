@@ -168,6 +168,11 @@ namespace OnionMedia.Core.ViewModels
         public AsyncRelayCommand EditTagsCommand { get; }
         public RelayCommand<double> SetFramerateCommand { get; }
 
+        /// <summary>
+        /// True, when errors occured.
+        /// </summary>
+        public event EventHandler<bool> ConversionDone;
+
         public ObservableCollection<MediaItemModel> Files { get; } = new();
         public ObservableCollection<ConversionPreset> ConversionPresets { get; private set; } = new();
         public ObservableCollection<Resolution> Resolutions { get; } = new()
@@ -446,22 +451,38 @@ namespace OnionMedia.Core.ViewModels
                 }
             }
             catch {Console.WriteLine("Failed to get temporary conversion folders.");}
-            
-            if (unauthorizedAccessExceptions + directoryNotFoundExceptions + notEnoughSpaceExceptions > 0)
-            {
-                taskbarProgressService?.UpdateState(typeof(MediaViewModel), ProgressBarState.Error);
-                await GlobalResources.DisplayFileSaveErrorDialog(unauthorizedAccessExceptions, directoryNotFoundExceptions, notEnoughSpaceExceptions);
-            }
 
-            taskbarProgressService?.UpdateState(typeof(MediaViewModel), ProgressBarState.None);
-            if (!AppSettings.Instance.SendMessageAfterConversion) return;
-            if (completed == 1)
+            try
             {
-                await lastCompleted.ShowToastAsync(lastCompletedPath);
+	            if (unauthorizedAccessExceptions + directoryNotFoundExceptions + notEnoughSpaceExceptions > 0)
+	            {
+		            taskbarProgressService?.UpdateState(typeof(MediaViewModel), ProgressBarState.Error);
+		            await GlobalResources.DisplayFileSaveErrorDialog(unauthorizedAccessExceptions,
+			            directoryNotFoundExceptions, notEnoughSpaceExceptions);
+	            }
+
+	            taskbarProgressService?.UpdateState(typeof(MediaViewModel), ProgressBarState.None);
+	            if (!AppSettings.Instance.SendMessageAfterConversion)
+	            {
+		            return;
+	            }
+
+	            if (completed == 1)
+	            {
+		            await lastCompleted.ShowToastAsync(lastCompletedPath);
+	            }
+	            else if (completed > 1)
+	            {
+		            toastNotificationService.SendConversionsDoneNotification(completed);
+	            }
             }
-            else if (completed > 1)
+            finally
             {
-                toastNotificationService.SendConversionsDoneNotification(completed);
+	            if (!(allCanceled || files.All(f => f.ConversionState == FFmpegConversionState.Cancelled)))
+				{
+					bool errors = files.Any(f => Files.Contains(f) && f.ConversionState is FFmpegConversionState.Failed);
+					ConversionDone?.Invoke(this, errors);
+				}
             }
         }
 

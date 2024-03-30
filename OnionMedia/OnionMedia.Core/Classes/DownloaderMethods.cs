@@ -73,7 +73,6 @@ namespace OnionMedia.Core.Classes
 			//Creates a new temp directory for this file
 			string videotempdir = CreateVideoTempDir();
 
-
 			SetProgressToDefault(stream);
 			stream.CancelEventHandler += CancelDownload;
 
@@ -163,7 +162,16 @@ namespace OnionMedia.Core.Classes
 				//Writes the tags into the file
 				//TODO: Fix file corruptions while saving tags
 				if (Path.GetExtension(tempfile) is ".mp3" or ".mp4" or ".m4a" or ".flac")
-					SaveTags(tempfile, stream.Video);
+				{
+					if (stream.CustomTags is null)
+					{
+						SaveTags(tempfile, stream.Video);
+					}
+					else
+					{
+						SaveTags(tempfile, stream.CustomTags);
+					}
+				}
 
 				//Moves the video in the correct directory
 				stream.Moving = true;
@@ -214,6 +222,19 @@ namespace OnionMedia.Core.Classes
 			finally { stream.Moving = false; }
 		}
 
+		public static async Task DownloadThumbnailAsync(string videoUrl, string filePath, string imageFormat, CancellationToken ct = default)
+		{
+			OptionSet options = new() { WriteThumbnail = true, SkipDownload = true, Output = filePath };
+			options.AddCustomOption("--convert-thumbnails", imageFormat);
+			options.AddCustomOption("--ppa", "ThumbnailsConvertor:-q:v 1");
+			string newFilename = $"{filePath}.{imageFormat}";
+			await downloadClient.RunWithOptions(new[] { videoUrl }, options, ct);
+			if (File.Exists(newFilename))
+			{
+				File.Move(newFilename, filePath, true);
+			}
+		}
+
 		private static void SetProgressToDefault(StreamItemModel stream)
 		{
 			stream.ProgressInfo.IsDone = false;
@@ -243,8 +264,17 @@ namespace OnionMedia.Core.Classes
 				if (downloadCounter > 1)
 					stream.SetProgressToDefault();
 
+				bool gotArguments = false;
 				stream.Downloading = true;
-				RunResult<string> result = await downloadClient.RunAudioDownload(stream.Video.Url, AudioConversionFormat.Best, cToken, stream.DownloadProgress, overrideOptions: ytOptions);
+				RunResult<string> result = await downloadClient.RunAudioDownload(stream.Video.Url, AudioConversionFormat.Best, cToken, stream.DownloadProgress, overrideOptions: ytOptions, output: new Progress<string>(p =>
+				{
+					Debug.WriteLine(p);
+					if (!gotArguments)
+					{
+						stream.downloadLog.Insert(0, p + '\n');
+						gotArguments = true;
+					}
+				}));
 				stream.Downloading = false;
 
 				//Return if the download completed sucessfully.
@@ -327,8 +357,17 @@ namespace OnionMedia.Core.Classes
 					ytOptions.ExternalDownloaderArgs = GetHardwareEncodingParameters(formatData);
 				}
 
+				bool gotArguments = false;
 				stream.Downloading = true;
-				result = await downloadClient.RunVideoDownload(stream.Video.Url, formatString, videoMergeFormat, videoRecodeFormat, cToken, stream.DownloadProgress, overrideOptions: ytOptions, output: new Progress<string>(p => Debug.WriteLine(p)));
+				result = await downloadClient.RunVideoDownload(stream.Video.Url, formatString, videoMergeFormat, videoRecodeFormat, cToken, stream.DownloadProgress, overrideOptions: ytOptions, output: new Progress<string>(p =>
+				{
+					Debug.WriteLine(p);
+					if (!gotArguments)
+					{ 
+						stream.downloadLog.Insert(0, p + '\n');
+						gotArguments = true;
+					}
+				}));
 				stream.Downloading = false;
 
 				if (!result.Data.IsNullOrEmpty())
@@ -425,6 +464,24 @@ namespace OnionMedia.Core.Classes
 
 			if (meta.UploadDate != null)
 				tagfile.Tag.Year = (uint)meta.UploadDate.Value.Year;
+
+			tagfile.Save();
+		}
+
+		//Saves the tags into the file
+		public static void SaveTags(string filename, FileTags tags)
+		{
+			var tagfile = TagLib.File.Create(filename);
+
+			tagfile.Tag.Title = tags.Title;
+
+			if (!tags.Description.IsNullOrEmpty())
+				tagfile.Tag.Description = tags.Description;
+
+			if (!tags.Artist.IsNullOrEmpty())
+				tagfile.Tag.Performers = new[] { tags.Artist };
+
+			tagfile.Tag.Year = tags.Year;
 
 			tagfile.Save();
 		}

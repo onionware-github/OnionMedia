@@ -28,21 +28,26 @@ using System.IO;
 using OnionMedia.Core.Classes;
 using OnionMedia.Core.Extensions;
 using System.Text.RegularExpressions;
+using TextCopy;
 using OnionMedia.Core.Services;
 using YoutubeDLSharp.Options;
+using System.Net;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace OnionMedia.Core.ViewModels
 {
     [ObservableObject]
     public sealed partial class YouTubeDownloaderViewModel
     {
-        public YouTubeDownloaderViewModel(IDialogService dialogService, IDownloaderDialogService downloaderDialogService, IDispatcherService dispatcher, INetworkStatusService networkStatusService, IToastNotificationService toastNotificationService, IPathProvider pathProvider, ITaskbarProgressService taskbarProgressService, IWindowClosingService windowClosingService)
+        public YouTubeDownloaderViewModel(IDialogService dialogService, IDownloaderDialogService downloaderDialogService, IDispatcherService dispatcher, INetworkStatusService networkStatusService, IToastNotificationService toastNotificationService, IPathProvider pathProvider, ITaskbarProgressService taskbarProgressService, IWindowClosingService windowClosingService, IFiletagEditorDialog filetagDialogService)
         {
             this.dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             this.downloaderDialogService = downloaderDialogService ?? throw new ArgumentNullException(nameof(downloaderDialogService));
             this.dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
             this.toastNotificationService = toastNotificationService ?? throw new ArgumentNullException(nameof(toastNotificationService));
             this.pathProvider = pathProvider ?? throw new ArgumentNullException(nameof(pathProvider));
+            this.filetagDialogService = filetagDialogService ?? throw new ArgumentNullException(nameof(filetagDialogService));
             this.networkStatusService = networkStatusService;
             this.taskbarProgressService = taskbarProgressService;
 
@@ -70,6 +75,7 @@ namespace OnionMedia.Core.ViewModels
 
         private readonly IDialogService dialogService;
         private readonly IDownloaderDialogService downloaderDialogService;
+        private readonly IFiletagEditorDialog filetagDialogService;
         private readonly IDispatcherService dispatcher;
         private readonly INetworkStatusService networkStatusService;
         private readonly IToastNotificationService toastNotificationService;
@@ -83,6 +89,8 @@ namespace OnionMedia.Core.ViewModels
         public AsyncRelayCommand<SearchItemModel> AddSearchedVideo { get; }
         public RelayCommand<StreamItemModel> RestartDownloadCommand { get; }
         public RelayCommand<int> RemoveCommand { get; }
+
+        public event EventHandler<bool> DownloadDone;
 
         [ObservableProperty]
         [AlsoNotifyChangeFor(nameof(ResolutionsAvailable))]
@@ -295,7 +303,94 @@ namespace OnionMedia.Core.ViewModels
             }
         }
 
-        private void AddVideos(IEnumerable<StreamItemModel> videos)
+        [ICommand]
+        private async Task CopyUrlAsync(string url)
+        {
+	        await ClipboardService.SetTextAsync(url);
+        }
+
+        [ICommand]
+        private async Task ShowLogAsync(StreamItemModel video)
+        {
+	        if (string.IsNullOrEmpty(video.DownloadLog))
+	        {
+		        await dialogService.ShowInfoDialogAsync(video.Video.Title, "emptyLog".GetLocalized(), "close".GetLocalized());
+		        return;
+	        }
+
+	        bool? storeAsFile = await dialogService.ShowInteractionDialogAsync(video.Video.Title, video.DownloadLog, "save".GetLocalized(), "copy".GetLocalized(), "close".GetLocalized());
+	        if (storeAsFile is null)
+	        {
+		        return;
+	        }
+	        if (storeAsFile is false)
+	        {
+		        await ClipboardService.SetTextAsync(video.DownloadLog);
+		        return;
+	        }
+
+	        Dictionary<string, IEnumerable<string>> types = new()
+	        {
+		        { "", new[] { ".txt" } }
+	        };
+			string filepath = await dialogService.ShowSaveFilePickerDialogAsync("log.txt", types, DirectoryLocation.Documents);
+	        if (filepath != null)
+	        {
+		        await File.WriteAllTextAsync(filepath, video.DownloadLog);
+	        }
+        }
+
+        [ICommand]
+        private async Task DownloadThumbnailAsync(StreamItemModel video)
+        {
+	        string tempPath = Path.GetTempFileName();
+
+	        var types = new Dictionary<string, IEnumerable<string>>()
+	        {
+		        { "Portable Network Graphics", new[] { ".png" } },
+		        { "JPEG", new[] { ".jpg", ".jpeg" } }
+			};
+	        string filepath = await dialogService.ShowSaveFilePickerDialogAsync(video.Video.Title.TrimToFilename(int.MaxValue), types, DirectoryLocation.Pictures);
+	        if (filepath is null)
+	        {
+		        return;
+	        }
+
+	        string format = Path.GetExtension(filepath) switch
+	        {
+		        ".jpg" => "jpg",
+		        ".jpeg" => "jpg",
+		        _ => "png"
+	        };
+
+	        await DownloaderMethods.DownloadThumbnailAsync(video.Video.Url, tempPath, format);
+            File.Move(tempPath, filepath, true);
+        }
+
+        [ICommand]
+        private async Task EditTagsAsync(StreamItemModel video)
+        {
+	        FileTags tags = video.CustomTags ?? new()
+	        {
+		        Title = video.Video.Title,
+		        Description = video.Video.Description,
+		        Artist = video.Video.Uploader,
+		        Year = video.Video.UploadDate.HasValue ? (uint)video.Video.UploadDate.Value.Year : 0,
+	        };
+	        var finalTags = await filetagDialogService.ShowTagEditorDialogAsync(tags);
+	        if (finalTags is null)
+	        {
+		        return;
+	        }
+
+            video.CustomTags = finalTags;
+            if (video.DownloadState == DownloadState.IsDone && File.Exists(video.Path.OriginalString))
+            {
+                DownloaderMethods.SaveTags(video.Path.OriginalString, finalTags);
+            }
+        }
+
+		private void AddVideos(IEnumerable<StreamItemModel> videos)
         {
             if (videos == null) throw new ArgumentNullException(nameof(videos));
             if (!videos.Any()) return;
@@ -503,28 +598,50 @@ namespace OnionMedia.Core.ViewModels
                 catch { /* Dont crash if a directory cant be deleted */ }
             }
 
-            if (unauthorizedAccessExceptions + directoryNotFoundExceptions + notEnoughSpaceExceptions > 0)
+            try
             {
-                taskbarProgressService?.UpdateState(typeof(YouTubeDownloaderViewModel), ProgressBarState.Error);
-                await GlobalResources.DisplayFileSaveErrorDialog(unauthorizedAccessExceptions, directoryNotFoundExceptions, notEnoughSpaceExceptions);
+	            if (unauthorizedAccessExceptions + directoryNotFoundExceptions + notEnoughSpaceExceptions > 0)
+	            {
+		            taskbarProgressService?.UpdateState(typeof(YouTubeDownloaderViewModel), ProgressBarState.Error);
+		            await GlobalResources.DisplayFileSaveErrorDialog(unauthorizedAccessExceptions,
+			            directoryNotFoundExceptions, notEnoughSpaceExceptions);
+	            }
+
+	            taskbarProgressService?.UpdateState(typeof(YouTubeDownloaderViewModel), ProgressBarState.None);
+
+	            if (!AppSettings.Instance.SendMessageAfterDownload)
+	            {
+		            return;
+	            }
+
+	            if (finishedCount == 1)
+	            {
+		            loadedVideo.ShowToast();
+	            }
+	            else if (finishedCount > 1)
+	            {
+		            IEnumerable<string> filenames = null;
+
+		            if (items.Any(v => v?.Path != null && Path.GetDirectoryName(v.Path.OriginalString) ==
+			                Path.GetDirectoryName(loadedVideo.Path.OriginalString)))
+		            {
+			            filenames = items
+				            .Where(v => v?.Path != null && v.DownloadState is DownloadState.IsDone &&
+				                        File.Exists(v.Path.OriginalString))
+				            .Select(v => Path.GetFileName(v.Path.OriginalString));
+		            }
+
+		            toastNotificationService.SendDownloadsDoneNotification(loadedVideo.Path.OriginalString,
+			            finishedCount, filenames);
+	            }
             }
-            taskbarProgressService?.UpdateState(typeof(YouTubeDownloaderViewModel), ProgressBarState.None);
-
-            if (!AppSettings.Instance.SendMessageAfterDownload) return;
-            if (finishedCount == 1)
+            finally
             {
-                loadedVideo.ShowToast();
-            }
-            else if (finishedCount > 1)
-            {
-                IEnumerable<string> filenames = null;
-
-                if (items.Any(v => v?.Path != null && Path.GetDirectoryName(v.Path.OriginalString) == Path.GetDirectoryName(loadedVideo.Path.OriginalString)))
-                {
-                    filenames = items.Where(v => v?.Path != null && v.DownloadState is DownloadState.IsDone && File.Exists(v.Path.OriginalString)).Select(v => Path.GetFileName(v.Path.OriginalString));
-                }
-
-                toastNotificationService.SendDownloadsDoneNotification(loadedVideo.Path.OriginalString, finishedCount, filenames);
+	            if (!(canceledAll || items.All(v => v.DownloadState == DownloadState.IsCancelled)))
+				{
+					bool errors = items.Any(v => videos.Contains(v) && v.Failed);
+					DownloadDone?.Invoke(this, errors);
+				}
             }
         }
 

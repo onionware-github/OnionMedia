@@ -34,6 +34,13 @@ public interface IDialogService
 	Task<string[]> ShowMultipleFilePickerDialogAsync(DirectoryLocation location = DirectoryLocation.Home);
 
 	/// <summary>
+	/// Opens a dialog and lets the user select a location to save a file.
+	/// </summary>
+	/// <param name="filetypeFilters">The available filetypes for the file to save, null to allow any files.</param>
+	/// <returns>The complete paths of the desired filename, null if the dialog get cancelled.</returns>
+	Task<string> ShowSaveFilePickerDialogAsync(string suggestedName, IDictionary<string, IEnumerable<string>> filetypeFilters, DirectoryLocation location = DirectoryLocation.Home);
+
+	/// <summary>
 	/// Opens an information dialog with a title, a text and a close button.
 	/// </summary>
 	/// <param name="title">The title of the dialog.</param>

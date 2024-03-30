@@ -126,11 +126,14 @@
   <data name="converting.Text" xml:space="preserve">
     <value>Convirtiendo</value>
   </data>
+  <data name="copyUrl.Text" xml:space="preserve">
+    <value>Copiar URL</value>
+  </data>
   <data name="currentPlaylist.Text" xml:space="preserve">
     <value>Vídeos</value>
   </data>
   <data name="donationBanner.Text" xml:space="preserve">
-    <value>OnionMedia es un proyecto voluntario de un desarrollador individual, abierto y sin publicidad. Si aprecias mi trabajo y puedes permitírtelo, no dudes en apoyarme con una pequeña donación.</value>
+    <value>OnionMedia es un proyecto sin ánimo de lucro de un único desarrollador, gratuito y sin publicidad. Si te gusta mi trabajo, considera apoyarme con una donación - incluso el precio de una taza de café hace una gran diferencia.</value>
   </data>
   <data name="donationBtn.Content" xml:space="preserve">
     <value>Donar ❤</value>
@@ -143,6 +146,12 @@
   </data>
   <data name="downloadStreamBtn.Text" xml:space="preserve">
     <value>Descargar</value>
+  </data>
+  <data name="downloadThumbnail.Text" xml:space="preserve">
+    <value>Descargar miniatura</value>
+  </data>
+  <data name="editTags.Text" xml:space="preserve">
+    <value>Editar etiquetas</value>
   </data>
   <data name="failed.Text" xml:space="preserve">
     <value>Fallido</value>
@@ -197,5 +206,8 @@
   </data>
   <data name="videolink.PlaceholderText" xml:space="preserve">
     <value>Busca el vídeo o pega el enlace...</value>
+  </data>
+  <data name="viewLog.Text" xml:space="preserve">
+    <value>Mostrar registro</value>
   </data>
 </root>

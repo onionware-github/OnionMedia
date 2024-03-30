@@ -10,10 +10,12 @@
  */
 
 using System;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Navigation;
 using OnionMedia.Contracts.Services;
 using OnionMedia.Core;
+using OnionMedia.Core.Enums;
 using OnionMedia.Core.Models;
 using OnionMedia.Core.Services;
 using OnionMedia.Core.ViewModels;
@@ -24,19 +26,49 @@ namespace OnionMedia.ViewModels
     public class ShellViewModel : ObservableRecipient
     {
         private bool _isBackEnabled;
+        private bool _shutdownTipIsOpen;
+        private bool _showHeaderPowerBtn;
+        private bool _executeOnError;
+        private PCPowerOption _powerOption;
         private object _selected;
 
         public INavigationService NavigationService { get; }
 
         public INavigationViewService NavigationViewService { get; }
 
-        public bool IsBackEnabled
+		public PCPowerOption[] PowerOptions { get; } = Enum.GetValues<PCPowerOption>().ToArray();
+
+		public bool IsBackEnabled
         {
             get { return _isBackEnabled; }
             set { SetProperty(ref _isBackEnabled, value); }
         }
 
-        public object Selected
+        public bool ShutdownTipIsOpen
+        {
+	        get { return _shutdownTipIsOpen; }
+	        set { SetProperty(ref _shutdownTipIsOpen, value); }
+        }
+
+        public bool ShowHeaderPowerButton
+        {
+	        get { return _showHeaderPowerBtn; }
+	        set { SetProperty(ref _showHeaderPowerBtn, value); }
+        }
+
+        public bool ExecuteOnError
+        {
+	        get { return _executeOnError; }
+	        set { SetProperty(ref _executeOnError, value); }
+        }
+
+		public PCPowerOption SelectedPowerOption
+        {
+	        get { return _powerOption; }
+	        set { SetProperty(ref _powerOption, value); }
+        }
+
+		public object Selected
         {
             get { return _selected; }
             set { SetProperty(ref _selected, value); }

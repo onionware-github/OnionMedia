@@ -126,6 +126,9 @@
   <data name="converting.Text" xml:space="preserve">
     <value>Wird konvertiert</value>
   </data>
+  <data name="copyUrl.Text" xml:space="preserve">
+    <value>URL kopieren</value>
+  </data>
   <data name="currentPlaylist.Text" xml:space="preserve">
     <value>Aktuelle Playlist</value>
   </data>
@@ -143,6 +146,12 @@
   </data>
   <data name="downloadStreamBtn.Text" xml:space="preserve">
     <value>Herunterladen</value>
+  </data>
+  <data name="downloadThumbnail.Text" xml:space="preserve">
+    <value>Vorschaubild speichern</value>
+  </data>
+  <data name="editTags.Text" xml:space="preserve">
+    <value>Tags bearbeiten</value>
   </data>
   <data name="failed.Text" xml:space="preserve">
     <value>Fehlgeschlagen</value>
@@ -197,5 +206,8 @@
   </data>
   <data name="videolink.PlaceholderText" xml:space="preserve">
     <value>Video suchen oder Link einfügen...</value>
+  </data>
+  <data name="viewLog.Text" xml:space="preserve">
+    <value>Log anzeigen</value>
   </data>
 </root>

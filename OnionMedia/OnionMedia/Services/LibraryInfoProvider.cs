@@ -23,7 +23,8 @@ sealed class LibraryInfoProvider : IDataCollectionProvider<LibraryInfo>
             new LibraryInfo("Newtonsoft.Json", "James Newton-King", "MIT License", Path.Combine(pathProvider.LicensesDir, "newtonsoft_json.txt"), "https://github.com/JamesNK/Newtonsoft.Json"),
             new LibraryInfo("PInvoke.User32", ".NET Foundation", "MIT License", Path.Combine(pathProvider.LicensesDir, "pinvoke_user32.txt"), "https://github.com/dotnet/pinvoke"),
             new LibraryInfo("TagLib#", "mono", "LGPL v2.1", Path.Combine(pathProvider.LicensesDir, "TagLibSharp.txt"), "https://github.com/mono/taglib-sharp"),
-            new LibraryInfo("xFFmpeg.NET", "Tobias Haimerl(cmxl)", "MIT License", Path.Combine(pathProvider.LicensesDir, "xFFmpeg.NET.txt"), "https://github.com/cmxl/FFmpeg.NET"),
+            new LibraryInfo("TextCopy", "Simon Cropp", "MIT License", Path.Combine(pathProvider.LicensesDir, "textcopy.txt"), "https://github.com/CopyText/TextCopy"),
+			new LibraryInfo("xFFmpeg.NET", "Tobias Haimerl(cmxl)", "MIT License", Path.Combine(pathProvider.LicensesDir, "xFFmpeg.NET.txt"), "https://github.com/cmxl/FFmpeg.NET"),
             new LibraryInfo("XamlBehaviors", "Microsoft", "MIT License", Path.Combine(pathProvider.LicensesDir, "microsoft_mit_license.txt"), "https://github.com/Microsoft/XamlBehaviors"),
             new LibraryInfo("YoutubeDLSharp", "Bluegrams", "BSD 3-Clause License", Path.Combine(pathProvider.LicensesDir, "YoutubeDLSharp.txt"), "https://github.com/Bluegrams/YoutubeDLSharp"),
             new LibraryInfo("YoutubeExplode", "Tyrrrz", "LGPL v3", Path.Combine(pathProvider.LicensesDir, "YoutubeExplode.txt"), "https://github.com/Tyrrrz/YoutubeExplode")

@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -66,6 +67,7 @@ namespace OnionMedia.Core.Models
             if (DownloadProgress != null)
                 DownloadProgress.ProgressChanged -= OnProgressChanged;
 
+            downloadLog = new();
             DownloadProgress = new();
             ProgressInfo = new();
 
@@ -76,9 +78,17 @@ namespace OnionMedia.Core.Models
         protected void OnProgressChanged(object sender, DownloadProgress e)
         {
             downloadProgress = e;
-            var matchResult = Regex.Match(e.Data ?? string.Empty, GlobalResources.FFMPEGTIMEFROMOUTPUTREGEX);
+            Match matchResult = null;
+            if (!string.IsNullOrEmpty(e.Data))
+			{
+				matchResult = Regex.Match(e.Data, GlobalResources.FFMPEGTIMEFROMOUTPUTREGEX);
+				if (!matchResult.Success)
+				{
+					downloadLog.AppendLine(e.Data);
+				}
+			}
 
-            if (matchResult.Success)
+            if (matchResult?.Success is true)
                 ProgressInfo.Progress = (int)(TimeSpan.Parse(matchResult.Value.Remove(0, 5)) / (TimeSpanGroup.EndTime - TimeSpanGroup.StartTime) * 100);
             else if (e.Progress != 0)
                 ProgressInfo.Progress = (int)(downloadProgress.Progress * 100);
@@ -127,6 +137,11 @@ namespace OnionMedia.Core.Models
         public Progress<DownloadProgress> DownloadProgress { get; set; }
 
         /// <summary>
+        /// If set, override the filetags on the download
+        /// </summary>
+        public FileTags? CustomTags { get; set; }
+
+        /// <summary>
         /// The conversion progress after download in %
         /// </summary>
         [ObservableProperty]
@@ -146,6 +161,13 @@ namespace OnionMedia.Core.Models
         /// The CancellationTokenSource to cancel the download
         /// </summary>
         public CancellationTokenSource CancelSource { get; protected set; }
+
+        /// <summary>
+        /// Contains information about the downloading progress. Useful to identify errors.
+        /// </summary>
+        public string DownloadLog => downloadLog.ToString();
+
+        private StringBuilder downloadLog;
 
         /// <summary>
         /// Indicates whether the video is being downloaded

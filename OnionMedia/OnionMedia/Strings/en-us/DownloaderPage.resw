@@ -126,11 +126,14 @@
   <data name="converting.Text" xml:space="preserve">
     <value>Converting</value>
   </data>
+  <data name="copyUrl.Text" xml:space="preserve">
+    <value>Copy URL</value>
+  </data>
   <data name="currentPlaylist.Text" xml:space="preserve">
     <value>Current playlist</value>
   </data>
   <data name="donationBanner.Text" xml:space="preserve">
-    <value>OnionMedia is a voluntary project by an individual developer, open and ad-free. If you appreciate my work and can afford it, feel free to support me with a small donation.</value>
+    <value>OnionMedia is a voluntary project by an individual developer, open and ad-free. If you enjoy my work and can afford it, consider supporting me with a donation - even the price of a cup of coffee makes a big difference.</value>
   </data>
   <data name="donationBtn.Content" xml:space="preserve">
     <value>Donate ❤</value>
@@ -143,6 +146,12 @@
   </data>
   <data name="downloadStreamBtn.Text" xml:space="preserve">
     <value>Download</value>
+  </data>
+  <data name="downloadThumbnail.Text" xml:space="preserve">
+    <value>Download thumbnail</value>
+  </data>
+  <data name="editTags.Text" xml:space="preserve">
+    <value>Edit tags</value>
   </data>
   <data name="failed.Text" xml:space="preserve">
     <value>Failed</value>
@@ -197,5 +206,8 @@
   </data>
   <data name="videolink.PlaceholderText" xml:space="preserve">
     <value>Search video or paste link...</value>
+  </data>
+  <data name="viewLog.Text" xml:space="preserve">
+    <value>Show log</value>
   </data>
 </root>

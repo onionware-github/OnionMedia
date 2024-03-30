@@ -126,11 +126,14 @@
   <data name="converting.Text" xml:space="preserve">
     <value>Converteren...</value>
   </data>
+  <data name="copyUrl.Text" xml:space="preserve">
+    <value>Kopie URL</value>
+  </data>
   <data name="currentPlaylist.Text" xml:space="preserve">
     <value>Huidige afspeellijst</value>
   </data>
   <data name="donationBanner.Text" xml:space="preserve">
-    <value>OnionMedia is een vrijwillig project van een individuele ontwikkelaar, open en advertentievrij. Als u mijn werk waardeert en het zich kunt veroorloven, kunt u mij steunen met een kleine donatie.</value>
+    <value>OnionMedia is een non-profit project van één enkele ontwikkelaar, gratis en zonder advertenties. Als je mijn werk leuk vindt, overweeg dan om mij te steunen met een donatie – zelfs de prijs van een kopje koffie maakt een groot verschil.</value>
   </data>
   <data name="donationBtn.Content" xml:space="preserve">
     <value>Doneer ❤</value>
@@ -143,6 +146,12 @@
   </data>
   <data name="downloadStreamBtn.Text" xml:space="preserve">
     <value>Download</value>
+  </data>
+  <data name="downloadThumbnail.Text" xml:space="preserve">
+    <value>Miniatuur downloaden</value>
+  </data>
+  <data name="editTags.Text" xml:space="preserve">
+    <value>Tags bewerken</value>
   </data>
   <data name="failed.Text" xml:space="preserve">
     <value>Mislukt</value>
@@ -197,5 +206,8 @@
   </data>
   <data name="videolink.PlaceholderText" xml:space="preserve">
     <value>Zoek video of plak link...</value>
+  </data>
+  <data name="viewLog.Text" xml:space="preserve">
+    <value>Logboek tonen</value>
   </data>
 </root>

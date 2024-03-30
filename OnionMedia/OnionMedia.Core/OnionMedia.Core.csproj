@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+	    <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -11,6 +11,7 @@
       <PackageReference Include="FFMpegCore" Version="4.7.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="TagLibSharp" Version="2.3.0" />
+      <PackageReference Include="TextCopy" Version="6.2.1" />
       <PackageReference Include="xFFmpeg.NET" Version="7.1.3" />
       <PackageReference Include="YoutubeExplode" Version="6.0.7" />
     </ItemGroup>

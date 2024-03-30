@@ -267,4 +267,37 @@ pukkandan (desarrollo y apoyo a yt-dlp)</value>
   <data name="video" xml:space="preserve">
     <value>Vídeo</value>
   </data>
+  <data name="close" xml:space="preserve">
+    <value>Cerrar</value>
+  </data>
+  <data name="copy" xml:space="preserve">
+    <value>Copia</value>
+  </data>
+  <data name="emptyLog" xml:space="preserve">
+    <value>El registro de este proceso está vacío.</value>
+  </data>
+  <data name="save" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="Hibernate" xml:space="preserve">
+    <value>Hibernar</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>No hacer nada</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>Apagar</value>
+  </data>
+  <data name="Sleep" xml:space="preserve">
+    <value>Suspendar</value>
+  </data>
+  <data name="executeOnErrors.Content" xml:space="preserve">
+    <value>Ejecutar incluso en operaciones fallidas</value>
+  </data>
+  <data name="shutdownFlyout.ActionButtonContent" xml:space="preserve">
+    <value>Aplicar</value>
+  </data>
+  <data name="shutdownFlyout.Title" xml:space="preserve">
+    <value>Cuando esté hecho:</value>
+  </data>
 </root>
