@@ -264,8 +264,8 @@
 
                     <StackPanel>
                         <TextBlock x:Uid="/DownloaderPage/selectFileFormat" Margin="0,10" FontWeight="SemiBold" FontSize="16"/>
-                        <RadioButton GroupName="FormatSelection" x:Uid="/DownloaderPage/Mp3" IsEnabled="{x:Bind ViewModel.QueueIsNotEmpty}"/>
-                        <RadioButton GroupName="FormatSelection" x:Uid="/DownloaderPage/Mp4" IsEnabled="{x:Bind ViewModel.QueueIsNotEmpty}" IsChecked="{x:Bind ViewModel.GetMP4, Mode=TwoWay}"/>
+                        <RadioButton GroupName="FormatSelection" x:Uid="/DownloaderPage/Mp3"/>
+                        <RadioButton GroupName="FormatSelection" x:Uid="/DownloaderPage/Mp4" IsChecked="{x:Bind ViewModel.GetMP4, Mode=TwoWay}"/>
                     </StackPanel>
 
                     <StackPanel Visibility="{x:Bind ViewModel.ResolutionsAvailable}">
