@@ -48,8 +48,9 @@ OnionMedia delivers a built-in Searchbar for Youtube, functions to recode your d
 #### Download from Microsoft Store
 You can find OnionMedia in the Microsoft Store, that is preinstalled in Windows 10 and Windows 11.
 
-<a href="https://www.microsoft.com/store/productId/9N252NJJQB65">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Get_it_from_Microsoft_Badge.svg" alt="Click here to download OnionMedia from the Microsoft Store" width="250"/>
+<a href="https://apps.microsoft.com/detail/OnionMedia%20-%20Videodownloader%20und%20Konverter/9n252njjqb65?launch=true
+    &mode=mini">
+    <img src="https://get.microsoft.com/images/en-us%20dark.svg" width="250" alt="Click here to download OnionMedia from the Microsoft Store"/>
 </a>
 
 
