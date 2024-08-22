@@ -223,7 +223,7 @@ namespace OnionMedia.Core.ViewModels
                 }
 
                 ScanVideoCount++;
-                var data = await DownloaderMethods.downloadClient.RunVideoDataFetch(videolink, overrideOptions: OptionSet.FromString(new[] {"--extractor-args \"youtube:player_client=android,web\""}));
+                var data = await DownloaderMethods.downloadClient.RunVideoDataFetch(videolink);
 
                 if (data.Data == null && urlClone == SearchTerm)
                 {

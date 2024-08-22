@@ -16,6 +16,7 @@ using OnionMedia.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -121,11 +122,11 @@ namespace OnionMedia.Core.Models
             isUpdating = false;
             Debug.WriteLine("Finish update task");
         }
-
+        
         /// <summary>
-        /// Contains informations of the video
-        /// </summary>
-        public VideoData Video { get; }
+		/// Contains informations of the video
+		/// </summary>
+		public VideoData Video { get; }
         public TimeSpan Duration { get; }
         public string? UploadDate => Video.UploadDate?.ToShortDateString();
         public TimeSpanGroup TimeSpanGroup { get; }
@@ -167,7 +168,7 @@ namespace OnionMedia.Core.Models
         /// </summary>
         public string DownloadLog => downloadLog.ToString();
 
-        private StringBuilder downloadLog;
+        internal StringBuilder downloadLog;
 
         /// <summary>
         /// Indicates whether the video is being downloaded
@@ -218,9 +219,9 @@ namespace OnionMedia.Core.Models
         /// The height for the video to download
         /// </summary>
         public int GetVideoHeight => Convert.ToInt32(QualityLabel.Remove(QualityLabel.Length - 1));
-        /// <summary>
-        /// The format for the video to download
-        /// </summary>
+		/// <summary>
+		/// The format for the video to download
+		/// </summary>
         public string Format => $"bestvideo[height<={GetVideoHeight}]+bestaudio[ext=m4a]/best[height<={GetVideoHeight}]/best";
 
         /// <summary>

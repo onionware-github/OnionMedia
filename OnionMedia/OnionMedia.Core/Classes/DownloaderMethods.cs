@@ -65,7 +65,6 @@ namespace OnionMedia.Core.Classes
 				throw new ArgumentNullException(nameof(stream));
 
 			OptionSet ytOptions = new() { RestrictFilenames = true };
-			ytOptions.AddCustomOption("--extractor-args", "youtube:player_client=android,web");
 
 			//Creates a temp directory if it does not already exist.
 			Directory.CreateDirectory(pathProvider.DownloaderTempdir);
@@ -314,12 +313,13 @@ namespace OnionMedia.Core.Classes
 			VideoRecodeFormat videoRecodeFormat = (autoConvertToH264 || isShortened) ? VideoRecodeFormat.None : VideoRecodeFormat.Mp4;
 			ytOptions.EmbedThumbnail = true;
 			ytOptions.AddCustomOption("--format-sort", "hdr:SDR");
+			bool isFromYoutube = stream.Video.Url.Contains("youtube.com") || stream.Video.Url.Contains("youtu.be");
 
 			Size originalSize = default;
 			FormatData formatData = null;
 			bool removeFormat = false;
 
-			//Don't use DASH in trimmed videos
+			//Don't use DASH/M3U8 in trimmed videos
 			if (stream.CustomTimes)
 			{
 				//formatData = GetBestFormatWithoutDash(stream, out originalSize);
@@ -401,7 +401,7 @@ namespace OnionMedia.Core.Classes
 		private static FormatData GetBestTrimmableFormat(StreamItemModel stream)
 		{
 			bool isFromYoutube = stream.Video.Url.Contains("youtube.com") || stream.Video.Url.Contains("youtu.be");
-			var validFormats = stream.FormatQualityLabels.Where(f => ((f.Key.Protocol != "http_dash_segments" && !isFromYoutube) || (isFromYoutube && !(f.Key.FormatNote ?? string.Empty).ToLower().Contains("dash video"))) && f.Key.Extension != "3gp" && f.Key.HDR == "SDR");
+			var validFormats = stream.FormatQualityLabels.Where(f => ((f.Key.Protocol != "http_dash_segments" && !isFromYoutube) || (isFromYoutube && !f.Key.Protocol.Contains("m3u8") && !(f.Key.FormatNote ?? string.Empty).Contains("dash video", StringComparison.OrdinalIgnoreCase))) && f.Key.Extension != "3gp" && f.Key.HDR == "SDR");
 			var heightSortedFormats = validFormats.OrderByDescending(f => f.Key.Height);
 			var extSortedFormats = heightSortedFormats.ThenBy(f => f.Key.Extension == "mp4" ? 0 : 1);
 			var selectedFormat = stream.QualityLabel.IsNullOrEmpty()

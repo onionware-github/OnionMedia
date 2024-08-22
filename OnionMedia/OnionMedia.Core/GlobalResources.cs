@@ -4,6 +4,7 @@ using OnionMedia.Core.Models;
 using OnionMedia.Core.Services;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -25,6 +26,20 @@ namespace OnionMedia.Core
         public const string INVALIDFILENAMECHARACTERSREGEX = @"[<|>:""/\?*]";
         public const string FFMPEGTIMEFROMOUTPUTREGEX = "time=[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{2}";
         public const string URLREGEX = @"^(?:https?:\/\/)?(?:www[.])?\S+[.]\S+(?:[\/]+\S*)*$";
+
+        public static string LocalDonationUrl
+        {
+	        get
+	        {
+		        switch (CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol)
+		        {
+			        case "€":
+				        return "https://www.paypal.com/donate/?hosted_button_id=5TABD3FZYH452";
+			        default:
+				        return "https://www.paypal.com/donate/?hosted_button_id=D6H44EWFWZ5YE";
+		        }
+			}
+        }
 
 
         private const string DialogResources = "DialogResources";

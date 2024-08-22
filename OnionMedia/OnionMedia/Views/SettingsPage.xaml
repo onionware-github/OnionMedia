@@ -297,7 +297,7 @@
                             <HyperlinkButton x:Uid="/SettingsPage/contactBtn" Command="{x:Bind ViewModel.OpenContactMailCommand}"/>
                             <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/onionware-github/OnionMedia"/>
                         </ctc:WrapPanel>
-                        <HyperlinkButton x:Uid="/SettingsPage/donateBtn" NavigateUri="https://www.paypal.com/donate/?hosted_button_id=5TABD3FZYH452" HorizontalAlignment="Stretch" BorderBrush="SlateGray" BorderThickness="1"/>
+                        <HyperlinkButton x:Uid="/SettingsPage/donateBtn" NavigateUri="{x:Bind c:GlobalResources.LocalDonationUrl, Mode=OneTime}" HorizontalAlignment="Stretch" BorderBrush="SlateGray" BorderThickness="1"/>
 
                         <ctc:WrapPanel Orientation="Horizontal" HorizontalSpacing="40" VerticalSpacing="30" MaxHeight="350" Margin="{StaticResource SmallTopMargin}">
                             <Image Source="../Assets/OnionMedia_Icon_New.png" Height="200" VerticalAlignment="Top"/>
@@ -326,7 +326,7 @@
                         <HyperlinkButton x:Uid="/SettingsPage/contactBtn" Command="{x:Bind ViewModel.OpenContactMailCommand}"/>
                         <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/onionware-github/OnionMedia"/>
                     </ctc:WrapPanel>
-                    <HyperlinkButton x:Uid="/SettingsPage/donateBtn" NavigateUri="https://www.paypal.com/donate/?hosted_button_id=5TABD3FZYH452" HorizontalAlignment="Stretch" BorderBrush="SlateGray" BorderThickness="1"/>
+                    <HyperlinkButton x:Uid="/SettingsPage/donateBtn" NavigateUri="{x:Bind c:GlobalResources.LocalDonationUrl, Mode=OneTime}" HorizontalAlignment="Stretch" BorderBrush="SlateGray" BorderThickness="1"/>
 
                     <ctc:WrapPanel Orientation="Horizontal" HorizontalSpacing="40" VerticalSpacing="30" MaxHeight="350" Margin="{StaticResource SmallTopMargin}">
                         <Image Source="../Assets/OnionMedia_Icon_New.png" Height="200" VerticalAlignment="Top"/>

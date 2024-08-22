@@ -17,6 +17,7 @@ using OnionMedia.Core.ViewModels;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using Microsoft.UI.Xaml.Navigation;
+using OnionMedia.Core;
 using OnionMedia.Core.Models;
 using YoutubeExplode.Playlists;
 using Visibility = Microsoft.UI.Xaml.Visibility;
@@ -87,7 +88,7 @@ namespace OnionMedia.Views
         {
 	        Process.Start(new ProcessStartInfo
 			{
-				FileName = "https://www.paypal.com/donate/?hosted_button_id=5TABD3FZYH452",
+				FileName = GlobalResources.LocalDonationUrl,
 				UseShellExecute = true
 			});
 		}
