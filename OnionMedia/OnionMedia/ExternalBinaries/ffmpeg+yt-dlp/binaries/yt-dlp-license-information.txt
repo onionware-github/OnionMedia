@@ -6,4 +6,4 @@ mutagen (GPLv2+)
 pycryptodomex (BSD-2-Clause)
 phantomJS (BSD-3-Clause)
 
-https://github.com/yt-dlp/yt-dlp/releases/tag/2023.12.30
+https://github.com/yt-dlp/yt-dlp/releases/tag/2024.11.18

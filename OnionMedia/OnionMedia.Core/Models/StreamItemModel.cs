@@ -122,8 +122,8 @@ namespace OnionMedia.Core.Models
             isUpdating = false;
             Debug.WriteLine("Finish update task");
         }
-        
-        /// <summary>
+
+		/// <summary>
 		/// Contains informations of the video
 		/// </summary>
 		public VideoData Video { get; }

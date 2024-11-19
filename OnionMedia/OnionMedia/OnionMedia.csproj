@@ -107,7 +107,7 @@
 		<PackageReference Include="CommunityToolkit.WinUI.UI.Behaviors" Version="7.1.2" />
 		<PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
 		<PackageReference Include="Jab" Version="0.8.6" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.4" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.1" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.0.8" />

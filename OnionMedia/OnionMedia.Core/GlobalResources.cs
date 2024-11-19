@@ -35,7 +35,11 @@ namespace OnionMedia.Core
 		        {
 			        case "€":
 				        return "https://www.paypal.com/donate/?hosted_button_id=5TABD3FZYH452";
-			        default:
+                    case "CHF":
+                        return "https://www.paypal.com/donate/?hosted_button_id=MN8ESWH82EENA";
+                    case "£":
+                        return "https://www.paypal.com/donate/?hosted_button_id=MYQV428WNNYX6";
+					default: //$
 				        return "https://www.paypal.com/donate/?hosted_button_id=D6H44EWFWZ5YE";
 		        }
 			}
