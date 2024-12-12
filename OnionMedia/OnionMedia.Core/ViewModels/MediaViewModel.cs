@@ -27,14 +27,26 @@ using OnionMedia.Core.Enums;
 using OnionMedia.Core.Extensions;
 using OnionMedia.Core.Models;
 using OnionMedia.Core.Services;
+using Microsoft.Extensions.Logging;
+using OnionMedia.Core.Services.Logging.Classes;
+using OnionMedia.Core.Services.Logging.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace OnionMedia.Core.ViewModels
 {
     [ObservableObject]
     public sealed partial class MediaViewModel
     {
-        public MediaViewModel(IDialogService dialogService, IDispatcherService dispatcher, IConversionPresetDialog conversionPresetDialog, IFiletagEditorDialog filetagEditorDialog, IToastNotificationService toastNotificationService, ITaskbarProgressService taskbarProgressService)
+        public MediaViewModel(IDialogService dialogService, IDispatcherService dispatcher, IConversionPresetDialog conversionPresetDialog, IFiletagEditorDialog filetagEditorDialog, IToastNotificationService toastNotificationService, ITaskbarProgressService taskbarProgressService, IServiceProvider serviceprovider)
         {
+            var loggerService = serviceprovider.GetRequiredService<ICentralLoggerService>();
+           
+            loggerService.EnqueueLog(new LogType
+            {
+                LogMessage = "Dies ist eine Testnachricht",
+                LogPriority = LogLevel.Warning,
+                LogTime = DateTime.Now.ToString("HH:mm:ss")
+            });
             this.dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             this.conversionPresetDialog = conversionPresetDialog ?? throw new ArgumentNullException(nameof(conversionPresetDialog));
             this.filetagEditorDialog = filetagEditorDialog ?? throw new ArgumentNullException(nameof(filetagEditorDialog));

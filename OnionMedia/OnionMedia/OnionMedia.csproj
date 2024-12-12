@@ -10,6 +10,9 @@
 		<UseWinUI>true</UseWinUI>
 		<SupportedOSPlatformVersion>10.0.18362.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
+	<PropertyGroup>
+		<Jab_EnableCodeGenerationDebugOutput>true</Jab_EnableCodeGenerationDebugOutput>
+	</PropertyGroup>
 	<ItemGroup>
 		<None Remove="Assets\AGPLv3_Logo.svg" />
 		<None Remove="Assets\OnionMedia_Icon.svg" />
@@ -107,7 +110,10 @@
 		<PackageReference Include="CommunityToolkit.WinUI.UI.Behaviors" Version="7.1.2" />
 		<PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
 		<PackageReference Include="Jab" Version="0.8.6" />
+		<PackageReference Include="Microsoft.Azure.Amqp" Version="2.6.9" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.1" />
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.4" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.1" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.0.8" />

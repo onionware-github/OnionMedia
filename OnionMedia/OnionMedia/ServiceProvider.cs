@@ -9,17 +9,31 @@ using OnionMedia.Core.ViewModels;
 using OnionMedia.Services;
 using OnionMedia.ViewModels;
 using OnionMedia.Views;
+using Microsoft.Extensions.Logging;
+using OnionMedia.Core.Services.Logging;
+using OnionMedia.Core.Services.Logging.Interfaces;
+using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace OnionMedia;
 
 //Services/Activation Handler
 [ServiceProvider]
+
+//Logging
+[Singleton(typeof(ILoggerFactory), Factory = nameof(CreateLoggerFactory))]
+[Singleton(typeof(ILogger<>))]
+[Singleton(typeof(ILogger<CentralLoggerService>), Factory = nameof(CreateLogger))]
+[Singleton(typeof(ICentralLoggerService), typeof(CentralLoggerService))]
+
+
 [Singleton(typeof(IThemeSelectorService), typeof(ThemeSelectorService))]
 [Singleton(typeof(IPageService), typeof(PageService))]
 [Singleton(typeof(INavigationService), typeof(NavigationService))]
 [Transient(typeof(INavigationViewService), typeof(NavigationViewService))]
 [Transient(typeof(ActivationHandler<LaunchActivatedEventArgs>), typeof(DefaultActivationHandler))]
 [Singleton(typeof(IActivationService), typeof(ActivationService))]
+
 //Core Services
 [Singleton(typeof(IDataCollectionProvider<LibraryInfo>), typeof(LibraryInfoProvider))]
 [Singleton(typeof(IDialogService), typeof(DialogService))]
@@ -40,6 +54,7 @@ namespace OnionMedia;
 [Singleton(typeof(IWindowClosingService), typeof(WindowClosingService))]
 [Singleton(typeof(IPCPower), typeof(WindowsPowerService))]
 [Singleton(typeof(IFFmpegStartup), typeof(FFmpegStartup))]
+
 //Views and ViewModels
 [Transient(typeof(ShellViewModel))]
 [Transient(typeof(ShellPage))]
@@ -51,4 +66,22 @@ namespace OnionMedia;
 [Transient(typeof(SettingsPage))]
 [Transient(typeof(PlaylistsViewModel))]
 [Transient(typeof(PlaylistsPage))]
-sealed partial class ServiceProvider { }
+sealed partial class ServiceProvider
+{
+
+    private static ILogger<CentralLoggerService> CreateLogger(IServiceProvider serviceProvider)
+    {
+        var factory = serviceProvider.GetRequiredService<ILoggerFactory>();
+        return factory.CreateLogger<CentralLoggerService>();
+    }
+
+    private static ILoggerFactory CreateLoggerFactory()
+    {
+        return LoggerFactory.Create(builder =>
+        {
+            builder.AddConsole(); // Konfiguration für Logging, z. B. Console-Logging.
+            builder.SetMinimumLevel(LogLevel.Information);
+        });
+    }
+
+}
