@@ -75,10 +75,9 @@ sealed partial class ServiceProvider
 
     private static Serilog.ILogger CreateSerilogLogger()
     {
-        if (!Directory.Exists("logs"))
-        {
-            Directory.CreateDirectory("logs");
-        }
+      
+        Directory.CreateDirectory(AppSettings.Instance.LogPath);
+       
         CheckAge();
         if (AppSettings.Instance.UseLogging)
         {
