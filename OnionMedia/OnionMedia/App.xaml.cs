@@ -42,8 +42,6 @@ using Microsoft.UI.Composition.SystemBackdrops;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using Windows.Services.Maps;
-using OnionMedia.Core.Services.Logging.Classes;
-using OnionMedia.Core.Services.Logging.Interfaces;
 
 // To learn more about WinUI3, see: https://docs.microsoft.com/windows/apps/winui/winui3/.
 namespace OnionMedia

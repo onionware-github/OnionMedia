@@ -19,14 +19,18 @@ using CommunityToolkit.Mvvm.Input;
 using OnionMedia.Core.Models;
 using OnionMedia.Core.Services;
 using OnionMedia.Core.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace OnionMedia.Core.ViewModels
 {
     [ObservableObject]
     public sealed partial class SettingsViewModel
     {
-        public SettingsViewModel(IUrlService urlService, IDialogService dialogService, IThirdPartyLicenseDialog thirdPartyLicenseDialog, IPathProvider pathProvider, IVersionService versionService)
+        public ILogger<SettingsViewModel> logger;
+        public SettingsViewModel(ILogger<SettingsViewModel> _logger,IUrlService urlService, IDialogService dialogService, IThirdPartyLicenseDialog thirdPartyLicenseDialog, IPathProvider pathProvider, IVersionService versionService)
         {
+            logger = _logger ?? throw new ArgumentNullException(nameof(_logger));
             this.dialogService = dialogService;
             this.urlService = urlService;
             this.thirdPartyLicenseDialog = thirdPartyLicenseDialog;
@@ -67,6 +71,9 @@ namespace OnionMedia.Core.ViewModels
 
                 case PathType.DownloadedAudiofiles:
                     AppSettings.Instance.DownloadsAudioSavePath = path;
+                    break;
+                case PathType.LogPath:
+                    AppSettings.Instance.LogPath = path;
                     break;
             }
         }

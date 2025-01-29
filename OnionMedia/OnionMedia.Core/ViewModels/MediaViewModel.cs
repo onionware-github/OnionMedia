@@ -28,31 +28,27 @@ using OnionMedia.Core.Extensions;
 using OnionMedia.Core.Models;
 using OnionMedia.Core.Services;
 using Microsoft.Extensions.Logging;
-using OnionMedia.Core.Services.Logging.Classes;
-using OnionMedia.Core.Services.Logging.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-
 namespace OnionMedia.Core.ViewModels
 {
     [ObservableObject]
     public sealed partial class MediaViewModel
     {
-        public MediaViewModel(IDialogService dialogService, IDispatcherService dispatcher, IConversionPresetDialog conversionPresetDialog, IFiletagEditorDialog filetagEditorDialog, IToastNotificationService toastNotificationService, ITaskbarProgressService taskbarProgressService, IServiceProvider serviceprovider)
+        private readonly ILogger<MediaViewModel> logger;
+        public MediaViewModel(ILogger<MediaViewModel> _logger, IDialogService dialogService, IDispatcherService dispatcher, IConversionPresetDialog conversionPresetDialog, IFiletagEditorDialog filetagEditorDialog, IToastNotificationService toastNotificationService, ITaskbarProgressService taskbarProgressService)
         {
-            var loggerService = serviceprovider.GetRequiredService<ICentralLoggerService>();
-           
-            loggerService.EnqueueLog(new LogType
-            {
-                LogMessage = "Dies ist eine Testnachricht",
-                LogPriority = LogLevel.Warning,
-                LogTime = DateTime.Now.ToString("HH:mm:ss")
-            });
+            logger = _logger ?? throw new ArgumentNullException(nameof(_logger));
             this.dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             this.conversionPresetDialog = conversionPresetDialog ?? throw new ArgumentNullException(nameof(conversionPresetDialog));
             this.filetagEditorDialog = filetagEditorDialog ?? throw new ArgumentNullException(nameof(filetagEditorDialog));
             this.toastNotificationService = toastNotificationService ?? throw new ArgumentNullException(nameof(toastNotificationService));
             this.dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
             this.taskbarProgressService = taskbarProgressService;
+
+            if (Debugger.IsAttached)
+            {
+                logger.LogWarning("App runs currently in debug-mode");
+            }
 
             if (this.taskbarProgressService != null)
                 PropertyChanged += (o, e) =>
@@ -120,14 +116,26 @@ namespace OnionMedia.Core.ViewModels
 
         private void Files_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            logger.LogInformation("Files_CollectionChanged in MediaViewModel");
             OnPropertyChanged(nameof(FilesAreEmpty));
             OnPropertyChanged(nameof(CanExecuteConversion));
         }
+        private T CheckAndLogNull<T>(T parameter, string parameterName)
+        {
+            if (parameter == null)
+            {
+                logger.LogError($"ArgumentNullException: {parameterName} is null in MediaViewModel constructor");
+                throw new ArgumentNullException(parameterName);
+            }
+            return parameter;
+        }
+
 
         private void InsertConversionPresetsFromJson()
         {
             try
             {
+                logger.LogInformation("Trying to read json in InsertConversionPresetsFromJson");
                 //Try to read the .json file that contains the presets.
                 ConversionPresets.AddRange(JsonSerializer.Deserialize<IEnumerable<ConversionPreset>>(File.ReadAllText(conversionPresetsPath)));
             }
@@ -135,10 +143,14 @@ namespace OnionMedia.Core.ViewModels
             {
                 try
                 {
+                    logger.LogInformation("ReTrying to read json in InsertConversionPresetsFromJson");
                     //If the file is missing or corrupted, try to read the supplied file.
                     ConversionPresets.AddRange(JsonSerializer.Deserialize<IEnumerable<ConversionPreset>>(File.ReadAllText(Path.Combine(pathProvider.InstallPath, "Data", "ConversionPresets.json"))));
                 }
-                catch (Exception) { } //Dont crash when the supplied .json file is missing or corrupted too.
+                catch (Exception)
+                {
+                    logger.LogInformation("Json is corrupted or Missing in InsertConversionPresetsFromJson");
+                } //Dont crash when the supplied .json file is missing or corrupted too.
                 finally
                 {
                     //Finally create a new .json file for the presets.
@@ -146,17 +158,25 @@ namespace OnionMedia.Core.ViewModels
                         Directory.CreateDirectory(Path.GetDirectoryName(conversionPresetsPath));
                     using var sr = File.CreateText(conversionPresetsPath);
                     sr.Write(JsonSerializer.Serialize<IEnumerable<ConversionPreset>>(ConversionPresets));
+                    logger.LogInformation("New json got Written in InsertConversionPresetsFromJson ");
+
                 }
             }
         }
 
         private async void UpdateConversionPresets(object sender, NotifyCollectionChangedEventArgs e)
         {
+
+            logger.LogInformation("UpdateConversionPresets got called");
+
             if (!File.Exists(conversionPresetsPath))
             {
                 if (!Directory.Exists(Path.GetDirectoryName(conversionPresetsPath)))
                     Directory.CreateDirectory(Path.GetDirectoryName(conversionPresetsPath));
                 File.Create(conversionPresetsPath);
+
+                logger.LogInformation($"Created file {conversionPresetsPath} in UpdateConversionPresets ");
+
             }
 
             List<ConversionPreset> presets = new(((IEnumerable<ConversionPreset>)sender).Where(p => p != null));
@@ -277,11 +297,16 @@ namespace OnionMedia.Core.ViewModels
         /// <param name="filepaths">The files to add to the list.</param>
         public async Task AddFilesAsync(IEnumerable<string> filepaths = null)
         {
+
             string[] result = filepaths?.ToArray();
             if (result == null || result.Length == 0)
             {
                 result = await dialogService.ShowMultipleFilePickerDialogAsync(DirectoryLocation.Videos);
-                if (result == null || !result.Any()) return;
+                if (result == null || !result.Any())
+                {
+                    logger.LogInformation($"Created file dialogResult war null in AddFilesAsync");
+                    return;
+                };
             }
 
             int failedCount = 0;
@@ -304,6 +329,8 @@ namespace OnionMedia.Core.ViewModels
             AddingFiles = false;
             if (failedCount > 0)
             {
+                logger.LogInformation($"failedCount>0 in AddFilesAsync");
+
                 (string title, string content) dlgContent;
                 if (result.Length == 1)
                     dlgContent = ("fileNotSupported".GetLocalized(dialogResources), "fileNotSupportedText".GetLocalized(dialogResources));
@@ -321,24 +348,43 @@ namespace OnionMedia.Core.ViewModels
         private async Task AddConversionPresetAsync()
         {
             ConversionPreset newPreset = await conversionPresetDialog.ShowCustomPresetDialogAsync(ConversionPresets.Select(p => p.Name));
-            if (newPreset == null) return;
+            if (newPreset == null)
+            {
+                logger.LogInformation($"newPreset was null in AddConversionPresetAsync");
+
+                return;
+            }
 
             //Add the new preset and sort the presets (exclude the standard preset [0] from sorting)
             ConversionPresets.Add(newPreset);
             ReorderConversionPresets();
             SelectedConversionPreset = newPreset;
+            logger.LogInformation($"newPreset added in AddConversionPresetAsync");
+
+
         }
 
         private async Task EditConversionPresetAsync(ConversionPreset conversionPreset)
         {
+
             if (conversionPreset == null)
+            {
                 throw new ArgumentNullException(nameof(conversionPreset));
+            }
+
 
             if (!ConversionPresets.Contains(conversionPreset))
+            {
                 throw new ArgumentException("ConversionPresets does not contain conversionPreset.");
+            }
 
             ConversionPreset editedPreset = await conversionPresetDialog.ShowCustomPresetDialogAsync(conversionPreset, ConversionPresets.Select(p => p.Name));
-            if (editedPreset == null) return;
+            if (editedPreset == null)
+            {
+                logger.LogInformation($"editedPreset was null in EditConversionPresetAsync");
+
+                return;
+            }
 
             //Rename the preset and sort the presets (exclude the standard preset [0] from sorting)
             ConversionPresets[ConversionPresets.IndexOf(conversionPreset)] = editedPreset;
@@ -348,6 +394,7 @@ namespace OnionMedia.Core.ViewModels
 
         private async Task DeleteConversionPresetAsync(ConversionPreset conversionPreset)
         {
+
             if (conversionPreset == null)
                 throw new ArgumentNullException(nameof(conversionPreset));
 
@@ -359,7 +406,12 @@ namespace OnionMedia.Core.ViewModels
                                                                              "delete".GetLocalized(deletePresetDialog),
                                                                              "cancel".GetLocalized(deletePresetDialog),
                                                                              null) ?? false;
-            if (!deletePreset) return;
+            if (!deletePreset)
+            {
+                logger.LogInformation($"deletePreset was false in EditConversionPresetAsync");
+
+                return;
+            }
 
             ConversionPresets.Remove(conversionPreset);
             if (ConversionPresets.Count > 1)
@@ -370,6 +422,7 @@ namespace OnionMedia.Core.ViewModels
 
         private async Task ConvertFilesAsync()
         {
+
             if (SelectedConversionPreset == null)
                 throw new Exception("SelectedConversionPreset is null.");
 
@@ -378,7 +431,12 @@ namespace OnionMedia.Core.ViewModels
             {
                 //TODO: Check if this path is writable.
                 path = await dialogService.ShowFolderPickerDialogAsync(DirectoryLocation.Videos);
-                if (path == null) return;
+                if (path == null)
+                {
+                    logger.LogInformation($"Path was null in ConvertFilesAsync");
+
+                    return;
+                }
             }
 
             allCanceled = false;
@@ -416,6 +474,8 @@ namespace OnionMedia.Core.ViewModels
                 string outputPath = Path.ChangeExtension(Path.Combine(targetDir, file.MediaFile.FileInfo.Name), file.UseCustomOptions ? file.CustomOptions.Format.Name : SelectedConversionPreset.Format.Name);
                 file.Complete += (o, e) =>
                 {
+                    logger.LogInformation($"File Complete in ConvertFilesAsync");
+
                     completed++;
                     lastCompleted = (MediaItemModel)o;
                     if (File.Exists(e?.Output?.Name))
@@ -429,19 +489,27 @@ namespace OnionMedia.Core.ViewModels
                     switch (t.Exception?.InnerException)
                     {
                         default:
+                            logger.LogError($"Exception occured while saving the file. in ConvertFilesAsync");
+
                             Debug.WriteLine("Exception occured while saving the file.");
                             break;
 
                         case UnauthorizedAccessException:
                             unauthorizedAccessExceptions++;
+                            logger.LogError($"UnauthorizedAccessException {unauthorizedAccessExceptions}. in ConvertFilesAsync");
+
                             break;
 
                         case DirectoryNotFoundException:
                             directoryNotFoundExceptions++;
+                            logger.LogError($"DirectoriyNotFoundExceptions {directoryNotFoundExceptions}. in ConvertFilesAsync");
+
                             break;
 
                         case NotEnoughSpaceException:
                             notEnoughSpaceExceptions++;
+                            logger.LogError($"NotEnoughtSpaceExceptions {notEnoughSpaceExceptions}. in ConvertFilesAsync");
+
                             break;
                     }
                 }));
@@ -452,6 +520,8 @@ namespace OnionMedia.Core.ViewModels
             if (AppSettings.Instance.ClearListsAfterOperation)
                 files.ForEach(f => Files.Remove(f), f => Files.Contains(f) && f.ConversionState is FFmpegConversionState.Done);
 
+            logger.LogInformation($"ConversionDone. in ConvertFilesAsync");
+
             Debug.WriteLine("Conversion done");
 
             try
@@ -459,48 +529,60 @@ namespace OnionMedia.Core.ViewModels
                 foreach (var dir in Directory.GetDirectories(pathProvider.ConverterTempdir))
                 {
                     try { Directory.Delete(dir, true); }
-                    catch { /* Dont crash if a directory cant be deleted */ }
+                    catch
+                    {
+
+                        logger.LogWarning($"Directorie cant be deleted. in ConvertFilesAsync");
+
+                        /* Dont crash if a directory cant be deleted */
+                    }
                 }
             }
-            catch {Console.WriteLine("Failed to get temporary conversion folders.");}
+            catch
+            {
+                logger.LogWarning($"Failed to get temporary conversion folders. in ConvertFilesAsync");
+
+                Console.WriteLine("Failed to get temporary conversion folders.");
+            }
 
             try
             {
-	            if (unauthorizedAccessExceptions + directoryNotFoundExceptions + notEnoughSpaceExceptions > 0)
-	            {
-		            taskbarProgressService?.UpdateState(typeof(MediaViewModel), ProgressBarState.Error);
-		            await GlobalResources.DisplayFileSaveErrorDialog(unauthorizedAccessExceptions,
-			            directoryNotFoundExceptions, notEnoughSpaceExceptions);
-	            }
+                if (unauthorizedAccessExceptions + directoryNotFoundExceptions + notEnoughSpaceExceptions > 0)
+                {
+                    taskbarProgressService?.UpdateState(typeof(MediaViewModel), ProgressBarState.Error);
+                    await GlobalResources.DisplayFileSaveErrorDialog(unauthorizedAccessExceptions,
+                        directoryNotFoundExceptions, notEnoughSpaceExceptions);
+                }
 
-	            taskbarProgressService?.UpdateState(typeof(MediaViewModel), ProgressBarState.None);
-	            if (!AppSettings.Instance.SendMessageAfterConversion)
-	            {
-		            return;
-	            }
+                taskbarProgressService?.UpdateState(typeof(MediaViewModel), ProgressBarState.None);
+                if (!AppSettings.Instance.SendMessageAfterConversion)
+                {
+                    return;
+                }
 
-	            if (completed == 1)
-	            {
-		            await lastCompleted.ShowToastAsync(lastCompletedPath);
-	            }
-	            else if (completed > 1)
-	            {
-		            toastNotificationService.SendConversionsDoneNotification(completed);
-	            }
+                if (completed == 1)
+                {
+                    await lastCompleted.ShowToastAsync(lastCompletedPath);
+                }
+                else if (completed > 1)
+                {
+                    toastNotificationService.SendConversionsDoneNotification(completed);
+                }
             }
             finally
             {
-	            if (!(allCanceled || files.All(f => f.ConversionState == FFmpegConversionState.Cancelled)))
-				{
-					bool errors = files.Any(f => Files.Contains(f) && f.ConversionState is FFmpegConversionState.Failed);
-					ConversionDone?.Invoke(this, errors);
-				}
+                if (!(allCanceled || files.All(f => f.ConversionState == FFmpegConversionState.Cancelled)))
+                {
+                    bool errors = files.Any(f => Files.Contains(f) && f.ConversionState is FFmpegConversionState.Failed);
+                    ConversionDone?.Invoke(this, errors);
+                }
             }
         }
 
         [ICommand]
         public void SetResolution(Resolution res)
         {
+
             if (SelectedItem is null) return;
             SelectedItem.Width = res.Width;
             SelectedItem.Height = res.Height;
@@ -509,17 +591,25 @@ namespace OnionMedia.Core.ViewModels
 
         private async Task EditTagsAsync()
         {
+
             TagsEditedFlyoutIsOpen = false;
             if (SelectedItem == null || !SelectedItem.FileTagsAvailable) return;
 
             FileTags newTags = await filetagEditorDialog.ShowTagEditorDialogAsync(SelectedItem.FileTags);
-            if (newTags == null) return;
+            if (newTags == null)
+            {
+                logger.LogInformation($"newTags was null. in EditTagsAsync");
+
+                return;
+            }
             try
             {
                 bool result = SelectedItem.ApplyNewTags(newTags);
                 if (!result)
                 {
                     await dialogService.ShowInfoDialogAsync("error".GetLocalized(resources), "tagerrormsg".GetLocalized(resources), "OK");
+                    logger.LogError($"error occured by ApplyNewTags. in EditTagsAsync");
+
                     return;
                 }
 
@@ -530,11 +620,15 @@ namespace OnionMedia.Core.ViewModels
             }
             catch (FileNotFoundException)
             {
+                logger.LogError($"error occured file not found. in EditTagsAsync");
+
                 await dialogService.ShowInfoDialogAsync("fileNotFound".GetLocalized(resources), "fileNotFoundText".GetLocalized(resources), "OK");
                 Files.Remove(SelectedItem);
             }
             catch
             {
+                logger.LogError($"error occured file not found. in EditTagsAsync");
+
                 await dialogService.ShowInfoDialogAsync("error".GetLocalized(resources), "changesErrorMsg".GetLocalized(resources), "OK");
             }
         }
@@ -543,6 +637,7 @@ namespace OnionMedia.Core.ViewModels
         [ICommand]
         private void CancelAll()
         {
+
             Files.Where(f => f.ConversionState is FFmpegConversionState.None or FFmpegConversionState.Converting or FFmpegConversionState.Moving)
                 .OrderBy(f => f.ConversionState)
                 .ForEach(f => f.RaiseCancel());

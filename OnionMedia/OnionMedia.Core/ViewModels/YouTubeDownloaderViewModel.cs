@@ -34,14 +34,18 @@ using YoutubeDLSharp.Options;
 using System.Net;
 using System.Drawing;
 using System.Drawing.Imaging;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace OnionMedia.Core.ViewModels
 {
     [ObservableObject]
     public sealed partial class YouTubeDownloaderViewModel
     {
-        public YouTubeDownloaderViewModel(IDialogService dialogService, IDownloaderDialogService downloaderDialogService, IDispatcherService dispatcher, INetworkStatusService networkStatusService, IToastNotificationService toastNotificationService, IPathProvider pathProvider, ITaskbarProgressService taskbarProgressService, IWindowClosingService windowClosingService, IFiletagEditorDialog filetagDialogService)
-        {
+        public ILogger<YouTubeDownloaderViewModel> logger;
+        public YouTubeDownloaderViewModel(ILogger<YouTubeDownloaderViewModel> _logger, IDialogService dialogService, IDownloaderDialogService downloaderDialogService, IDispatcherService dispatcher, INetworkStatusService networkStatusService, IToastNotificationService toastNotificationService, IPathProvider pathProvider, ITaskbarProgressService taskbarProgressService, IWindowClosingService windowClosingService, IFiletagEditorDialog filetagDialogService)
+        {          
+            logger = _logger ?? throw new ArgumentNullException(nameof(_logger));
             this.dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             this.downloaderDialogService = downloaderDialogService ?? throw new ArgumentNullException(nameof(downloaderDialogService));
             this.dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
@@ -71,6 +75,7 @@ namespace OnionMedia.Core.ViewModels
             networkAvailable = this.networkStatusService?.IsNetworkConnectionAvailable() ?? true;
             if (this.networkStatusService != null)
                 this.networkStatusService.ConnectionStateChanged += (o, e) => this.dispatcher.Enqueue(() => NetworkAvailable = e);
+             
         }
 
         private readonly IDialogService dialogService;
@@ -132,6 +137,7 @@ namespace OnionMedia.Core.ViewModels
                 if (selectedVideo != value && value != null)
                 {
                     selectedVideo = value;
+                    logger.LogInformation($"Selected Video changed {value.Video.Url}");
                     OnPropertyChanged();
                 }
             }
@@ -158,6 +164,7 @@ namespace OnionMedia.Core.ViewModels
                     sb.Append(selectedQuality);
                     previouslySelected = sb.ToString();
                     selectedQuality = value;
+                    logger.LogInformation($"Selected quality changed to {value}");
                     sb.Clear();
                 }
 
@@ -170,6 +177,8 @@ namespace OnionMedia.Core.ViewModels
         {
             if (VideoNotFound)
             {
+                //WHAT the Hell??
+                //Was solln dass?
                 VideoNotFound = false;
                 VideoNotFound = true;
                 return;
@@ -183,7 +192,10 @@ namespace OnionMedia.Core.ViewModels
             SearchResults.Clear();
 
             if (string.IsNullOrWhiteSpace(videolink))
+            {
+                logger.LogWarning("Video link was Empty");
                 return;
+            }
 
             bool validUri = Regex.IsMatch(videolink, GlobalResources.URLREGEX);
             bool isYoutubePlaylist = validUri && allowPlaylists && IsYoutubePlaylist(urlClone);
@@ -197,6 +209,7 @@ namespace OnionMedia.Core.ViewModels
                 if (!validUri)
                 {
                     await RefreshResultsAsync(videolink.Clone() as string);
+                    logger.LogWarning("InvalidUri in YouTubeDownloaderViewModel");
                     return;
                 }
 
@@ -269,6 +282,7 @@ namespace OnionMedia.Core.ViewModels
             }
             catch (Exception ex)
             {
+                logger.LogError($"{ex} in YouTubeDownloaderViewModel by FillInfosAsync");
                 ScanVideoCount--;
                 switch (ex)
                 {
@@ -420,8 +434,9 @@ namespace OnionMedia.Core.ViewModels
                 OnPropertyChanged(nameof(QueueIsNotEmpty));
                 OnPropertyChanged(nameof(MultipleVideos));
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException)          
             {
+                logger.LogError("InvalidOperation triggered in YouTubeDownloaderViewModel by AddVideos");
                 Debug.WriteLine("InvalidOperation triggered");
             }
             finally
@@ -450,7 +465,11 @@ namespace OnionMedia.Core.ViewModels
                         lock (items)
                             items.Add(item);
                     }
-                    catch (Exception ex) { Debug.WriteLine(ex.Message); }
+                    catch (Exception ex) 
+                    {
+                        logger.LogError($"{ex} in YouTubeDownloaderViewModel by GetVideosAsync");
+                        Debug.WriteLine(ex.Message); 
+                    }
                 }, cToken).ContinueWith(o => queue.Release()));
             }
 
@@ -513,7 +532,7 @@ namespace OnionMedia.Core.ViewModels
                 else
                     SelectedQuality = null;
             }
-            catch (InvalidOperationException) { Debug.WriteLine("InvalidOperation triggered"); }
+            catch (InvalidOperationException) { Debug.WriteLine("InvalidOperation triggered"); logger.LogError("InvalidOperatipnException in YouTubeDownloaderViewModel by RemoveVideoAsync"); }
             await Task.CompletedTask;
         }
 
@@ -567,6 +586,7 @@ namespace OnionMedia.Core.ViewModels
                     switch (t.Exception?.InnerException)
                     {
                         default:
+                            logger.LogInformation("Exception occured while saving file in DonwloadVideoAsync");
                             Debug.WriteLine("Exception occured while saving the file.");
                             break;
 
@@ -595,7 +615,7 @@ namespace OnionMedia.Core.ViewModels
             foreach (var dir in Directory.GetDirectories(pathProvider.DownloaderTempdir))
             {
                 try { Directory.Delete(dir, true); }
-                catch { /* Dont crash if a directory cant be deleted */ }
+                catch { logger.LogInformation("Directory cant be deleted in DownloadVideosAsync");/* Dont crash if a directory cant be deleted */ }
             }
 
             try
@@ -640,7 +660,16 @@ namespace OnionMedia.Core.ViewModels
 	            if (!(canceledAll || items.All(v => v.DownloadState == DownloadState.IsCancelled)))
 				{
 					bool errors = items.Any(v => videos.Contains(v) && v.Failed);
-					DownloadDone?.Invoke(this, errors);
+                    logger.LogInformation(errors ? "Errors occured while download":"No errors occured while download");
+                    if (errors)
+                    {
+                        foreach(var i in items)
+                        {
+                            logger.LogError($"download failed by: {i.Video.Url}");
+                        }
+                    }
+                    
+                    DownloadDone?.Invoke(this, errors);
 				}
             }
         }
@@ -667,7 +696,7 @@ namespace OnionMedia.Core.ViewModels
             {
                 Debug.WriteLine("No internet connection!");
             }
-            catch (TaskCanceledException) { }
+            catch (TaskCanceledException) { logger.LogError("TaskCancellationException in RefreshResultsAsync by YoutubeDownloaderViewModel"); }
             finally { searchProcesses--; }
         }
         private int searchProcesses = 0;
@@ -682,6 +711,7 @@ namespace OnionMedia.Core.ViewModels
             if (!SearchResults.Any()) return;
             SearchResults.Clear();
             lastSearch = (string.Empty, new Collection<SearchItemModel>());
+            logger.LogInformation("ResultsCleared");
         }
 
         [ICommand]
@@ -689,6 +719,7 @@ namespace OnionMedia.Core.ViewModels
         {
             Videos.ForEach(v => v?.RaiseCancel());
             CanceledAll?.Invoke(this, EventArgs.Empty);
+            logger.LogInformation("CancelALL");
         }
         public event EventHandler CanceledAll;
 
@@ -697,6 +728,7 @@ namespace OnionMedia.Core.ViewModels
         {
             CancelAll();
             Videos.Clear();
+            logger.LogInformation("RemoveALL");
         }
 
         public int DownloadProgress

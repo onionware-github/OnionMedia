@@ -198,6 +198,9 @@
   <data name="limitDownloadSpeed.Content" xml:space="preserve">
     <value>Limiteer de downloadsnelheid</value>
   </data>
+  <data name="logPath.Header" xml:space="preserve">
+    <value>Log:</value>
+  </data>
   <data name="maxDownloadSpeedPerFile.Header" xml:space="preserve">
     <value>Max. downloadsnelheid per bestand:</value>
   </data>
@@ -233,6 +236,9 @@
   </data>
   <data name="useHwAccelerated.Content" xml:space="preserve">
     <value>Gebruik hardwareversnelde conversie</value>
+  </data>
+  <data name="useLogging.Content" xml:space="preserve">
+    <value>Software-activiteit loggen</value>
   </data>
   <data name="videoOrPlaylist.Header" xml:space="preserve">
     <value>Video of de afspeellijst toevoegen met een afspeellijst-URL?</value>

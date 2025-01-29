@@ -198,6 +198,9 @@
   <data name="limitDownloadSpeed.Content" xml:space="preserve">
     <value>Downloadgeschwindigkeit limitieren</value>
   </data>
+  <data name="logPath.Header" xml:space="preserve">
+    <value>Protokoll:</value>
+  </data>
   <data name="maxDownloadSpeedPerFile.Header" xml:space="preserve">
     <value>Max. Downloadgeschwindigkeit pro Datei:</value>
   </data>
@@ -233,6 +236,9 @@
   </data>
   <data name="useHwAccelerated.Content" xml:space="preserve">
     <value>Hardwareunterstützte Konvertierung verwenden</value>
+  </data>
+  <data name="useLogging.Content" xml:space="preserve">
+    <value>Softwareaktivität Protokollieren</value>
   </data>
   <data name="videoOrPlaylist.Header" xml:space="preserve">
     <value>Video oder komplette Playlist bei der Verwendung einer Playlist-URL hinzufügen?</value>

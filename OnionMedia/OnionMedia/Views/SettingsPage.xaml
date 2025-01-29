@@ -135,6 +135,16 @@
                                         </Button>
                                         <TextBox x:Uid="/SettingsPage/downloadedAudios" Text="{x:Bind m:AppSettings.Instance.DownloadsAudioSavePath, Mode=OneWay}" IsReadOnly="True"/>
                                     </ctc:DockPanel>
+                                    <ctc:DockPanel>
+                                        <Button VerticalAlignment="Bottom"
+                                                ctc:DockPanel.Dock="Right"
+                                                Margin="5,0"
+                                                Command="{x:Bind ViewModel.ChangePathCommand, Mode=OneTime}"
+                                                CommandParameter="{x:Bind m:PathType.LogPath, Mode=OneTime}">
+                                            <SymbolIcon Symbol="OpenLocal"/>
+                                        </Button>
+                                        <TextBox x:Uid="/SettingsPage/logPath" Text="{x:Bind m:AppSettings.Instance.LogPath}" IsReadOnly="True"/>
+                                    </ctc:DockPanel>
                                     <TextBox x:Name="filenameSuffix"
                                              x:Uid="/SettingsPage/filenameSuffix"
                                              Text="{x:Bind m:AppSettings.Instance.ConvertedFilenameSuffix}"
@@ -227,6 +237,10 @@
                                 <Run Text="/  "/>
                                 <Run Text="{x:Bind g:UIResources.SystemThreadCount, Mode=OneTime}"/>
                                     </TextBlock>
+                                </StackPanel>
+
+                                <StackPanel>
+                                    <CheckBox x:Name="useLogging" x:Uid="/SettingsPage/useLogging" IsChecked="{x:Bind m:AppSettings.Instance.UseLogging}"/>
                                 </StackPanel>
                             </StackPanel>
                         </Expander.Content>
