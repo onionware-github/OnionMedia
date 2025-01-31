@@ -68,7 +68,8 @@ namespace OnionMedia.Core.Models
 
 
             useLogging=settingsService.GetSetting("useLogging") as bool? ?? false;
-            logPath = settingsService.GetSetting("logPath") as string?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "OnionMedia", "Logs"); ;
+            logPath = settingsService.GetSetting("logPath") as string?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "OnionMedia", "Logs"); ;
+            deleteLogInterval = settingsService.GetSetting("deleteLogInterval") as byte? ?? 7;
 
             var downloadsAudioFormat = settingsService.GetSetting("downloadsAudioFormat");
             if (downloadsAudioFormat == null)
@@ -99,6 +100,12 @@ namespace OnionMedia.Core.Models
 
         //Settings
 
+        public byte DeleteLogInterval
+        {
+            get => deleteLogInterval;
+            set => SetSetting(ref deleteLogInterval, value,"deleteLogInterval");
+        }
+        private byte deleteLogInterval;
         public bool UseLogging
         {
             get => useLogging.HasValue ? (bool)useLogging:false;

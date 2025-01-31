@@ -82,7 +82,7 @@ sealed partial class ServiceProvider
         if (AppSettings.Instance.UseLogging)
         {
             return new LoggerConfiguration()
-            .MinimumLevel.Information()
+            .MinimumLevel.Debug()
             .WriteTo.File(logfile)
             .CreateLogger();
         }
@@ -113,7 +113,7 @@ sealed partial class ServiceProvider
         foreach (var file in files) 
         {
             DateTime lastModified = File.GetLastWriteTime(file);
-            if ((DateTime.Now - lastModified).TotalDays > 7)
+            if ((DateTime.Now - lastModified).TotalDays >= AppSettings.Instance.DeleteLogInterval)
             {
                 File.Delete(file);
             }

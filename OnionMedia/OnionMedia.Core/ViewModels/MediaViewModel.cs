@@ -35,7 +35,7 @@ namespace OnionMedia.Core.ViewModels
     public sealed partial class MediaViewModel
     {
         private readonly ILogger<MediaViewModel> logger;
-        public MediaViewModel(ILogger<MediaViewModel> _logger, IDialogService dialogService, IDispatcherService dispatcher, IConversionPresetDialog conversionPresetDialog, IFiletagEditorDialog filetagEditorDialog, IToastNotificationService toastNotificationService, ITaskbarProgressService taskbarProgressService)
+        public MediaViewModel(IVersionService versionService, ILogger<MediaViewModel> _logger, IDialogService dialogService, IDispatcherService dispatcher, IConversionPresetDialog conversionPresetDialog, IFiletagEditorDialog filetagEditorDialog, IToastNotificationService toastNotificationService, ITaskbarProgressService taskbarProgressService)
         {
             logger = _logger ?? throw new ArgumentNullException(nameof(_logger));
             this.dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
@@ -44,6 +44,9 @@ namespace OnionMedia.Core.ViewModels
             this.toastNotificationService = toastNotificationService ?? throw new ArgumentNullException(nameof(toastNotificationService));
             this.dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
             this.taskbarProgressService = taskbarProgressService;
+            this.versionService = versionService;
+            logger.LogDebug(GetVersionDescription());
+
 
             if (Debugger.IsAttached)
             {
@@ -105,6 +108,7 @@ namespace OnionMedia.Core.ViewModels
             });
         }
 
+        private readonly IVersionService versionService;
         private readonly IDialogService dialogService;
         private readonly IConversionPresetDialog conversionPresetDialog;
         private readonly IFiletagEditorDialog filetagEditorDialog;
@@ -114,6 +118,14 @@ namespace OnionMedia.Core.ViewModels
 
         private static readonly IPathProvider pathProvider = IoC.Default.GetService<IPathProvider>() ?? throw new ArgumentNullException();
 
+
+        private string GetVersionDescription()
+        {
+            var appName = "OnionMedia";
+            var version = versionService.GetCurrentVersion();
+
+            return $"{appName} - {version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
+        }
         private void Files_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             logger.LogInformation("Files_CollectionChanged in MediaViewModel");

@@ -162,6 +162,9 @@
   <data name="ConverterPage" xml:space="preserve">
     <value>Media Converter</value>
   </data>
+  <data name="DeleteLogAfter.Header" xml:space="preserve">
+    <value>Delete log file after days:</value>
+  </data>
   <data name="donateBtn.Content" xml:space="preserve">
     <value>♥ Donate ♥</value>
   </data>
