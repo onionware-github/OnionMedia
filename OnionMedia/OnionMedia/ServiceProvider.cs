@@ -71,14 +71,14 @@ namespace OnionMedia;
 [Transient(typeof(PlaylistsPage))]
 sealed partial class ServiceProvider
 {
-    private static string logfile = Path.Combine(AppSettings.Instance.LogPath, $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log");
+    private static string logfile = Path.Combine(AppSettings.Instance.LogPath, $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.log");
 
     private static Serilog.ILogger CreateSerilogLogger()
     {
       
         Directory.CreateDirectory(AppSettings.Instance.LogPath);
        
-        CheckAge();
+         CheckAge();
         if (AppSettings.Instance.UseLogging)
         {
             return new LoggerConfiguration()
@@ -92,6 +92,7 @@ sealed partial class ServiceProvider
            .MinimumLevel.Fatal() // There are no fatal log-messages in code so nothing will be loggt.
            .CreateLogger();
         }
+       
     }
     private static ILogger<T> CreateLogger<T>(IServiceProvider serviceProvider)
     {
