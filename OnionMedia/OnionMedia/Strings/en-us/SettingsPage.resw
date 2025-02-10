@@ -241,7 +241,7 @@
     <value>Use hardware accelerated conversion</value>
   </data>
   <data name="useLogging.Content" xml:space="preserve">
-    <value>Log Software activity</value>
+    <value>Log software activity</value>
   </data>
   <data name="videoOrPlaylist.Header" xml:space="preserve">
     <value>Add video or the playlist with a Playlist-URL?</value>
