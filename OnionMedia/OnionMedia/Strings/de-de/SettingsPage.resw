@@ -241,7 +241,7 @@
     <value>Hardwareunterstützte Konvertierung verwenden</value>
   </data>
   <data name="useLogging.Content" xml:space="preserve">
-    <value>Softwareaktivität Protokollieren</value>
+    <value>Softwareaktivität protokollieren</value>
   </data>
   <data name="videoOrPlaylist.Header" xml:space="preserve">
     <value>Video oder komplette Playlist bei der Verwendung einer Playlist-URL hinzufügen?</value>
