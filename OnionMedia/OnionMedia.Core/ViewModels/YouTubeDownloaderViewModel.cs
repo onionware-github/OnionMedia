@@ -245,7 +245,7 @@ namespace OnionMedia.Core.ViewModels
                     return;
                 }
 
-                var video = new StreamItemModel(data);
+                var video = new StreamItemModel(data, logger);
                 video.Video.Url = videolink;
 
                 if (Videos.Any(v => v.Video.ID == video.Video.ID))
@@ -459,7 +459,7 @@ namespace OnionMedia.Core.ViewModels
                     try
                     {
                         var video = await DownloaderMethods.downloadClient.RunVideoDataFetch(url);
-                        StreamItemModel item = new(video);
+                        StreamItemModel item = new(video,logger);
                         item.Video.Url = url;
 
                         lock (items)
@@ -578,7 +578,7 @@ namespace OnionMedia.Core.ViewModels
                     finishedCount++;
                 };
 
-                tasks.Add(DownloaderMethods.DownloadStreamAsync(video, getMp4, path).ContinueWith(t =>
+                tasks.Add(DownloaderMethods.DownloadStreamAsync(video, logger,getMp4, path).ContinueWith(t =>
                 {
                     queue.Release();
                     if (t.Exception?.InnerException == null) return;
