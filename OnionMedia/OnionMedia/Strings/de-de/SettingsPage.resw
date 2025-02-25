@@ -162,6 +162,9 @@
   <data name="ConverterPage" xml:space="preserve">
     <value>Media Konverter</value>
   </data>
+  <data name="DeleteLogAfter.Header" xml:space="preserve">
+    <value>Protokolldatei löschen nach Tagen:</value>
+  </data>
   <data name="donateBtn.Content" xml:space="preserve">
     <value>♥ Spenden ♥</value>
   </data>
@@ -198,6 +201,9 @@
   <data name="limitDownloadSpeed.Content" xml:space="preserve">
     <value>Downloadgeschwindigkeit limitieren</value>
   </data>
+  <data name="logPath.Header" xml:space="preserve">
+    <value>Protokoll:</value>
+  </data>
   <data name="maxDownloadSpeedPerFile.Header" xml:space="preserve">
     <value>Max. Downloadgeschwindigkeit pro Datei:</value>
   </data>
@@ -233,6 +239,9 @@
   </data>
   <data name="useHwAccelerated.Content" xml:space="preserve">
     <value>Hardwareunterstützte Konvertierung verwenden</value>
+  </data>
+  <data name="useLogging.Content" xml:space="preserve">
+    <value>Softwareaktivität protokollieren</value>
   </data>
   <data name="videoOrPlaylist.Header" xml:space="preserve">
     <value>Video oder komplette Playlist bei der Verwendung einer Playlist-URL hinzufügen?</value>
