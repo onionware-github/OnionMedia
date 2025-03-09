@@ -133,7 +133,7 @@
     <value>Vídeos</value>
   </data>
   <data name="donationBanner.Text" xml:space="preserve">
-    <value>OnionMedia es un proyecto sin ánimo de lucro de un único desarrollador, gratuito y sin publicidad. Si te gusta mi trabajo, considera apoyarme con una donación - incluso el precio de una taza de café hace una gran diferencia.</value>
+    <value>OnionMedia es un proyecto voluntario de un desarrollador individual de 19 años, abierto y sin publicidad. Si te gusta mi trabajo y puedes permitírtelo, considera apoyarme con una donación: el precio de una taza de café tiene un gran impacto.</value>
   </data>
   <data name="donationBtn.Content" xml:space="preserve">
     <value>Donar ❤</value>

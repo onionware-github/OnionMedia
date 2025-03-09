@@ -133,7 +133,7 @@
     <value>Current playlist</value>
   </data>
   <data name="donationBanner.Text" xml:space="preserve">
-    <value>OnionMedia is a voluntary project by an individual developer, open and ad-free. If you enjoy my work and can afford it, consider supporting me with a donation - even the price of a cup of coffee makes a big difference.</value>
+    <value>OnionMedia is a voluntary project by a 19-year old individual developer, open and ad-free. If you enjoy my work and can afford it, consider supporting me with a donation - the price of a cup of coffee makes a big impact.</value>
   </data>
   <data name="donationBtn.Content" xml:space="preserve">
     <value>Donate ❤</value>
