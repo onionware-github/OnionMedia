@@ -162,6 +162,9 @@
   <data name="ConverterPage" xml:space="preserve">
     <value>Media Converter</value>
   </data>
+  <data name="DeleteLogAfter.Header" xml:space="preserve">
+    <value>Delete log file after days:</value>
+  </data>
   <data name="donateBtn.Content" xml:space="preserve">
     <value>♥ Donate ♥</value>
   </data>
@@ -198,6 +201,9 @@
   <data name="limitDownloadSpeed.Content" xml:space="preserve">
     <value>Limit download speed</value>
   </data>
+  <data name="logPath.Header" xml:space="preserve">
+    <value>Log:</value>
+  </data>
   <data name="maxDownloadSpeedPerFile.Header" xml:space="preserve">
     <value>Max. download speed per file:</value>
   </data>
@@ -233,6 +239,9 @@
   </data>
   <data name="useHwAccelerated.Content" xml:space="preserve">
     <value>Use hardware accelerated conversion</value>
+  </data>
+  <data name="useLogging.Content" xml:space="preserve">
+    <value>Log software activity</value>
   </data>
   <data name="videoOrPlaylist.Header" xml:space="preserve">
     <value>Add video or the playlist with a Playlist-URL?</value>

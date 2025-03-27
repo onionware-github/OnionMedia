@@ -15,6 +15,8 @@ using Windows.Storage;
 
 namespace OnionMedia.Services
 {
+    //Why does a programmer code in java?   Because he can´t see sharp. rofl
+
     sealed class SettingsService : ISettingsService
     {
         public object? GetSetting(string key)

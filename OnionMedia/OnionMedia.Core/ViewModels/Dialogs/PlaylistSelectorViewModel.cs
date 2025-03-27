@@ -10,6 +10,7 @@
  */
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using OnionMedia.Core.Extensions;
 using System;

@@ -19,14 +19,20 @@ using CommunityToolkit.Mvvm.Input;
 using OnionMedia.Core.Models;
 using OnionMedia.Core.Services;
 using OnionMedia.Core.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace OnionMedia.Core.ViewModels
 {
     [ObservableObject]
     public sealed partial class SettingsViewModel
     {
-        public SettingsViewModel(IUrlService urlService, IDialogService dialogService, IThirdPartyLicenseDialog thirdPartyLicenseDialog, IPathProvider pathProvider, IVersionService versionService)
+        public ILogger<SettingsViewModel> logger;
+        public SettingsViewModel(ILogger<SettingsViewModel> _logger, IUrlService urlService, IDialogService dialogService, IThirdPartyLicenseDialog thirdPartyLicenseDialog, IPathProvider pathProvider, IVersionService versionService)
         {
+            logger = _logger ?? throw new ArgumentNullException(nameof(_logger));
             this.dialogService = dialogService;
             this.urlService = urlService;
             this.thirdPartyLicenseDialog = thirdPartyLicenseDialog;
@@ -68,6 +74,35 @@ namespace OnionMedia.Core.ViewModels
                 case PathType.DownloadedAudiofiles:
                     AppSettings.Instance.DownloadsAudioSavePath = path;
                     break;
+                case PathType.LogPath:
+                    AppSettings.Instance.LogPath = path;
+                    break;
+            }
+        }
+
+        [ICommand]
+        private async Task OpenPathAsync(PathType pathType)
+        {
+            switch (pathType)
+            {
+                case PathType.ConvertedVideofiles:
+                    OpenPath(AppSettings.Instance.ConvertedVideoSavePath);
+                    break;
+
+                case PathType.ConvertedAudiofiles:
+                    OpenPath(AppSettings.Instance.ConvertedAudioSavePath);
+                    break;
+
+                case PathType.DownloadedVideofiles:
+                    OpenPath(AppSettings.Instance.DownloadsVideoSavePath);
+                    break;
+
+                case PathType.DownloadedAudiofiles:
+                    OpenPath(AppSettings.Instance.DownloadsAudioSavePath);
+                    break;
+                case PathType.LogPath:
+                    OpenPath(AppSettings.Instance.LogPath);
+                    break;
             }
         }
 
@@ -102,6 +137,26 @@ namespace OnionMedia.Core.ViewModels
             var version = versionService.GetCurrentVersion();
 
             return $"{appName} - {version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
+        }
+
+        static void OpenPath(string path)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Process.Start(new ProcessStartInfo("explorer", path) { UseShellExecute = true });
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                Process.Start("xdg-open", path); // xdg is mostly pre-installed. if its not u can just install it with apt, pacman or dnf
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                Process.Start("open", path);
+            }
+            else
+            {
+                Debug.WriteLine("Nicht unterstütztes Betriebssystem.");
+            }
         }
     }
 }

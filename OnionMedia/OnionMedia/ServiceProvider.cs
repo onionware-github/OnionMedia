@@ -9,17 +9,34 @@ using OnionMedia.Core.ViewModels;
 using OnionMedia.Services;
 using OnionMedia.ViewModels;
 using OnionMedia.Views;
+using Microsoft.Extensions.Logging;
+using System;
+using Microsoft.Extensions.DependencyInjection;
+using Serilog;
+using System.IO;
+using Windows.Storage;
+using System.Threading;
 
 namespace OnionMedia;
 
 //Services/Activation Handler
 [ServiceProvider]
+
+//Logging
+[Singleton(typeof(ILoggerFactory), Factory = nameof(CreateLoggerFactory))]
+[Singleton(typeof(Serilog.ILogger), Factory = nameof(CreateSerilogLogger))]
+[Transient(typeof(ILogger<>), Factory = nameof(CreateLogger))]
+
+
+
+
 [Singleton(typeof(IThemeSelectorService), typeof(ThemeSelectorService))]
 [Singleton(typeof(IPageService), typeof(PageService))]
 [Singleton(typeof(INavigationService), typeof(NavigationService))]
 [Transient(typeof(INavigationViewService), typeof(NavigationViewService))]
 [Transient(typeof(ActivationHandler<LaunchActivatedEventArgs>), typeof(DefaultActivationHandler))]
 [Singleton(typeof(IActivationService), typeof(ActivationService))]
+
 //Core Services
 [Singleton(typeof(IDataCollectionProvider<LibraryInfo>), typeof(LibraryInfoProvider))]
 [Singleton(typeof(IDialogService), typeof(DialogService))]
@@ -40,6 +57,7 @@ namespace OnionMedia;
 [Singleton(typeof(IWindowClosingService), typeof(WindowClosingService))]
 [Singleton(typeof(IPCPower), typeof(WindowsPowerService))]
 [Singleton(typeof(IFFmpegStartup), typeof(FFmpegStartup))]
+
 //Views and ViewModels
 [Transient(typeof(ShellViewModel))]
 [Transient(typeof(ShellPage))]
@@ -51,4 +69,56 @@ namespace OnionMedia;
 [Transient(typeof(SettingsPage))]
 [Transient(typeof(PlaylistsViewModel))]
 [Transient(typeof(PlaylistsPage))]
-sealed partial class ServiceProvider { }
+sealed partial class ServiceProvider
+{
+    private static string logfile = Path.Combine(AppSettings.Instance.LogPath, $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.log");
+
+    private static Serilog.ILogger CreateSerilogLogger()
+    {
+      
+        Directory.CreateDirectory(AppSettings.Instance.LogPath);
+       
+         CheckAge();
+        if (AppSettings.Instance.UseLogging)
+        {
+            return new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.File(logfile)
+            .CreateLogger();
+        }
+        else
+        {
+            return new LoggerConfiguration()
+           .MinimumLevel.Fatal() // There are no fatal log-messages in code so nothing will be loggt.
+           .CreateLogger();
+        }
+       
+    }
+    private static ILogger<T> CreateLogger<T>(IServiceProvider serviceProvider)
+    {
+        var factory = serviceProvider.GetService<ILoggerFactory>();
+        return factory.CreateLogger<T>();
+    }
+
+    private static ILoggerFactory CreateLoggerFactory()
+    {
+        var logger = CreateSerilogLogger();
+        return LoggerFactory.Create(builder =>
+        {
+            builder.AddSerilog(logger);
+        });
+    }
+    private static void CheckAge()
+    {
+        var files = Directory.EnumerateFiles(AppSettings.Instance.LogPath, "*");
+        foreach (var file in files) 
+        {
+            DateTime lastModified = File.GetLastWriteTime(file);
+            if ((DateTime.Now - lastModified).TotalDays >= AppSettings.Instance.DeleteLogInterval)
+            {
+                File.Delete(file);
+            }
+        }
+    }
+
+}
