@@ -120,4 +120,7 @@
   <data name="AppDescription" xml:space="preserve">
     <value>OnionMedia is a free video and audio file converter and downloader. It supports a large number of formats and codecs and is available on GitHub and the Microsoft Store.</value>
   </data>
+  <data name="useLogging.Content" xml:space="preserve">
+    <value>Log Software activity</value>
+  </data>
 </root>

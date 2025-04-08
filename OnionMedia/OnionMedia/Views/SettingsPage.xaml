@@ -96,6 +96,11 @@
                                 <RadioButton GroupName="fixedPaths" x:Uid="/SettingsPage/setStoragePaths" IsChecked="{x:Bind m:AppSettings.Instance.UseFixedStoragePaths}"/>
                                 <StackPanel Spacing="10" Visibility="{x:Bind m:AppSettings.Instance.UseFixedStoragePaths, Mode=OneWay}">
                                     <ctc:DockPanel>
+                                        <Button VerticalAlignment="Bottom"  ctc:DockPanel.Dock="Right"
+                                                Margin="5,0" Command="{x:Bind ViewModel.OpenPathCommand, Mode=OneTime}"
+                                                CommandParameter="{x:Bind m:PathType.ConvertedVideofiles, Mode=OneTime}">
+                                            <SymbolIcon Symbol="OpenPane"/>
+                                        </Button>
                                         <Button VerticalAlignment="Bottom"
                                                 ctc:DockPanel.Dock="Right"
                                                 Margin="5,0"
@@ -106,6 +111,11 @@
                                         <TextBox x:Uid="/SettingsPage/convertedVideos" Text="{x:Bind m:AppSettings.Instance.ConvertedVideoSavePath, Mode=OneWay}" IsReadOnly="True"/>
                                     </ctc:DockPanel>
                                     <ctc:DockPanel>
+                                        <Button VerticalAlignment="Bottom"  ctc:DockPanel.Dock="Right"
+                                                Margin="5,0" Command="{x:Bind ViewModel.OpenPathCommand, Mode=OneTime}"
+                                                CommandParameter="{x:Bind m:PathType.ConvertedAudiofiles, Mode=OneTime}">
+                                            <SymbolIcon Symbol="OpenPane"/>
+                                        </Button>
                                         <Button VerticalAlignment="Bottom"
                                                 ctc:DockPanel.Dock="Right"
                                                 Margin="5,0"
@@ -116,6 +126,11 @@
                                         <TextBox x:Uid="/SettingsPage/convertedAudios" Text="{x:Bind m:AppSettings.Instance.ConvertedAudioSavePath, Mode=OneWay}" IsReadOnly="True"/>
                                     </ctc:DockPanel>
                                     <ctc:DockPanel>
+                                        <Button VerticalAlignment="Bottom"  ctc:DockPanel.Dock="Right"
+                                                Margin="5,0" Command="{x:Bind ViewModel.OpenPathCommand, Mode=OneTime}"
+                                                CommandParameter="{x:Bind m:PathType.DownloadedVideofiles, Mode=OneTime}">
+                                            <SymbolIcon Symbol="OpenPane"/>
+                                        </Button>
                                         <Button VerticalAlignment="Bottom"
                                                 ctc:DockPanel.Dock="Right"
                                                 Margin="5,0"
@@ -126,6 +141,11 @@
                                         <TextBox x:Uid="/SettingsPage/downloadedVideos" Text="{x:Bind m:AppSettings.Instance.DownloadsVideoSavePath, Mode=OneWay}" IsReadOnly="True"/>
                                     </ctc:DockPanel>
                                     <ctc:DockPanel>
+                                        <Button VerticalAlignment="Bottom"  ctc:DockPanel.Dock="Right"
+                                                Margin="5,0" Command="{x:Bind ViewModel.OpenPathCommand, Mode=OneTime}"
+                                                CommandParameter="{x:Bind m:PathType.DownloadedAudiofiles, Mode=OneTime}">
+                                            <SymbolIcon Symbol="OpenPane"/>
+                                        </Button>
                                         <Button VerticalAlignment="Bottom"
                                                 ctc:DockPanel.Dock="Right"
                                                 Margin="5,0"
@@ -134,6 +154,22 @@
                                             <SymbolIcon Symbol="OpenLocal"/>
                                         </Button>
                                         <TextBox x:Uid="/SettingsPage/downloadedAudios" Text="{x:Bind m:AppSettings.Instance.DownloadsAudioSavePath, Mode=OneWay}" IsReadOnly="True"/>
+                                    </ctc:DockPanel>
+                                    <ctc:DockPanel>
+                                        <Button VerticalAlignment="Bottom"  ctc:DockPanel.Dock="Right"
+                                                Margin="5,0" Command="{x:Bind ViewModel.OpenPathCommand, Mode=OneTime}"
+                                                CommandParameter="{x:Bind m:PathType.LogPath, Mode=OneTime}">
+                                            <SymbolIcon Symbol="OpenPane"/>
+                                        </Button>
+                                        <Button VerticalAlignment="Bottom"
+                                                ctc:DockPanel.Dock="Right"
+                                                Margin="5,0"
+                                                Command="{x:Bind ViewModel.ChangePathCommand, Mode=OneTime}"
+                                                CommandParameter="{x:Bind m:PathType.LogPath, Mode=OneTime}">
+                                            <SymbolIcon Symbol="OpenLocal"/>
+                                        </Button>
+                                       
+                                        <TextBox x:Uid="/SettingsPage/logPath" Text="{x:Bind m:AppSettings.Instance.LogPath}" IsReadOnly="True"/>
                                     </ctc:DockPanel>
                                     <TextBox x:Name="filenameSuffix"
                                              x:Uid="/SettingsPage/filenameSuffix"
@@ -227,6 +263,11 @@
                                 <Run Text="/  "/>
                                 <Run Text="{x:Bind g:UIResources.SystemThreadCount, Mode=OneTime}"/>
                                     </TextBlock>
+                                </StackPanel>
+
+                                <StackPanel>
+                                    <CheckBox x:Name="useLogging" x:Uid="/SettingsPage/useLogging" IsChecked="{x:Bind m:AppSettings.Instance.UseLogging}"/>
+                                    <NumberBox x:Uid="/SettingsPage/DeleteLogAfter"  SpinButtonPlacementMode="Inline" MaxWidth="155" HorizontalAlignment="Left" Margin="0,5,0,0" Visibility="{x:Bind m:AppSettings.Instance.UseLogging, Mode=OneWay}" Minimum="1" Maximum="30" Value="{x:Bind m:AppSettings.Instance.DeleteLogInterval}"/>
                                 </StackPanel>
                             </StackPanel>
                         </Expander.Content>

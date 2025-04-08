@@ -26,6 +26,9 @@ using OnionMedia.Core.Enums;
 using OnionMedia.Core.Services;
 using OnionMedia.Core.ViewModels;
 using Microsoft.UI;
+using Microsoft.Extensions.Logging;
+using OnionMedia.Services;
+using System.Diagnostics;
 
 namespace OnionMedia.Views
 {
@@ -49,9 +52,13 @@ namespace OnionMedia.Views
 
 		private PCPowerOption desiredPowerOption;
 		private bool executeOnError;
+		public ILogger<ShellPage> logger;
+        private readonly IVersionService versionService;
 
-		public ShellPage(ShellViewModel viewModel, MediaViewModel mediaViewModel, YouTubeDownloaderViewModel downloaderViewModel, IPCPower pcPowerService)
+        public ShellPage(IVersionService versionService, ShellViewModel viewModel, MediaViewModel mediaViewModel, YouTubeDownloaderViewModel downloaderViewModel, IPCPower pcPowerService, ILogger<ShellPage> _logger)
 		{
+			this.versionService = versionService;
+			logger = _logger;
 			ViewModel = viewModel;
 			InitializeComponent();
 			ViewModel.NavigationService.Frame = shellFrame;
@@ -66,17 +73,31 @@ namespace OnionMedia.Views
 
 		private void OnLoaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
 		{
-			// Keyboard accelerators are added here to avoid showing 'Alt + left' tooltip on the page.
-			// More info on tracking issue https://github.com/Microsoft/microsoft-ui-xaml/issues/8
-			KeyboardAccelerators.Add(_altLeftKeyboardAccelerator);
+            
+            logger.LogDebug(GetVersionDescription());
+            if (Debugger.IsAttached)
+            {
+                logger.LogDebug("App runs currently in debug-mode");
+            }
+
+            // Keyboard accelerators are added here to avoid showing 'Alt + left' tooltip on the page.
+            // More info on tracking issue https://github.com/Microsoft/microsoft-ui-xaml/issues/8
+            KeyboardAccelerators.Add(_altLeftKeyboardAccelerator);
 			KeyboardAccelerators.Add(_backKeyboardAccelerator);
 			ConfigureTitleBar();
 
 			if (AppSettings.Instance.StartPageType is StartPageType.DownloaderPage || (AppSettings.Instance.StartPageType is StartPageType.LastOpened && navigateToDownloadPage))
 				shellFrame.Navigate(typeof(YouTubeDownloaderPage), null, new SuppressNavigationTransitionInfo());
 		}
+        private string GetVersionDescription()
+        {
+            var appName = "OnionMedia";
+            var version = versionService.GetCurrentVersion();
 
-		private void ConfigureTitleBar()
+            return $"{appName} - {version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
+        }
+
+        private void ConfigureTitleBar()
 		{
 			AppTitleBar.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
 			App.MainWindow.ExtendsContentIntoTitleBar = true;

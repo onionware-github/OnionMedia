@@ -10,9 +10,11 @@
  */
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.Logging;
 using OnionMedia.Core.Classes;
 using OnionMedia.Core.Extensions;
 using OnionMedia.Core.Services;
+using OnionMedia.Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -30,17 +32,28 @@ namespace OnionMedia.Core.Models
     [ObservableObject]
     public partial class StreamItemModel
     {
+
+        ILogger<YouTubeDownloaderViewModel> logger;
         /// <summary>
         /// Initializes a new StreamItemModel.
         /// </summary>
         /// <param name="video">The video to get informations from.</param>
-        public StreamItemModel(RunResult<VideoData> video)
+        public StreamItemModel(RunResult<VideoData> video, ILogger<YouTubeDownloaderViewModel> _logger)
         {
+            logger = _logger;
             if (video.Data == null)
+            {
+                logger.LogError("VideoData was null in StreamItemModel");
                 throw new ArgumentNullException("video.Data is null!");
+            }
+
 
             if (video.Data.IsLive == true)
+            {
+                logger.LogError("Tried to Download an Livestream in StreamItemModel");
                 throw new NotSupportedException("Livestreams cannot be downloaded.");
+            }
+               
 
             Video = video.Data;
             if (Video.Thumbnail.IsNullOrEmpty())
@@ -81,13 +94,13 @@ namespace OnionMedia.Core.Models
             downloadProgress = e;
             Match matchResult = null;
             if (!string.IsNullOrEmpty(e.Data))
-			{
-				matchResult = Regex.Match(e.Data, GlobalResources.FFMPEGTIMEFROMOUTPUTREGEX);
-				if (!matchResult.Success)
-				{
-					downloadLog.AppendLine(e.Data);
-				}
-			}
+            {
+                matchResult = Regex.Match(e.Data, GlobalResources.FFMPEGTIMEFROMOUTPUTREGEX);
+                if (!matchResult.Success)
+                {
+                    downloadLog.AppendLine(e.Data);
+                }
+            }
 
             if (matchResult?.Success is true)
                 ProgressInfo.Progress = (int)(TimeSpan.Parse(matchResult.Value.Remove(0, 5)) / (TimeSpanGroup.EndTime - TimeSpanGroup.StartTime) * 100);
@@ -123,10 +136,10 @@ namespace OnionMedia.Core.Models
             Debug.WriteLine("Finish update task");
         }
 
-		/// <summary>
-		/// Contains informations of the video
-		/// </summary>
-		public VideoData Video { get; }
+        /// <summary>
+        /// Contains informations of the video
+        /// </summary>
+        public VideoData Video { get; }
         public TimeSpan Duration { get; }
         public string? UploadDate => Video.UploadDate?.ToShortDateString();
         public TimeSpanGroup TimeSpanGroup { get; }
@@ -219,9 +232,9 @@ namespace OnionMedia.Core.Models
         /// The height for the video to download
         /// </summary>
         public int GetVideoHeight => Convert.ToInt32(QualityLabel.Remove(QualityLabel.Length - 1));
-		/// <summary>
-		/// The format for the video to download
-		/// </summary>
+        /// <summary>
+        /// The format for the video to download
+        /// </summary>
         public string Format => $"bestvideo[height<={GetVideoHeight}]+bestaudio[ext=m4a]/best[height<={GetVideoHeight}]/best";
 
         /// <summary>

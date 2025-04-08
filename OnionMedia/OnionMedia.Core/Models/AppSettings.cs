@@ -46,6 +46,7 @@ namespace OnionMedia.Core.Models
             maxThreadCountForConversion = settingsService.GetSetting("maxThreadCountForConversion") as int? ?? 1;
             ValidateSettingOrSetToDefault(ref maxThreadCountForConversion, val => val is > 0, 1);
             
+
             useFixedStoragePaths = settingsService.GetSetting("useFixedStoragePaths") as bool? ?? true;
             convertedAudioSavePath = settingsService.GetSetting("convertedAudioSavePath") as string ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic), "OnionMedia", "converted".GetLocalized());
             convertedVideoSavePath = settingsService.GetSetting("convertedVideoSavePath") as string ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "OnionMedia", "converted".GetLocalized());
@@ -64,7 +65,12 @@ namespace OnionMedia.Core.Models
             showDonationBanner = settingsService.GetSetting("showDonationBanner") as bool? ?? true;
             selectedTheme = ParseEnum<ThemeType>(settingsService.GetSetting("selectedTheme"));
             appFlowDirection = ParseEnum<AppFlowDirection>(settingsService.GetSetting("appFlowDirection"));
-            
+
+
+            useLogging=settingsService.GetSetting("useLogging") as bool? ?? false;
+            logPath = settingsService.GetSetting("logPath") as string?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "OnionMedia", "Logs"); ;
+            deleteLogInterval = settingsService.GetSetting("deleteLogInterval") as byte? ?? 7;
+
             var downloadsAudioFormat = settingsService.GetSetting("downloadsAudioFormat");
             if (downloadsAudioFormat == null)
                 this.downloadsAudioFormat = AudioConversionFormat.Mp3;
@@ -93,6 +99,25 @@ namespace OnionMedia.Core.Models
         public static AppFlowDirection[] FlowDirections { get; } = Enum.GetValues<AppFlowDirection>().ToArray();
 
         //Settings
+
+        public byte DeleteLogInterval
+        {
+            get => deleteLogInterval;
+            set => SetSetting(ref deleteLogInterval, value,"deleteLogInterval");
+        }
+        private byte deleteLogInterval;
+        public bool UseLogging
+        {
+            get => useLogging.HasValue ? (bool)useLogging:false;
+            set => SetSetting(ref useLogging, value, "useLogging");
+        }
+        private bool? useLogging;
+        public string LogPath
+        {
+            get => logPath;
+            set => SetSetting(ref logPath, value, "logPath");
+        }
+        public string logPath;
         public int SimultaneousOperationCount
         {
             get => simultaneousOperationCount.HasValue ? (int)simultaneousOperationCount : default;
@@ -367,7 +392,8 @@ namespace OnionMedia.Core.Models
         ConvertedVideofiles,
         ConvertedAudiofiles,
         DownloadedVideofiles,
-        DownloadedAudiofiles
+        DownloadedAudiofiles,
+        LogPath
     }
 
     public enum StartPageType

@@ -10,22 +10,50 @@
  */
 
 using System;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace OnionMedia.Core;
 
 public sealed class IoC
 {
     public static IoC Default { get; } = new();
+    private IServiceProvider iocProvider;
+    private readonly object lockObject = new();
 
-    public void InitializeServices(IServiceProvider serviceProvider) =>
-        iocProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+    public void InitializeServices(IServiceProvider serviceProvider)
+    {
+        if (iocProvider != null)
+            throw new InvalidOperationException("Service provider has already been initialized.");
+
+        lock (lockObject)
+        {
+            iocProvider ??= serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+        }
+    }
+
+    public void InitializeDefault(Action<IServiceCollection> configureServices)
+    {
+        var serviceCollection = new ServiceCollection();
+        configureServices(serviceCollection);
+        InitializeServices(serviceCollection.BuildServiceProvider());
+    }
 
     public T? GetService<T>() where T : class
     {
         if (iocProvider == null)
             throw new Exception("Service provider is not initialized.");
 
-        return (T?)iocProvider.GetService(typeof(T));
+        return iocProvider.GetService<T>();
     }
-    private IServiceProvider iocProvider;
+
+    public T GetRequiredService<T>() where T : class
+    {
+        if (iocProvider == null)
+            throw new Exception("Service provider is not initialized.");
+
+        return (T)iocProvider.GetService(typeof(T))
+            ?? throw new InvalidOperationException($"Service of type {typeof(T).Name} is not registered.");
+    }
 }
+
