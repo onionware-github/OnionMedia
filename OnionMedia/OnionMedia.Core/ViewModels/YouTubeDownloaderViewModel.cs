@@ -51,7 +51,8 @@ namespace OnionMedia.Core.ViewModels
             this.networkStatusService = networkStatusService;
             this.taskbarProgressService = taskbarProgressService;
 
-            SearchResults.CollectionChanged += (o, e) => OnPropertyChanged(nameof(AnyResults));
+			VideoFetchingErrors.CollectionChanged += (_,_) => OnPropertyChanged(nameof(VideoFetchingLogAvailable));
+			SearchResults.CollectionChanged += (o, e) => OnPropertyChanged(nameof(AnyResults));
             Videos.CollectionChanged += OnProgressChanged;
 
             AddVideoCommand = new(async link => await FillInfosAsync(link), link => !DownloadFileCommand.IsRunning);
@@ -107,8 +108,9 @@ namespace OnionMedia.Core.ViewModels
 
         public bool ResolutionsAvailable => GetMP4 && Videos.Any() && Resolutions.Any();
 
+        public bool VideoFetchingLogAvailable => VideoFetchingErrors.Any();
 
-        public string SearchTerm
+		public string SearchTerm
         {
             get => searchTerm;
             set
@@ -119,7 +121,7 @@ namespace OnionMedia.Core.ViewModels
         }
         private string searchTerm = string.Empty;
         public ObservableCollection<SearchItemModel> SearchResults { get; } = new();
-
+        public ObservableCollection<string[]> VideoFetchingErrors { get; } = new();
         public ObservableCollection<StreamItemModel> Videos { get; set; } = new();
         public ObservableCollection<string> Resolutions { get; set; } = new();
 
@@ -181,8 +183,10 @@ namespace OnionMedia.Core.ViewModels
             if (searchProcesses > 0 && !DownloaderMethods.VideoSearchCancelSource.IsCancellationRequested)
                 DownloaderMethods.VideoSearchCancelSource.Cancel();
             SearchResults.Clear();
+            VideoFetchingErrors.Clear();
 
-            if (string.IsNullOrWhiteSpace(videolink))
+
+			if (string.IsNullOrWhiteSpace(videolink))
                 return;
 
             bool validUri = Regex.IsMatch(videolink, GlobalResources.URLREGEX);
@@ -225,7 +229,11 @@ namespace OnionMedia.Core.ViewModels
                 ScanVideoCount++;
                 var data = await DownloaderMethods.downloadClient.RunVideoDataFetch(videolink);
 
-                if (data.Data == null && urlClone == SearchTerm)
+				if (!data.Success)
+				{
+					VideoFetchingErrors.Add(data.ErrorOutput);
+				}
+				if (data.Data == null && urlClone == SearchTerm)
                 {
                     VideoNotFound = true;
                     ScanVideoCount--;
@@ -310,6 +318,35 @@ namespace OnionMedia.Core.ViewModels
         }
 
         [ICommand]
+        private async Task ShowVideoFetchingLogAsync()
+        {
+            if (!VideoFetchingErrors.Any())
+                return;
+
+            string lastLog = string.Join('\n', VideoFetchingErrors.Last());
+            
+            bool? storeAsFile = await dialogService.ShowInteractionDialogAsync("Log:", lastLog, "save".GetLocalized(), "copy".GetLocalized(), "close".GetLocalized());
+            if (storeAsFile is null)
+            {
+                return;
+            }
+            if (storeAsFile is false)
+            {
+                await ClipboardService.SetTextAsync(lastLog);
+                return;
+            }
+            Dictionary<string, IEnumerable<string>> types = new()
+            {
+                { "", new[] { ".txt" } }
+            };
+			string filepath = await dialogService.ShowSaveFilePickerDialogAsync("video-fetching-log.txt", types, DirectoryLocation.Desktop);
+			if (filepath != null)
+			{
+				await File.WriteAllTextAsync(filepath, lastLog);
+			}
+		}
+
+		[ICommand]
         private async Task ShowLogAsync(StreamItemModel video)
         {
 	        if (string.IsNullOrEmpty(video.DownloadLog))
@@ -444,9 +481,16 @@ namespace OnionMedia.Core.ViewModels
                     try
                     {
                         var video = await DownloaderMethods.downloadClient.RunVideoDataFetch(url);
+
+                        /*TODO: Video fetch logging for playlists
+                        if(!video.Success)
+                        {
+                            VideoFetchingErrors.Add(video.ErrorOutput);
+						}
+                        */
+
                         StreamItemModel item = new(video);
                         item.Video.Url = url;
-
                         lock (items)
                             items.Add(item);
                     }

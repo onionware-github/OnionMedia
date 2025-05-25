@@ -258,7 +258,15 @@
                         </Button>
                         <TeachingTip x:Uid="/DownloaderPage/noVideoFound"
                                  IsOpen="{x:Bind ViewModel.VideoNotFound}"
-                                 Target="{x:Bind videolink, Mode=OneTime}"/>
+                                 Target="{x:Bind videolink, Mode=OneTime}">
+                            <TeachingTip.Content>
+                                <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="40" ToolTipService.ToolTip="Log"
+                                        Command="{x:Bind ViewModel.ShowVideoFetchingLogCommand}"
+                                        Visibility="{x:Bind ViewModel.VideoFetchingLogAvailable}">
+                                    <SymbolIcon Symbol="List"/>
+                                </Button>
+                            </TeachingTip.Content>
+                        </TeachingTip>
                     </Grid>
 
 
