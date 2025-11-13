@@ -17,6 +17,7 @@
 		<None Remove="Assets\OnionMedia_Icon_transparent.svg" />
 		<None Remove="Data\codecs.json" />
 		<None Remove="Data\ConversionPresets.json" />
+		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\binaries\deno.exe" />
 		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffmpeg.exe" />
 		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffprobe.exe" />
 		<None Remove="ExternalBinaries\ffmpeg+yt-dlp\binaries\yt-dlp-license-information.txt" />
@@ -73,6 +74,7 @@
 	<ItemGroup>
 		<Content Include="Data\codecs.json" />
 		<Content Include="Data\ConversionPresets.json" />
+		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\binaries\deno.exe" />
 		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffmpeg.exe" />
 		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\binaries\ffprobe.exe" />
 		<Content Include="ExternalBinaries\ffmpeg+yt-dlp\binaries\yt-dlp-license-information.txt" />
