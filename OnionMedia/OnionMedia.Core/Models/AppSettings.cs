@@ -56,6 +56,7 @@ namespace OnionMedia.Core.Models
             sendMessageAfterDownload = settingsService.GetSetting("sendMessageAfterDownload") as bool? ?? true;
             fallBackToSoftwareEncoding = settingsService.GetSetting("fallBackToSoftwareEncoding") as bool? ?? true;
             autoRetryDownload = settingsService.GetSetting("autoRetryDownload") as bool? ?? true;
+            checkForUpdates = settingsService.GetSetting("checkForUpdates") as bool? ?? true;
             countOfDownloadRetries = settingsService.GetSetting("countOfDownloadRetries") as int? ?? 3;
             ValidateSettingOrSetToDefault(ref countOfDownloadRetries, val => val is >= 0 and <= 5, 3);
 
@@ -175,6 +176,13 @@ namespace OnionMedia.Core.Models
             set => SetSetting(ref countOfDownloadRetries, value, "countOfDownloadRetries");
         }
         private int? countOfDownloadRetries;
+
+        public bool CheckForUpdates
+        {
+            get => checkForUpdates.HasValue && (bool)checkForUpdates;
+            set => SetSetting(ref checkForUpdates, value, "checkForUpdates");
+        }
+        private bool? checkForUpdates;
 
         public HardwareEncoder HardwareEncoder
         {

@@ -86,7 +86,14 @@
                     </StackPanel>
                 </TeachingTip.Content>
             </TeachingTip>
-            <NavigationView
+            <TeachingTip x:Name="updateFlyout"
+                         x:Uid="updateFlyout"
+                         IsOpen="{x:Bind ViewModel.UpdateTipIsOpen, Mode=TwoWay}"
+                         PreferredPlacement="BottomLeft"
+                         ActionButtonCommand="{x:Bind InstallUpdatesCommand}"
+                         CloseButtonClick="updateFlyout_CloseButtonClick"/>
+            
+        <NavigationView
         x:Name="navigationView"
         Grid.Row="1"
         IsBackButtonVisible="Collapsed"
@@ -133,11 +140,18 @@
                     </behaviors:NavigationViewHeaderBehavior>
                 </i:Interaction.Behaviors>
                 <NavigationView.PaneFooter>
-                    <NavigationViewItem Tapped="ShutdownBtn_OnClick" Visibility="{x:Bind ViewModel.ShowHeaderPowerButton, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
-                        <NavigationViewItem.Icon>
-                            <FontIcon x:Name="shutdownIcon" FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE7E8;"/>
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
+                    <StackPanel Spacing="4">
+                        <NavigationViewItem Tapped="UpdateBtn_OnClick" Visibility="{x:Bind UpdateAvailable, Mode=OneWay}">
+                            <NavigationViewItem.Icon>
+                                <SymbolIcon x:Name="updateIcon" Symbol="Sync"/>
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                        <NavigationViewItem Tapped="ShutdownBtn_OnClick" Visibility="{x:Bind ViewModel.ShowHeaderPowerButton, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
+                            <NavigationViewItem.Icon>
+                                <FontIcon x:Name="shutdownIcon" FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE7E8;"/>
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                    </StackPanel>
                 </NavigationView.PaneFooter>
                 <controls:DockPanel>
                     <StackPanel controls:DockPanel.Dock="Top" HorizontalAlignment="Right" Orientation="Horizontal" Spacing="5" Height="30">

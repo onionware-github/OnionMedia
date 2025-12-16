@@ -26,6 +26,14 @@ using OnionMedia.Core.Enums;
 using OnionMedia.Core.Services;
 using OnionMedia.Core.ViewModels;
 using Microsoft.UI;
+using System.Threading.Tasks;
+using Windows.Services.Store;
+using System.Collections.Generic;
+using System;
+using CommunityToolkit.Mvvm.Input;
+using Windows.Foundation;
+using System.Linq;
+using System.Diagnostics;
 
 namespace OnionMedia.Views
 {
@@ -41,27 +49,49 @@ namespace OnionMedia.Views
 		private double pageWidth;
 		[ObservableProperty]
 		private double pageHeight;
+		[ObservableProperty]
+		private bool updateAvailable;
 
 		public ShellViewModel ViewModel { get; }
 		private MediaViewModel MediaViewModel { get; }
 		private YouTubeDownloaderViewModel DownloaderViewModel { get; }
 		private IPCPower PcPowerService { get; }
+		private ISoftwareUpdateService UpdateService { get; }
 
 		private PCPowerOption desiredPowerOption;
 		private bool executeOnError;
 
-		public ShellPage(ShellViewModel viewModel, MediaViewModel mediaViewModel, YouTubeDownloaderViewModel downloaderViewModel, IPCPower pcPowerService)
+		public ShellPage(ShellViewModel viewModel, MediaViewModel mediaViewModel, YouTubeDownloaderViewModel downloaderViewModel, IPCPower pcPowerService, ISoftwareUpdateService updateService)
 		{
 			ViewModel = viewModel;
 			InitializeComponent();
 			ViewModel.NavigationService.Frame = shellFrame;
 			ViewModel.NavigationViewService.Initialize(navigationView);
 			PcPowerService = pcPowerService;
+			UpdateService = updateService;
 			MediaViewModel = mediaViewModel;
 			DownloaderViewModel = downloaderViewModel;
 			MediaViewModel.ConversionDone += ReactToProcessFinish;
 			DownloaderViewModel.DownloadDone += ReactToProcessFinish;
 			ActualThemeChanged += (_, _) => SetPowerIcon();
+			if (AppSettings.Instance.CheckForUpdates)
+				_ = CheckForUpdatesAsync();
+		}
+
+		private async Task CheckForUpdatesAsync()
+		{
+			try
+			{
+				UpdateAvailable = await UpdateService.CheckForUpdateAsync();
+				ViewModel.UpdateTipIsOpen = UpdateAvailable;
+			}
+			catch { Debug.WriteLine("Check for update failed."); }
+		}
+
+		[ICommand]
+		private async Task InstallUpdatesAsync()
+		{
+			await UpdateService.StartUpdateProcessAsync();
 		}
 
 		private void OnLoaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
@@ -122,7 +152,7 @@ namespace OnionMedia.Views
 			ViewModel.ExecuteOnError = executeOnError;
 			ViewModel.ShutdownTipIsOpen = false;
 		}
-		
+
 		private void ShutdownFlyout_OnActionButtonClick(TeachingTip sender, object args)
 		{
 			desiredPowerOption = ViewModel.SelectedPowerOption;
@@ -138,10 +168,10 @@ namespace OnionMedia.Views
 
 		private void ReactToProcessFinish(object sender, bool errors)
 		{
-			if  (desiredPowerOption is PCPowerOption.None ||
-			    (errors && !executeOnError) ||
-			    (sender is MediaViewModel && DownloaderViewModel.DownloadFileCommand.IsRunning) ||
-			    (sender is YouTubeDownloaderViewModel && MediaViewModel.StartConversionCommand.IsRunning))
+			if (desiredPowerOption is PCPowerOption.None ||
+				(errors && !executeOnError) ||
+				(sender is MediaViewModel && DownloaderViewModel.DownloadFileCommand.IsRunning) ||
+				(sender is YouTubeDownloaderViewModel && MediaViewModel.StartConversionCommand.IsRunning))
 			{
 				return;
 			}
@@ -186,6 +216,16 @@ namespace OnionMedia.Views
 					shutdownIcon.Foreground = (Brush)Application.Current.Resources["ApplicationForegroundThemeBrush"];
 					return;
 			}
+		}
+
+		private void UpdateBtn_OnClick(object sender, TappedRoutedEventArgs e)
+		{
+			ViewModel.UpdateTipIsOpen = true;
+		}
+
+		private void updateFlyout_CloseButtonClick(TeachingTip sender, object args)
+		{
+			ViewModel.UpdateTipIsOpen = false;
 		}
 	}
 }

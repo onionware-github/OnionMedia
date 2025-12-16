@@ -300,4 +300,13 @@ pukkandan (desarrollo y apoyo a yt-dlp)</value>
   <data name="shutdownFlyout.Title" xml:space="preserve">
     <value>Cuando esté hecho:</value>
   </data>
+	<data name="updateFlyout.Title" xml:space="preserve">
+    <value>Actualización disponible</value>
+  </data>
+	<data name="updateFlyout.Subtitle" xml:space="preserve">
+    <value>Actualice a la última versión para asegurarse de tener acceso a las últimas funciones y correcciones de errores.</value>
+  </data>
+	<data name="updateFlyout.ActionButtonContent" xml:space="preserve">
+    <value>Actualización a través de Microsoft Store</value>
+  </data>
 </root>

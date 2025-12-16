@@ -299,4 +299,13 @@ pukkandan (ontwikkeling en ondersteuning voor yt-dlp)</value>
   <data name="Sleep" xml:space="preserve">
     <value>Slaapstand</value>
   </data>
+	<data name="updateFlyout.Title" xml:space="preserve">
+    <value>Nieuwe update beschikbaar!</value>
+  </data>
+	<data name="updateFlyout.Subtitle" xml:space="preserve">
+    <value>Update naar de nieuwste versie om er zeker van te zijn dat u toegang hebt tot de nieuwste functies en bugfixes.</value>
+  </data>
+	<data name="updateFlyout.ActionButtonContent" xml:space="preserve">
+    <value>Update via de Microsoft Store</value>
+  </data>
 </root>

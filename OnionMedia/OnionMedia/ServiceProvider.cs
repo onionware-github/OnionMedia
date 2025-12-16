@@ -39,6 +39,7 @@ namespace OnionMedia;
 [Singleton(typeof(IVersionService), typeof(VersionService))]
 [Singleton(typeof(IWindowClosingService), typeof(WindowClosingService))]
 [Singleton(typeof(IPCPower), typeof(WindowsPowerService))]
+[Singleton(typeof(ISoftwareUpdateService), typeof(SoftwareUpdateService))]
 [Singleton(typeof(IFFmpegStartup), typeof(FFmpegStartup))]
 //Views and ViewModels
 [Transient(typeof(ShellViewModel))]

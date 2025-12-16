@@ -144,6 +144,9 @@
   <data name="autoSelectThreadCount.Content" xml:space="preserve">
     <value>Selecteer automatisch</value>
   </data>
+  <data name="checkForUpdates.Header" xml:space="preserve">
+    <value>Controleer op updates bij het opstarten</value>
+  </data>
   <data name="clearListsAfterOperation.Content" xml:space="preserve">
     <value>Wis lijst na operatie</value>
   </data>

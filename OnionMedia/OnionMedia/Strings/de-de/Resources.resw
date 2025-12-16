@@ -300,4 +300,13 @@ pukkandan (Entwickelt und unterstützt yt-dlp)</value>
   <data name="shutdownFlyout.Title" xml:space="preserve">
     <value>Wenn fertig:</value>
   </data>
+  <data name="updateFlyout.Title" xml:space="preserve">
+    <value>Update verfügbar!</value>
+  </data>
+  <data name="updateFlyout.Subtitle" xml:space="preserve">
+    <value>Bitte aktualisieren Sie OnionMedia, um sicherzustellen, dass Sie Zugriff auf die neuesten Funktionen und Fehlerbehebungen haben.</value>
+  </data>
+  <data name="updateFlyout.ActionButtonContent" xml:space="preserve">
+    <value>Aktualisieren via Microsoft Store</value>
+  </data>
 </root>

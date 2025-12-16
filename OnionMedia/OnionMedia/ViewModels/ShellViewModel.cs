@@ -27,7 +27,8 @@ namespace OnionMedia.ViewModels
     {
         private bool _isBackEnabled;
         private bool _shutdownTipIsOpen;
-        private bool _showHeaderPowerBtn;
+        private bool _updateTipIsOpen;
+		private bool _showHeaderPowerBtn;
         private bool _executeOnError;
         private PCPowerOption _powerOption;
         private object _selected;
@@ -50,7 +51,13 @@ namespace OnionMedia.ViewModels
 	        set { SetProperty(ref _shutdownTipIsOpen, value); }
         }
 
-        public bool ShowHeaderPowerButton
+		public bool UpdateTipIsOpen
+		{
+			get { return _updateTipIsOpen; }
+			set { SetProperty(ref _updateTipIsOpen, value); }
+		}
+
+		public bool ShowHeaderPowerButton
         {
 	        get { return _showHeaderPowerBtn; }
 	        set { SetProperty(ref _showHeaderPowerBtn, value); }

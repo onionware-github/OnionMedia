@@ -255,6 +255,7 @@
                                 </ComboBox>
 
                                 <ToggleSwitch x:Uid="/SettingsPage/showDonationBanner" IsOn="{x:Bind m:AppSettings.Instance.ShowDonationBanner}"/>
+                                <ToggleSwitch x:Uid="/SettingsPage/checkForUpdates" IsOn="{x:Bind m:AppSettings.Instance.CheckForUpdates}"/>
                             </StackPanel>
                         </Expander.Content>
                     </Expander>
