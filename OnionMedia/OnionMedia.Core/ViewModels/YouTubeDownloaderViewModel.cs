@@ -384,7 +384,7 @@ namespace OnionMedia.Core.ViewModels
 
 	        var types = new Dictionary<string, IEnumerable<string>>()
 	        {
-		        { "Portable Network Graphics", new[] { ".png" } },
+		        { "PNG", new[] { ".png" } },
 		        { "JPEG", new[] { ".jpg", ".jpeg" } }
 			};
 	        string filepath = await dialogService.ShowSaveFilePickerDialogAsync(video.Video.Title.TrimToFilename(int.MaxValue), types, DirectoryLocation.Pictures);
