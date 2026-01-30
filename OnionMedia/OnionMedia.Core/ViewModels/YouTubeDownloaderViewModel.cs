@@ -288,8 +288,8 @@ namespace OnionMedia.Core.ViewModels
                         await RefreshResultsAsync(videolink);
                         break;
 
-                    case YoutubeExplodeException:
-                        Debug.WriteLine("Video error");
+                    case YoutubeExplodeException e:
+                        Debug.WriteLine("Video error: " + e.Message);
                         break;
 
                     //TODO: Check what is that piece of code doing?! (i cant remember)

@@ -313,6 +313,7 @@ namespace OnionMedia.Core.Classes
 			VideoRecodeFormat videoRecodeFormat = (autoConvertToH264 || isShortened) ? VideoRecodeFormat.None : VideoRecodeFormat.Mp4;
 			ytOptions.EmbedThumbnail = true;
 			ytOptions.AddCustomOption("--format-sort", "hdr:SDR");
+			ytOptions.AddCustomOption("--no-check-formats", true);
 			bool isFromYoutube = stream.Video.Url.Contains("youtube.com") || stream.Video.Url.Contains("youtu.be");
 
 			Size originalSize = default;

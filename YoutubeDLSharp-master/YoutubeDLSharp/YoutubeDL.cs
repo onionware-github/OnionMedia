@@ -125,6 +125,7 @@ namespace YoutubeDLSharp
 			{
 				opts = opts.OverrideOptions(overrideOptions);
 			}
+			opts.AddCustomOption("--no-check-formats", true);
 			opts.DumpSingleJson = true;
 			opts.FlatPlaylist = flat;
 			VideoData videoData = null;
